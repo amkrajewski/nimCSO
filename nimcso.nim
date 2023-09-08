@@ -5,6 +5,7 @@ import arraymancer
 import strutils
 import times
 import bitty
+import os
 
 when compileOption("profiler"):
   import nimprof
@@ -66,33 +67,42 @@ template benchmark(benchmarkName: string, code: untyped) =
   block:
     let t0 = epochTime()
     code
-    let elapsed = epochTime() - t0
-    let elapsedStr = elapsed.formatFloat(format = ffDecimal, precision = 3)
-    echo "CPU Time [", benchmarkName, "] ", elapsedStr, "s"
+    let elapsed = (epochTime() - t0)*1000
+    let elapsedStr = elapsed.formatFloat(format = ffDecimal, precision = 1)
+    echo "CPU Time [", benchmarkName, "] ", elapsedStr, "ms"
 
 when isMainModule:
+    let args = commandLineParams()
+    if args.len == 0:
+        echo "To use form command line, provide parameters. Currently supported:\n--covBenchmark | -cb     --> to run small coverage benchmarks with two implementations"
+
+    if "--covBenchmark" in args or "-cb" in args:
+        echo "Running coverage benchmark with uint8 Tensor representation"
     
-    let presenceTensor = getPresenceTensor()
-    let presenceBitArrays = getPresenceBitArrays()
+        let presenceTensor = getPresenceTensor()
+        var b = zeros[uint8](shape = [1, 37])
+        b[0, 0..5] = 1
+        echo b
 
-    var b = zeros[uint8](shape = [1, 37])
-    b[0, 0..5] = 1
-    echo b
-#
-    benchmark "With Arraymancer":
-        for i in 1..1000:
-            discard preventedData(b, presenceTensor)
-        echo preventedData(b, presenceTensor)
+        benchmark "arraymancer":
+            for i in 1..1000:
+                discard preventedData(b, presenceTensor)
+            echo preventedData(b, presenceTensor)
 
-    var bb = newBitArray(37)
-    for i in 0..5:
-        bb[i] = true
-    echo bb
+        echo "\nRunning coverage benchmark with BitArray representation"
+        let presenceBitArrays = getPresenceBitArrays()
 
-    benchmark "With Bitty":
-        for i in 1..1000:
-            discard preventedData(bb, presenceBitArrays)
-        echo preventedData(bb, presenceBitArrays)
+        var bb = newBitArray(37)
+        for i in 0..5:
+            bb[i] = true
+        echo bb
+
+        benchmark "bitty":
+            for i in 1..1000:
+                discard preventedData(bb, presenceBitArrays)
+            echo preventedData(bb, presenceBitArrays)
+    
+    echo "Done"
 
 
 
