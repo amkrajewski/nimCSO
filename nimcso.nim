@@ -48,8 +48,13 @@ proc getPresenceBitArrays(): seq[BitArray] =
         presence = newBitArray(elementOrder.len)
 
 proc preventedData(elList: BitArray, presenceBitArrays: seq[BitArray]): int =
+    func isPrevented(elList: BitArray, presenceBitArray: BitArray): bool =
+        for i in 0..elList.len-1:
+            if elList[i] and presenceBitArray[i]:
+                return true
+        return false
     for pm in presenceBitArrays:
-        if (elList and pm).count>0:
+        if isPrevented(elList, pm):
             result += 1
 
 proc preventedData(elList: Tensor[uint8], presenceTensor: Tensor[uint8]): int =
