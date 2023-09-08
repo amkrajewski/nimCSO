@@ -112,10 +112,11 @@ when isMainModule:
         b[0, 0..5] = 1
         echo b
 
-        benchmark "arraymancer":
+        benchmark "arraymancer+randomizing":
             for i in 1..1000:
-                discard preventedData(b, presenceTensor)
-            echo preventedData(b, presenceTensor)
+                discard preventedData(randomTensor[uint8](shape = [1, 37], sample_source = [0.uint8,1.uint8]), 
+                                      presenceTensor)
+            echo "Prevented count:", preventedData(b, presenceTensor)
 
         echo "\nRunning coverage benchmark with BitArray representation"
         let presenceBitArrays = getPresenceBitArrays()
