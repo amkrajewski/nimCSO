@@ -87,11 +87,17 @@ template benchmark(benchmarkName: string, code: untyped) =
     let elapsedStr = elapsed.formatFloat(format = ffDecimal, precision = 1)
     echo "CPU Time [", benchmarkName, "] ", elapsedStr, "ms"
 
+proc echoHelp() = echo """
+To use form command line, provide parameters. Currently supported usage:
+
+--covBenchmark | -cb     --> Run small coverage benchmarks under two implementations.
+
+"""
+
 when isMainModule:
     let args = commandLineParams()
     if args.len == 0:
-        echo "To use form command line, provide parameters. Currently supported:"
-        echo "--covBenchmark | -cb     --> to run small coverage benchmarks with two implementations"
+        echoHelp()
 
     if "--covBenchmark" in args or "-cb" in args:
         echo "Running coverage benchmark with uint8 Tensor representation"
