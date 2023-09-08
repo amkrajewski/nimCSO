@@ -58,9 +58,8 @@ proc preventedData(elList: BitArray, presenceBitArrays: seq[BitArray]): int =
             result += 1
 
 proc preventedData(elList: Tensor[uint8], presenceTensor: Tensor[uint8]): int =
-    var c = presenceTensor *. elList
-    c = c.max(axis=1)
-    result = c.asType(int).sum()
+    let c = presenceTensor *. elList
+    result = c.max(axis=1).asType(int).sum()
 
 
 template benchmark(benchmarkName: string, code: untyped) =
