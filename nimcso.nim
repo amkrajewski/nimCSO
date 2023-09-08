@@ -126,10 +126,16 @@ when isMainModule:
             bb[i] = true
         echo bb
 
-        benchmark "bitty":
+        benchmark "bitty+randomizing":
             for i in 1..1000:
-                discard preventedData(bb, presenceBitArrays)
-            echo preventedData(bb, presenceBitArrays)
+                #discard preventedData(bb, presenceBitArrays)
+                var esTemp = ElSolution()
+                esTemp.elBA = newBitArray(37)
+                esTemp.randomize()
+                esTemp.setPrevented(presenceBitArrays)
+            let particularResult = newElSolution(bb, presenceBitArrays)
+            echo particularResult
+            echo "Prevented count:", particularResult.prevented
     
     echo "Done"
 
