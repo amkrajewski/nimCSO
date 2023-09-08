@@ -7,6 +7,7 @@ import times
 import bitty
 import os
 import std/sequtils
+import std/random
 
 when compileOption("profiler"):
   import nimprof
@@ -71,13 +72,17 @@ proc newElSolution*(elBA: BitArray, pBA: seq[BitArray]): ElSolution =
     result.elBA = elBA
     result.prevented = preventedData(elBA, pBA)
 
-proc `$`*(s: ElSolution): string =
-    for i in 0..s.elBA.len-1:
-        if s.elBA[i]:
+proc `$`*(elSol: ElSolution): string =
+    for i in 0..elSol.elBA.len-1:
+        if elSol.elBA[i]:
             result.add(elementOrder[i])
 
-proc setPrevented*(s: var ElSolution, presenceBitArrays: seq[BitArray]): void =
-    s.prevented = preventedData(s.elBA, presenceBitArrays)
+proc setPrevented*(elSol: var ElSolution, presenceBitArrays: seq[BitArray]): void =
+    elSol.prevented = preventedData(elSol.elBA, presenceBitArrays)
+
+proc randomize*(elSol: var ElSolution): void =
+    for i in 0..elSol.elBA.len-1:
+        elSol.elBA[i] = (rand(1) > 0)
 
 template benchmark(benchmarkName: string, code: untyped) =
   block:
