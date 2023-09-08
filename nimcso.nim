@@ -16,7 +16,7 @@ let elementOrder* = ["Fe", "Cr", "Ni", "Co", "Al", "Ti", "Nb", "Cu", "Mo", "Ta",
                      "Ag", "Nd", "S", "Ga"]
 
 proc getPresenceTensor(): Tensor[uint8] =
-    let elementsPresentList = readFile("elementList.txt").splitLines()
+    let elementsPresentList = readFile("elementLists.txt").splitLines()
     var
         presence = newTensor[uint8]([elementsPresentList.len, elementOrder.len])
         lineN: int = 0
@@ -33,7 +33,7 @@ proc getPresenceTensor(): Tensor[uint8] =
     result = presence
 
 proc getPresenceBitArrays(): seq[BitArray] =
-    let elementsPresentList = readFile("elementList.txt").splitLines()
+    let elementsPresentList = readFile("elementLists.txt").splitLines()
     var
         presence = newBitArray(elementOrder.len)
         elN: int = 0
@@ -74,7 +74,8 @@ template benchmark(benchmarkName: string, code: untyped) =
 when isMainModule:
     let args = commandLineParams()
     if args.len == 0:
-        echo "To use form command line, provide parameters. Currently supported:\n--covBenchmark | -cb     --> to run small coverage benchmarks with two implementations"
+        echo "To use form command line, provide parameters. Currently supported:"
+        echo "--covBenchmark | -cb     --> to run small coverage benchmarks with two implementations"
 
     if "--covBenchmark" in args or "-cb" in args:
         echo "Running coverage benchmark with uint8 Tensor representation"
