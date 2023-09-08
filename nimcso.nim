@@ -6,6 +6,7 @@ import strutils
 import times
 import bitty
 import os
+import std/sequtils
 
 when compileOption("profiler"):
   import nimprof
@@ -15,7 +16,7 @@ let elementOrder* = ["Fe", "Cr", "Ni", "Co", "Al", "Ti", "Nb", "Cu", "Mo", "Ta",
                      "Zn", "Li", "O",  "Y",  "Pd", "N",  "Ca", "Ir", "Sc", "Ge", "Be", 
                      "Ag", "Nd", "S", "Ga"]
 
-proc getPresenceTensor(): Tensor[uint8] =
+proc getPresenceTensor*(): Tensor[uint8] =
     let elementsPresentList = readFile("elementLists.txt").splitLines()
     var
         presence = newTensor[uint8]([elementsPresentList.len, elementOrder.len])
@@ -32,7 +33,7 @@ proc getPresenceTensor(): Tensor[uint8] =
         lineN += 1
     result = presence
 
-proc getPresenceBitArrays(): seq[BitArray] =
+proc getPresenceBitArrays*(): seq[BitArray] =
     let elementsPresentList = readFile("elementLists.txt").splitLines()
     var
         presence = newBitArray(elementOrder.len)
@@ -48,7 +49,7 @@ proc getPresenceBitArrays(): seq[BitArray] =
         result.add(presence)
         presence = newBitArray(elementOrder.len)
 
-proc preventedData(elList: BitArray, presenceBitArrays: seq[BitArray]): int =
+proc preventedData*(elList: BitArray, presenceBitArrays: seq[BitArray]): int =
     func isPrevented(elList: BitArray, presenceBitArray: BitArray): bool =
         for i in 0..elList.len-1:
             if elList[i] and presenceBitArray[i]:
@@ -58,10 +59,25 @@ proc preventedData(elList: BitArray, presenceBitArrays: seq[BitArray]): int =
         if isPrevented(elList, pm):
             result += 1
 
-proc preventedData(elList: Tensor[uint8], presenceTensor: Tensor[uint8]): int =
+proc preventedData*(elList: Tensor[uint8], presenceTensor: Tensor[uint8]): int =
     let c = presenceTensor *. elList
     result = c.max(axis=1).asType(int).sum()
 
+type ElSolution* = object 
+    elBA*: BitArray
+    prevented*: int 
+
+proc newElSolution*(elBA: BitArray, pBA: seq[BitArray]): ElSolution =
+    result.elBA = elBA
+    result.prevented = preventedData(elBA, pBA)
+
+proc `$`*(s: ElSolution): string =
+    for i in 0..s.elBA.len-1:
+        if s.elBA[i]:
+            result.add(elementOrder[i])
+
+proc setPrevented*(s: var ElSolution, presenceBitArrays: seq[BitArray]): void =
+    s.prevented = preventedData(s.elBA, presenceBitArrays)
 
 template benchmark(benchmarkName: string, code: untyped) =
   block:
