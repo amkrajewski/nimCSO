@@ -12,7 +12,7 @@ when compileOption("profiler"):
   import nimprof
 
 let elementOrder* = ["Fe", "Cr", "Ni", "Co", "Al", "Ti", "Nb", "Cu", "Mo", "Ta", "Zr",
-                     "V",  "Hf", "W",  "Mn", "Si", "Re", "B'", "Ru", "C",  "Sn", "Mg",
+                     "V",  "Hf", "W",  "Mn", "Si", "Re", "B",  "Ru", "C",  "Sn", "Mg",
                      "Zn", "Li", "O",  "Y",  "Pd", "N",  "Ca", "Ir", "Sc", "Ge", "Be", 
                      "Ag", "Nd", "S", "Ga"]
 
