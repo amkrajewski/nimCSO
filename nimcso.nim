@@ -3,19 +3,18 @@
 import std/sugar
 import arraymancer
 import strutils
-import times, os
+import times
+import bitty
 
-proc preventedData(elList: Tensor[uint8], presenceMatrix: Tensor[uint8]): int =
-    var c = presenceMatrix *. elList
-    c = c.max(axis=1)
-    result = c.asType(int).sum()
+when compileOption("profiler"):
+  import nimprof
 
-proc getPresenceMatrix(): Tensor[uint8] =
-    let elementOrder = ["Fe", "Cr","Cr","Ni","Co","Al","Ti","Nb","Cu","Mo","Ta","Zr",
-                        "V'","Hf","W'","Mn","Si","Re","B'","Ru","C'","Sn","Mg","Zn",
-                        "Li","O'", "Y'", "Pd","N'", "Ca","Ir","Sc","Ge","Be","Ag",
-                        "Nd","S'", "Ga"]
+let elementOrder* = ["Fe", "Cr", "Ni", "Co", "Al", "Ti", "Nb", "Cu", "Mo", "Ta", "Zr",
+                     "V",  "Hf", "W",  "Mn", "Si", "Re", "B'", "Ru", "C",  "Sn", "Mg",
+                     "Zn", "Li", "O",  "Y",  "Pd", "N",  "Ca", "Ir", "Sc", "Ge", "Be", 
+                     "Ag", "Nd", "S", "Ga"]
 
+proc getPresenceTensor(): Tensor[uint8] =
     let elementsPresentList = readFile("elementList.txt").splitLines()
     var
         presence = newTensor[uint8]([elementsPresentList.len, elementOrder.len])
@@ -32,6 +31,33 @@ proc getPresenceMatrix(): Tensor[uint8] =
         lineN += 1
     result = presence
 
+proc getPresenceBitArrays(): seq[BitArray] =
+    let elementsPresentList = readFile("elementList.txt").splitLines()
+    var
+        presence = newBitArray(elementOrder.len)
+        elN: int = 0
+
+    for line in elementsPresentList:
+        let elements = line.split(",")
+        elN = 0
+        for el in elementOrder:
+            if elements.contains(el):
+                presence[elN] = true
+            elN += 1
+        result.add(presence)
+        presence = newBitArray(elementOrder.len)
+
+proc preventedData(elList: BitArray, presenceBitArrays: seq[BitArray]): int =
+    for pm in presenceBitArrays:
+        if (elList and pm).count>0:
+            result += 1
+
+proc preventedData(elList: Tensor[uint8], presenceTensor: Tensor[uint8]): int =
+    var c = presenceTensor *. elList
+    c = c.max(axis=1)
+    result = c.asType(int).sum()
+
+
 template benchmark(benchmarkName: string, code: untyped) =
   block:
     let t0 = epochTime()
@@ -42,14 +68,29 @@ template benchmark(benchmarkName: string, code: untyped) =
 
 when isMainModule:
     
-    let presenceMatrix = getPresenceMatrix()
+    let presenceTensor = getPresenceTensor()
+    let presenceBitArrays = getPresenceBitArrays()
 
-    let b = [[0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0]].toTensor().astype(uint8)
+    var b = zeros[uint8](shape = [1, 37])
+    b[0, 0..5] = 1
+    echo b
+#
+    benchmark "With Arraymancer":
+        for i in 1..1000:
+            discard preventedData(b, presenceTensor)
+        echo preventedData(b, presenceTensor)
 
-    benchmark "my benchmark":
-        for i in 0..1000:
-            discard preventedData(b, presenceMatrix)
-    #echo preventedData(b, presenceMatrix)
+    var bb = newBitArray(37)
+    for i in 0..5:
+        bb[i] = true
+    echo bb
+
+    benchmark "With Bitty":
+        for i in 1..1000:
+            discard preventedData(bb, presenceBitArrays)
+        echo preventedData(bb, presenceBitArrays)
+
+
 
 
 
