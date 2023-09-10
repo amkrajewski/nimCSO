@@ -113,6 +113,7 @@ proc echoHelp() = echo """
 To use form command line, provide parameters. Currently supported usage:
 
 --covBenchmark | -cb     --> Run small coverage benchmarks under two implementations.
+--expBenchmark | -eb     --> Run small node expansion benchmarks.
 
 """
 
@@ -153,6 +154,14 @@ when isMainModule:
             let particularResult = newElSolution(bb, presenceBitArrays)
             echo particularResult
             echo "Prevented count:", particularResult.prevented
+    if "--expBenchmark" in args or "-eb" in args:
+        let bb = newBitArray(37)
+        let presenceBitArrays = getPresenceBitArrays()
+        var esTemp = newElSolution(bb, presenceBitArrays)
+        echo esTemp.getNextNodes(newBitArray(37), presenceBitArrays)
+        benchmark "Expanding to 37x100 nodes":
+            for i in 1..100:
+                discard esTemp.getNextNodes(bb, presenceBitArrays)
     
     echo "Done"
 
