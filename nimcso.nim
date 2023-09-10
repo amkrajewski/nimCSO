@@ -88,6 +88,19 @@ proc randomize*(elSol: var ElSolution): void =
     for i in 0..elSol.elBA.len-1:
         elSol.elBA[i] = (rand(1) > 0)
 
+proc getNextNodes*(elSol: ElSolution, exclusions: BitArray, presenceBitArrays: seq[BitArray]): seq[ElSolution] =
+    for i in 0..elSol.elBA.len-1:
+        var newBA = ElSolution()
+        newBA.elBA = newBitArray(elSol.elBA.len)
+        for j in 0..elSol.elBA.len-1:
+            newBA.elBA[j] = elSol.elBA[j]
+        if not elSol.elBA[i] and not exclusions[i]:
+            newBA.elBA[i] = true
+            newBA.setPrevented(presenceBitArrays)
+            result.add(newBA)
+
+### Helper procedures
+
 template benchmark(benchmarkName: string, code: untyped) =
   block:
     let t0 = epochTime()
