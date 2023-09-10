@@ -64,6 +64,8 @@ proc preventedData*(elList: Tensor[uint8], presenceTensor: Tensor[uint8]): int =
     let c = presenceTensor *. elList
     result = c.max(axis=1).asType(int).sum()
 
+### Solution class implementation
+
 type ElSolution* = object 
     elBA*: BitArray
     prevented*: int 
@@ -76,6 +78,8 @@ proc `$`*(elSol: ElSolution): string =
     for i in 0..elSol.elBA.len-1:
         if elSol.elBA[i]:
             result.add(elementOrder[i])
+    result.add("->")
+    result.add(elSol.prevented.intToStr())
 
 proc setPrevented*(elSol: var ElSolution, presenceBitArrays: seq[BitArray]): void =
     elSol.prevented = preventedData(elSol.elBA, presenceBitArrays)
