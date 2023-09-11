@@ -1,6 +1,5 @@
 # Copyrigth (C) 2023 Adam M. Krajewski
 
-import std/sugar
 import arraymancer
 import strutils
 import times
