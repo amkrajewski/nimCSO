@@ -1,10 +1,10 @@
 # Copyrigth (C) 2023 Adam M. Krajewski
 
 import arraymancer
-import strutils
-import times
+import std/strutils
+import std/times
 import bitty
-import os
+import std/os
 import std/sequtils
 import std/random
 import std/heapqueue
@@ -67,7 +67,7 @@ proc preventedData*(elList: Tensor[uint8], presenceTensor: Tensor[uint8]): int =
 
 ### Solution class implementation
 
-type ElSolution* = object 
+type ElSolution* = ref object 
     elBA*: BitArray
     prevented*: int 
 
@@ -98,7 +98,7 @@ proc randomize*(elSol: var ElSolution): void =
         elSol.elBA[i] = (rand(1) > 0)
 
 proc getNextNodes*(elSol: ElSolution, exclusions: BitArray, presenceBitArrays: seq[BitArray]): seq[ElSolution] =
-    for i in 0..elSol.elBA.len-1:
+    for i in 0..<elSol.elBA.len:
         if not elSol.elBA[i] and not exclusions[i]:
             var newElBA = newBitArray(elSol.elBA.len)
             for bit in 0..elSol.elBA.len-1:
