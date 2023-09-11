@@ -103,9 +103,12 @@ proc getNextNodes*(elSol: ElSolution, exclusions: BitArray, presenceBitArrays: s
         for j in 0..elSol.elBA.len-1:
             newBA.elBA[j] = elSol.elBA[j]
         if not elSol.elBA[i] and not exclusions[i]:
-            newBA.elBA[i] = true
-            newBA.setPrevented(presenceBitArrays)
-            result.add(newBA)
+            var newElBA = newBitArray(elSol.elBA.len)
+            for bit in 0..elSol.elBA.len-1:
+                newElBA[bit] =  elSol.elBA[bit]
+            newElBA[i] = true
+            result.add(
+                newElSolution(newElBA, presenceBitArrays))
 
 ### Helper procedures
 
