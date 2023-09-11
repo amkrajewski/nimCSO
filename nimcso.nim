@@ -66,11 +66,12 @@ proc preventedData*(elList: Tensor[uint8], presenceTensor: Tensor[uint8]): int =
 
 ### Solution class implementation
 
-type ElSolution* = object 
+type ElSolution* = ref object 
     elBA*: BitArray
     prevented*: int 
 
 proc newElSolution*(elBA: BitArray, pBA: seq[BitArray]): ElSolution =
+    result = ElSolution()
     result.elBA = elBA
     result.prevented = preventedData(elBA, pBA)
 
