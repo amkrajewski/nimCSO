@@ -7,6 +7,8 @@ import bitty
 import os
 import std/sequtils
 import std/random
+import std/heapqueue
+import std/hashes
 
 when compileOption("profiler"):
   import nimprof
@@ -49,9 +51,9 @@ proc getPresenceBitArrays*(): seq[BitArray] =
         result.add(presence)
         presence = newBitArray(elementOrder.len)
 
-proc preventedData*(elList: BitArray, presenceBitArrays: seq[BitArray]): int =
+proc preventedData*(elList: BitArray, presenceBitArrays: seq[BitArray]): int  =
     func isPrevented(elList: BitArray, presenceBitArray: BitArray): bool =
-        for i in 0..elList.len-1:
+        for i in 0..<elList.len:
             if elList[i] and presenceBitArray[i]:
                 return true
         return false
@@ -65,7 +67,7 @@ proc preventedData*(elList: Tensor[uint8], presenceTensor: Tensor[uint8]): int =
 
 ### Solution class implementation
 
-type ElSolution* = ref object 
+type ElSolution* = object 
     elBA*: BitArray
     prevented*: int 
 
@@ -120,6 +122,7 @@ To use form command line, provide parameters. Currently supported usage:
 
 --covBenchmark | -cb     --> Run small coverage benchmarks under two implementations.
 --expBenchmark | -eb     --> Run small node expansion benchmarks.
+--develpment   | -d      --> Run development code.
 
 """
 
@@ -160,6 +163,7 @@ when isMainModule:
             let particularResult = newElSolution(bb, presenceBitArrays)
             echo particularResult
             echo "Prevented count:", particularResult.prevented
+
     if "--expBenchmark" in args or "-eb" in args:
         let bb = newBitArray(37)
         let presenceBitArrays = getPresenceBitArrays()
@@ -168,6 +172,29 @@ when isMainModule:
         benchmark "Expanding to 37x100 nodes":
             for i in 1..100:
                 discard esTemp.getNextNodes(bb, presenceBitArrays)
+    
+    if "--development" in args or "-d" in args:
+        let presenceBitArrays = getPresenceBitArrays()
+        
+        var solutions = initHeapQueue[ElSolution]()
+
+        benchmark "exploring":
+            solutions.push(newElSolution(newBitArray(37), presenceBitArrays))
+            var toExpand: ElSolution
+            for order in 1..37:
+                var toExclude = newBitArray(37)
+                var topSolutionOrder: int = 0
+                while true:
+                    toExpand = solutions.pop()
+                    for sol in getNextNodes(toExpand, toExclude, presenceBitArrays):
+                        solutions.push(sol)
+                    toExclude = toExclude or toExpand.elBA
+                    topSolutionOrder = count(solutions[0].elBA)
+                    if topSolutionOrder >= order:
+                        break
+                    
+                echo order, "=>", solutions[0], " => exlored:", len(solutions)
+
     
     echo "Done"
 
