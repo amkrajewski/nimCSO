@@ -75,6 +75,9 @@ proc newElSolution*(elBA: BitArray, pBA: seq[BitArray]): ElSolution =
     result.elBA = elBA
     result.prevented = preventedData(elBA, pBA)
 
+func hash*(elSol: ElSolution): Hash =
+    hash(elSol.elBA)
+
 proc `$`*(elSol: ElSolution): string =
     for i in 0..elSol.elBA.len-1:
         if elSol.elBA[i]:
