@@ -1,6 +1,6 @@
 # Package
 
-version       = "0.0.4"
+version       = "0.1.0"
 author        = "Adam M. Krajewski"
 description   = "NIM Composition Space Optimization"
 license       = "MIT"
