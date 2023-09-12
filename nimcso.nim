@@ -52,9 +52,10 @@ proc getPresenceBitArrays*(): seq[BitArray] =
         presence = newBitArray(elementOrder.len)
 
 proc preventedData*(elList: BitArray, presenceBitArrays: seq[BitArray]): int  =
+    let elN = elList.len
     func isPrevented(elList: BitArray, presenceBitArray: BitArray): bool =
-        for i in 0..<elList.len:
-            if elList[i] and presenceBitArray[i]:
+        for i in 0..<elN:
+            if elList.unsafeGet(i) and presenceBitArray.unsafeGet(i):
                 return true
         return false
     for pm in presenceBitArrays:
