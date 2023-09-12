@@ -16,7 +16,7 @@ when compileOption("profiler"):
 let elementOrder* = ["Fe", "Cr", "Ni", "Co", "Al", "Ti", "Nb", "Cu", "Mo", "Ta", "Zr",
                      "V",  "Hf", "W",  "Mn", "Si", "Re", "B",  "Ru", "C",  "Sn", "Mg",
                      "Zn", "Li", "O",  "Y",  "Pd", "N",  "Ca", "Ir", "Sc", "Ge", "Be", 
-                     "Ag", "Nd", "S", "Ga"]
+                     "Ag", "Nd", "S",  "Ga"]
 
 proc getPresenceTensor*(): Tensor[uint8] =
     let elementsPresentList = readFile("elementLists.txt").splitLines()
@@ -53,13 +53,17 @@ proc getPresenceBitArrays*(): seq[BitArray] =
 
 proc preventedData*(elList: BitArray, presenceBitArrays: seq[BitArray]): int  =
     let elN = elList.len
-    func isPrevented(elList: BitArray, presenceBitArray: BitArray): bool =
+    var elBoolSeq = newSeq[bool](elN)
+    for i in 0 ..< elN:
+        elBoolSeq[i] = elList.unsafeGet(i)
+
+    func isPrevented(presenceBitArray: BitArray): bool =
         for i in 0..<elN:
-            if elList.unsafeGet(i) and presenceBitArray.unsafeGet(i):
+            if elBoolSeq[i] and presenceBitArray.unsafeGet(i):
                 return true
         return false
     for pm in presenceBitArrays:
-        if isPrevented(elList, pm):
+        if isPrevented(pm):
             result += 1
 
 proc preventedData*(elList: Tensor[uint8], presenceTensor: Tensor[uint8]): int =
