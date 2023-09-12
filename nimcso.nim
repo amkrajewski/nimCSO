@@ -170,9 +170,21 @@ when isMainModule:
         let presenceBitArrays = getPresenceBitArrays()
         var esTemp = newElSolution(bb, presenceBitArrays)
         echo esTemp.getNextNodes(newBitArray(37), presenceBitArrays)
-        benchmark "Expanding to 37x100 nodes":
+        benchmark "Expanding to 37 nodes 100 times":
             for i in 1..100:
                 discard esTemp.getNextNodes(bb, presenceBitArrays)
+        
+        benchmark "Expanding 100 steps (results dataset-dependent!)":
+            var solutions = initHeapQueue[ElSolution]()
+            solutions.push(newElSolution(newBitArray(37), presenceBitArrays))
+            var toExpand: ElSolution
+            var toExclude = newBitArray(37)
+            var topSolutionOrder: int = 0
+            for i in 1..100:
+                toExpand = solutions.pop()
+                for sol in getNextNodes(toExpand, toExclude, presenceBitArrays):
+                    solutions.push(sol)
+                toExclude = toExclude or toExpand.elBA
     
     if "--development" in args or "-d" in args:
         let presenceBitArrays = getPresenceBitArrays()
