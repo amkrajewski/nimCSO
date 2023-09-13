@@ -86,6 +86,21 @@ proc preventedData*(elList: BitArray, presenceBitArrays: seq[BitArray]): int  =
         if isPrevented(pm):
             result += 1
 
+proc preventedData*(elList: BitArray, presenceBoolArrays: seq[seq[bool]]): int  =
+    let elN = elList.len
+    var elBoolSeq = newSeq[bool](elN)
+    for i in 0 ..< elN:
+        elBoolSeq[i] = elList.unsafeGet(i)
+
+    func isPrevented(presenceBoolArray: seq[bool]): bool =
+        for i in 0..<elN:
+            if elBoolSeq[i] and presenceBoolArray[i]:
+                return true
+        return false
+    for pm in presenceBoolArrays:
+        if isPrevented(pm):
+            result += 1
+
 proc preventedData*(elList: Tensor[uint8], presenceTensor: Tensor[uint8]): int =
     let c = presenceTensor *. elList
     result = c.max(axis=1).asType(int).sum()
