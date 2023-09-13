@@ -1,3 +1,10 @@
-# Ignore all without extensions
 *
+!**/
 !*.*
+
+nimcache/
+build/
+docs/build/
+.cache
+.DS_Store
+.vscode
