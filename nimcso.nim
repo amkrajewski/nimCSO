@@ -130,8 +130,8 @@ proc `<`(a, b: ElSolution): bool = a.prevented < b.prevented
 
 proc `>`(a, b: ElSolution): bool = a.prevented > b.prevented
 
-proc setPrevented*(elSol: var ElSolution, presenceBitArrays: seq[BitArray]): void =
-    elSol.prevented = preventedData(elSol.elBA, presenceBitArrays)
+proc setPrevented*(elSol: var ElSolution, presenceArrays: seq[BitArray] | seq[seq[bool]]): void =
+    elSol.prevented = preventedData(elSol.elBA, presenceArrays)
 
 proc randomize*(elSol: var ElSolution): void =
     for i in 0..elSol.elBA.len-1:
