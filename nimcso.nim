@@ -51,6 +51,26 @@ proc getPresenceBitArrays*(): seq[BitArray] =
         result.add(presence)
         presence = newBitArray(elementOrder.len)
 
+proc getPresenceBoolArrays*(): seq[seq[bool]] =
+    let 
+        elementsPresentList = readFile("elementLists.txt").splitLines()
+        alloyN = elementsPresentList.len
+        elN = elementOrder.len
+    var
+        elI: int = 0
+        lineI: int = 0
+        
+    result = newSeqWith(alloyN, newSeq[bool](elN))
+
+    for line in elementsPresentList:
+        let elements = line.split(",")
+        elI = 0
+        for el in elementOrder:
+            if elements.contains(el):
+                result[lineI][elI] = true
+            elI += 1
+        lineI += 1
+
 proc preventedData*(elList: BitArray, presenceBitArrays: seq[BitArray]): int  =
     let elN = elList.len
     var elBoolSeq = newSeq[bool](elN)
