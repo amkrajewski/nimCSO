@@ -137,15 +137,16 @@ proc randomize*(elSol: var ElSolution): void =
     for i in 0..elSol.elBA.len-1:
         elSol.elBA[i] = (rand(1) > 0)
 
-proc getNextNodes*(elSol: ElSolution, exclusions: BitArray, presenceBitArrays: seq[BitArray]): seq[ElSolution] =
+proc getNextNodes*(elSol: ElSolution, 
+                   exclusions: BitArray, 
+                   presenceBitArrays: seq[BitArray] | seq[seq[bool]]): seq[ElSolution] =
     for i in 0..<elSol.elBA.len:
         if not elSol.elBA[i] and not exclusions[i]:
             var newElBA = newBitArray(elSol.elBA.len)
             for bit in 0..elSol.elBA.len-1:
                 newElBA[bit] =  elSol.elBA[bit]
             newElBA[i] = true
-            result.add(
-                newElSolution(newElBA, presenceBitArrays))
+            result.add(newElSolution(newElBA, presenceBitArrays))
 
 ### Helper procedures
 
