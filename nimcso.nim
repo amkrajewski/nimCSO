@@ -159,6 +159,14 @@ template benchmark(benchmarkName: string, code: untyped) =
     let elapsedStr = elapsed.formatFloat(format = ffDecimal, precision = 1)
     echo "CPU Time [", benchmarkName, "] ", elapsedStr, "us"
 
+template benchmarkOnce(benchmarkName: string, code: untyped) =
+  block:
+    let t0 = epochTime()
+    code
+    let elapsed = (epochTime() - t0) * 1000
+    let elapsedStr = elapsed.formatFloat(format = ffDecimal, precision = 1)
+    echo "CPU Time [", benchmarkName, "] ", elapsedStr, "ms"
+
 proc echoHelp() = echo """
 To use form command line, provide parameters. Currently supported usage:
 
@@ -204,7 +212,7 @@ when isMainModule:
             echo "Prevented count:", particularResult.prevented
 
         block:
-            echo "\nRunning coverage benchmark with bool arrays representation (BitArray intermediate)"
+            echo "\nRunning coverage benchmark with bool arrays representation (BitArray graph retained)"
             let presenceBoolArrays = getPresenceBoolArrays()
             var bb = newBitArray(37)
             for i in 0..5: bb[i] = true
@@ -219,26 +227,58 @@ when isMainModule:
             echo "Prevented count:", particularResult.prevented
 
     if "--expBenchmark" in args or "-eb" in args:
-        let bb = newBitArray(37)
-        let presenceBitArrays = getPresenceBitArrays()
-        var esTemp = newElSolution(bb, presenceBitArrays)
-        echo esTemp.getNextNodes(newBitArray(37), presenceBitArrays)
-        benchmark "Expanding to 37 nodes 100 times (bitarray)":
-            discard esTemp.getNextNodes(bb, presenceBitArrays)
-        
-        let presenceBoolArrays = getPresenceBoolArrays()
-        benchmark "bit&boolArrays+randomizing":
-            discard esTemp.getNextNodes(bb, presenceBoolArrays)
-        
-        var solutions = initHeapQueue[ElSolution]()
-        solutions.push(newElSolution(newBitArray(37), presenceBitArrays))
-        var toExpand: ElSolution
-        var toExclude = newBitArray(37)
-        benchmark "Expanding 100 steps (results dataset-dependent!)":
-            toExpand = solutions.pop()
-            for sol in getNextNodes(toExpand, toExclude, presenceBitArrays):
-                solutions.push(sol)
-            toExclude = toExclude or toExpand.elBA
+        block:
+            echo "\nRunning coverage benchmark with BitArray representation:"
+            let 
+                bb = newBitArray(37)
+                presenceBitArrays = getPresenceBitArrays()
+
+            var esTemp = newElSolution(bb, presenceBitArrays)
+            echo esTemp.getNextNodes(newBitArray(37), presenceBitArrays)
+            benchmark "Expanding to 37 nodes 1000 times from empty":
+                discard esTemp.getNextNodes(bb, presenceBitArrays)
+
+            benchmark "Expanding to 1-37 nodes 1000 times from random":
+                esTemp.randomize()
+                discard esTemp.getNextNodes(bb, presenceBitArrays)
+            
+            var 
+                solutions = initHeapQueue[ElSolution]()
+                toExpand: ElSolution
+                toExclude = newBitArray(37)
+
+            solutions.push(newElSolution(newBitArray(37), presenceBitArrays))
+            benchmark "Expanding 1000 steps (results dataset-dependent!)":
+                toExpand = solutions.pop()
+                for sol in getNextNodes(toExpand, toExclude, presenceBitArrays):
+                    solutions.push(sol)
+                toExclude = toExclude or toExpand.elBA
+            echo "Last solution on heap: ", solutions[0]
+
+        block:
+            echo "\nRunning coverage benchmark with bool arrays representation (BitArray graph retained)"
+            let bb = newBitArray(37)
+            let presenceBoolArrays = getPresenceBoolArrays()
+            var esTemp = newElSolution(bb, presenceBoolArrays)
+
+            benchmark "Expanding to 37 nodes 1000 times from empty":
+                discard esTemp.getNextNodes(bb, presenceBoolArrays)
+
+            benchmark "Expanding to 1-37 nodes 1000 times from random":
+                esTemp.randomize()
+                discard esTemp.getNextNodes(bb, presenceBoolArrays)
+            
+            var 
+                solutions = initHeapQueue[ElSolution]()
+                toExpand: ElSolution
+                toExclude = newBitArray(37)
+            solutions.push(newElSolution(newBitArray(37), presenceBoolArrays))
+            benchmark "Expanding 1000 steps (results dataset-dependent!)":
+                toExpand = solutions.pop()
+                for sol in getNextNodes(toExpand, toExclude, presenceBoolArrays):
+                    solutions.push(sol)
+                toExclude = toExclude or toExpand.elBA
+            echo "Last solution on heap: ", solutions[0]
     
     if "--development" in args or "-d" in args:
         let presenceBitArrays = getPresenceBitArrays()
