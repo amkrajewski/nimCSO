@@ -152,10 +152,11 @@ proc getNextNodes*(elSol: ElSolution, exclusions: BitArray, presenceBitArrays: s
 template benchmark(benchmarkName: string, code: untyped) =
   block:
     let t0 = epochTime()
-    code
-    let elapsed = (epochTime() - t0)*1000
+    for i in 1..1000:
+        code
+    let elapsed = (epochTime() - t0) * 1000
     let elapsedStr = elapsed.formatFloat(format = ffDecimal, precision = 1)
-    echo "CPU Time [", benchmarkName, "] ", elapsedStr, "ms"
+    echo "CPU Time [", benchmarkName, "] ", elapsedStr, "us"
 
 proc echoHelp() = echo """
 To use form command line, provide parameters. Currently supported usage:
@@ -172,30 +173,27 @@ when isMainModule:
         echoHelp()
 
     if "--covBenchmark" in args or "-cb" in args:
-        echo "Running coverage benchmark with uint8 Tensor representation"
-    
-        let presenceTensor = getPresenceTensor()
-        var b = zeros[uint8](shape = [1, 37])
-        b[0, 0..5] = 1
-        echo b
+        block:
+            echo "Running coverage benchmark with uint8 Tensor representation"
 
-        benchmark "arraymancer+randomizing":
-            for i in 1..1000:
+            let presenceTensor = getPresenceTensor()
+            var b = zeros[uint8](shape = [1, 37])
+            b[0, 0..5] = 1
+            echo b
+
+            benchmark "arraymancer+randomizing":
                 discard preventedData(randomTensor[uint8](shape = [1, 37], sample_source = [0.uint8,1.uint8]), 
-                                      presenceTensor)
+                                        presenceTensor)
             echo "Prevented count:", preventedData(b, presenceTensor)
 
-        echo "\nRunning coverage benchmark with BitArray representation"
-        let presenceBitArrays = getPresenceBitArrays()
+        block:
+            echo "\nRunning coverage benchmark with BitArray representation"
+            let presenceBitArrays = getPresenceBitArrays()
+            var bb = newBitArray(37)
+            for i in 0..5: bb[i] = true
+            echo bb
 
-        var bb = newBitArray(37)
-        for i in 0..5:
-            bb[i] = true
-        echo bb
-
-        benchmark "bitty+randomizing":
-            for i in 1..1000:
-                #discard preventedData(bb, presenceBitArrays)
+            benchmark "bitty+randomizing":
                 var esTemp = ElSolution()
                 esTemp.elBA = newBitArray(37)
                 esTemp.randomize()
@@ -209,21 +207,22 @@ when isMainModule:
         let presenceBitArrays = getPresenceBitArrays()
         var esTemp = newElSolution(bb, presenceBitArrays)
         echo esTemp.getNextNodes(newBitArray(37), presenceBitArrays)
-        benchmark "Expanding to 37 nodes 100 times":
-            for i in 1..100:
-                discard esTemp.getNextNodes(bb, presenceBitArrays)
+        benchmark "Expanding to 37 nodes 100 times (bitarray)":
+            discard esTemp.getNextNodes(bb, presenceBitArrays)
         
+        let presenceBoolArrays = getPresenceBoolArrays()
+        benchmark "bit&boolArrays+randomizing":
+            discard esTemp.getNextNodes(bb, presenceBoolArrays)
+        
+        var solutions = initHeapQueue[ElSolution]()
+        solutions.push(newElSolution(newBitArray(37), presenceBitArrays))
+        var toExpand: ElSolution
+        var toExclude = newBitArray(37)
         benchmark "Expanding 100 steps (results dataset-dependent!)":
-            var solutions = initHeapQueue[ElSolution]()
-            solutions.push(newElSolution(newBitArray(37), presenceBitArrays))
-            var toExpand: ElSolution
-            var toExclude = newBitArray(37)
-            var topSolutionOrder: int = 0
-            for i in 1..100:
-                toExpand = solutions.pop()
-                for sol in getNextNodes(toExpand, toExclude, presenceBitArrays):
-                    solutions.push(sol)
-                toExclude = toExclude or toExpand.elBA
+            toExpand = solutions.pop()
+            for sol in getNextNodes(toExpand, toExclude, presenceBitArrays):
+                solutions.push(sol)
+            toExclude = toExclude or toExpand.elBA
     
     if "--development" in args or "-d" in args:
         let presenceBitArrays = getPresenceBitArrays()
