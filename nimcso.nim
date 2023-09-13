@@ -203,6 +203,21 @@ when isMainModule:
             echo particularResult
             echo "Prevented count:", particularResult.prevented
 
+        block:
+            echo "\nRunning coverage benchmark with bool arrays representation (BitArray intermediate)"
+            let presenceBoolArrays = getPresenceBoolArrays()
+            var bb = newBitArray(37)
+            for i in 0..5: bb[i] = true
+            echo bb
+            benchmark "bit&boolArrays+randomizing":
+                var esTemp = ElSolution()
+                esTemp.elBA = newBitArray(37)
+                esTemp.randomize()
+                esTemp.setPrevented(presenceBoolArrays)
+            let particularResult = newElSolution(bb, presenceBoolArrays)
+            echo particularResult
+            echo "Prevented count:", particularResult.prevented
+
     if "--expBenchmark" in args or "-eb" in args:
         let bb = newBitArray(37)
         let presenceBitArrays = getPresenceBitArrays()
@@ -248,7 +263,7 @@ when isMainModule:
                 echo order, "=>", solutions[0], " => exlored:", len(solutions)
 
     
-    echo "Done"
+    echo "\nnimCSO Done!"
 
 
 
