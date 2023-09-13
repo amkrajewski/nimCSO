@@ -111,7 +111,7 @@ type ElSolution* = ref object
     elBA*: BitArray
     prevented*: int 
 
-proc newElSolution*(elBA: BitArray, pBA: seq[BitArray]): ElSolution =
+proc newElSolution*(elBA: BitArray, pBA: seq[BitArray] | seq[seq[bool]]): ElSolution =
     result = ElSolution()
     result.elBA = elBA
     result.prevented = preventedData(elBA, pBA)
