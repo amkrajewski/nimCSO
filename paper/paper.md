@@ -19,7 +19,7 @@ affiliations:
  - name: Department of Materials Science and Engineering, The Pennsylvania State University, USA
    index: 1
 date: 14 September 2023
-bibliography: [paper/paper.bib]
+bibliography: paper.bib
 ---
 
 
