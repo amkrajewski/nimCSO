@@ -281,7 +281,7 @@ when isMainModule:
             echo "Last solution on heap: ", solutions[0]
     
     if "--development" in args or "-d" in args:
-        let presenceBitArrays = getPresenceBitArrays()
+        let presenceBitArrays = getPresenceBoolArrays()
         
         var solutions = initHeapQueue[ElSolution]()
 
