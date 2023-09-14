@@ -23,13 +23,9 @@ bibliography: [paper/paper.bib]
 ---
 
 
-Test citing [@Shaikh2023] and looks good!
-
-
-
 # Summary
 
-Summary
+Test citing [@Shaikh2023] and looks good! Summary!
 
 
 # Statement of Need
