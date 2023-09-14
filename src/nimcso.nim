@@ -126,9 +126,9 @@ proc `$`*(elSol: ElSolution): string =
     result.add("->")
     result.add(elSol.prevented.intToStr())
 
-proc `<`(a, b: ElSolution): bool = a.prevented < b.prevented
+proc `<`*(a, b: ElSolution): bool = a.prevented < b.prevented
 
-proc `>`(a, b: ElSolution): bool = a.prevented > b.prevented
+proc `>`*(a, b: ElSolution): bool = a.prevented > b.prevented
 
 proc setPrevented*(elSol: var ElSolution, presenceArrays: seq[BitArray] | seq[seq[bool]]): void =
     elSol.prevented = preventedData(elSol.elBA, presenceArrays)
