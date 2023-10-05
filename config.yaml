@@ -1,5 +1,6 @@
 taskName: Default Task
 taskDescription: Optimization of a set of indivisual chemical elements for a large set ot high entropy alloys
+datasetPath: alloyList.txt
 
 elementOrder:
 - Fe

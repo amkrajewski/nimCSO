@@ -20,6 +20,7 @@ type Config = object
     taskName: string
     taskDescription: string
     elementOrder: seq[string]
+    datasetPath: string
 
 var config: Config
 block configLoad:
@@ -188,7 +189,6 @@ To use form command line, provide parameters. Currently supported usage:
 """
 
 when isMainModule:
-    let defaultDataPath = "alloyList.txt"
     let args = commandLineParams()
     if args.len == 0:
         echoHelp()
@@ -197,7 +197,7 @@ when isMainModule:
         block:
             echo "Running coverage benchmark with uint8 Tensor representation"
 
-            let presenceTensor = getPresenceTensor(defaultDataPath)
+            let presenceTensor = getPresenceTensor(config.datasetPath)
             var b = zeros[uint8](shape = [1, 37])
             b[0, 0..5] = 1
             echo b
@@ -209,7 +209,7 @@ when isMainModule:
 
         block:
             echo "\nRunning coverage benchmark with BitArray representation"
-            let presenceBitArrays = getPresenceBitArrays(defaultDataPath)
+            let presenceBitArrays = getPresenceBitArrays(config.datasetPath)
             var bb = newBitArray(37)
             for i in 0..5: bb[i] = true
             echo bb
@@ -225,7 +225,7 @@ when isMainModule:
 
         block:
             echo "\nRunning coverage benchmark with bool arrays representation (BitArray graph retained)"
-            let presenceBoolArrays = getPresenceBoolArrays(defaultDataPath)
+            let presenceBoolArrays = getPresenceBoolArrays(config.datasetPath)
             var bb = newBitArray(37)
             for i in 0..5: bb[i] = true
             echo bb
@@ -243,7 +243,7 @@ when isMainModule:
             echo "\nRunning coverage benchmark with BitArray representation:"
             let 
                 bb = newBitArray(37)
-                presenceBitArrays = getPresenceBitArrays(defaultDataPath)
+                presenceBitArrays = getPresenceBitArrays(config.datasetPath)
 
             var esTemp = newElSolution(bb, presenceBitArrays)
             echo esTemp.getNextNodes(newBitArray(37), presenceBitArrays)
@@ -270,7 +270,7 @@ when isMainModule:
         block:
             echo "\nRunning coverage benchmark with bool arrays representation (BitArray graph retained)"
             let bb = newBitArray(37)
-            let presenceBoolArrays = getPresenceBoolArrays(defaultDataPath)
+            let presenceBoolArrays = getPresenceBoolArrays(config.datasetPath)
             var esTemp = newElSolution(bb, presenceBoolArrays)
 
             benchmark "Expanding to 37 nodes 1000 times from empty":
@@ -293,7 +293,7 @@ when isMainModule:
             echo "Last solution on heap: ", solutions[0]
     
     if "--development" in args or "-d" in args:
-        let presenceBitArrays = getPresenceBoolArrays(defaultDataPath)
+        let presenceBitArrays = getPresenceBoolArrays(config.datasetPath)
         
         var solutions = initHeapQueue[ElSolution]()
 
