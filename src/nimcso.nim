@@ -1,22 +1,33 @@
 # Copyrigth (C) 2023 Adam M. Krajewski
 
-import arraymancer
 import std/strutils
 import std/times
-import bitty
 import std/os
 import std/sequtils
 import std/random
 import std/heapqueue
 import std/hashes
 
+import arraymancer
+import yaml, streams
+import bitty
+
 when compileOption("profiler"):
   import nimprof
 
-let elementOrder* = ["Fe", "Cr", "Ni", "Co", "Al", "Ti", "Nb", "Cu", "Mo", "Ta", "Zr",
-                     "V",  "Hf", "W",  "Mn", "Si", "Re", "B",  "Ru", "C",  "Sn", "Mg",
-                     "Zn", "Li", "O",  "Y",  "Pd", "N",  "Ca", "Ir", "Sc", "Ge", "Be", 
-                     "Ag", "Nd", "S",  "Ga"]
+# Load config YAML file
+type Config = object
+    taskName: string
+    taskDescription: string
+    elementOrder: seq[string]
+
+var config: Config
+block configLoad:
+    var s = newFileStream("config.yaml")
+    load(s, config)
+    s.close()
+
+let elementOrder* = config.elementOrder
 
 proc getPresenceTensor*(path: string): Tensor[uint8] =
     let elementsPresentList = readFile(path).splitLines()
