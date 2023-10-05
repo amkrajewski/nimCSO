@@ -18,8 +18,8 @@ let elementOrder* = ["Fe", "Cr", "Ni", "Co", "Al", "Ti", "Nb", "Cu", "Mo", "Ta",
                      "Zn", "Li", "O",  "Y",  "Pd", "N",  "Ca", "Ir", "Sc", "Ge", "Be", 
                      "Ag", "Nd", "S",  "Ga"]
 
-proc getPresenceTensor*(): Tensor[uint8] =
-    let elementsPresentList = readFile("elementLists.txt").splitLines()
+proc getPresenceTensor*(path: string): Tensor[uint8] =
+    let elementsPresentList = readFile(path).splitLines()
     var
         presence = newTensor[uint8]([elementsPresentList.len, elementOrder.len])
         lineN: int = 0
@@ -35,8 +35,8 @@ proc getPresenceTensor*(): Tensor[uint8] =
         lineN += 1
     result = presence
 
-proc getPresenceBitArrays*(): seq[BitArray] =
-    let elementsPresentList = readFile("elementLists.txt").splitLines()
+proc getPresenceBitArrays*(path: string): seq[BitArray] =
+    let elementsPresentList = readFile(path).splitLines()
     var
         presence = newBitArray(elementOrder.len)
         elN: int = 0
@@ -51,9 +51,9 @@ proc getPresenceBitArrays*(): seq[BitArray] =
         result.add(presence)
         presence = newBitArray(elementOrder.len)
 
-proc getPresenceBoolArrays*(): seq[seq[bool]] =
+proc getPresenceBoolArrays*(path: string): seq[seq[bool]] =
     let 
-        elementsPresentList = readFile("elementLists.txt").splitLines()
+        elementsPresentList = readFile(path).splitLines()
         alloyN = elementsPresentList.len
         elN = elementOrder.len
     var
@@ -177,6 +177,7 @@ To use form command line, provide parameters. Currently supported usage:
 """
 
 when isMainModule:
+    let defaultDataPath = "alloyList.txt"
     let args = commandLineParams()
     if args.len == 0:
         echoHelp()
@@ -185,7 +186,7 @@ when isMainModule:
         block:
             echo "Running coverage benchmark with uint8 Tensor representation"
 
-            let presenceTensor = getPresenceTensor()
+            let presenceTensor = getPresenceTensor(defaultDataPath)
             var b = zeros[uint8](shape = [1, 37])
             b[0, 0..5] = 1
             echo b
@@ -197,7 +198,7 @@ when isMainModule:
 
         block:
             echo "\nRunning coverage benchmark with BitArray representation"
-            let presenceBitArrays = getPresenceBitArrays()
+            let presenceBitArrays = getPresenceBitArrays(defaultDataPath)
             var bb = newBitArray(37)
             for i in 0..5: bb[i] = true
             echo bb
@@ -213,7 +214,7 @@ when isMainModule:
 
         block:
             echo "\nRunning coverage benchmark with bool arrays representation (BitArray graph retained)"
-            let presenceBoolArrays = getPresenceBoolArrays()
+            let presenceBoolArrays = getPresenceBoolArrays(defaultDataPath)
             var bb = newBitArray(37)
             for i in 0..5: bb[i] = true
             echo bb
@@ -231,7 +232,7 @@ when isMainModule:
             echo "\nRunning coverage benchmark with BitArray representation:"
             let 
                 bb = newBitArray(37)
-                presenceBitArrays = getPresenceBitArrays()
+                presenceBitArrays = getPresenceBitArrays(defaultDataPath)
 
             var esTemp = newElSolution(bb, presenceBitArrays)
             echo esTemp.getNextNodes(newBitArray(37), presenceBitArrays)
@@ -258,7 +259,7 @@ when isMainModule:
         block:
             echo "\nRunning coverage benchmark with bool arrays representation (BitArray graph retained)"
             let bb = newBitArray(37)
-            let presenceBoolArrays = getPresenceBoolArrays()
+            let presenceBoolArrays = getPresenceBoolArrays(defaultDataPath)
             var esTemp = newElSolution(bb, presenceBoolArrays)
 
             benchmark "Expanding to 37 nodes 1000 times from empty":
@@ -281,7 +282,7 @@ when isMainModule:
             echo "Last solution on heap: ", solutions[0]
     
     if "--development" in args or "-d" in args:
-        let presenceBitArrays = getPresenceBoolArrays()
+        let presenceBitArrays = getPresenceBoolArrays(defaultDataPath)
         
         var solutions = initHeapQueue[ElSolution]()
 
