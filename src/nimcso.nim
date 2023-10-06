@@ -22,18 +22,20 @@ type Config = object
     elementOrder: seq[string]
     datasetPath: string
 
-var config: Config
-block configLoad:
-    var s = newFileStream("config.yaml")
+const config = static:
+    var config: Config
+    let s = readFile("config.yaml")
     load(s, config)
-    s.close()
+    config
 
-let elementOrder* = config.elementOrder
+const elementOrder* = config.elementOrder
+const elementN* = elementOrder.len
+const elementsPresentList = readFile(config.datasetPath).splitLines()
+const alloyN* = elementsPresentList.len
 
-proc getPresenceTensor*(path: string): Tensor[uint8] =
-    let elementsPresentList = readFile(path).splitLines()
+proc getPresenceTensor*(): Tensor[int8] =
     var
-        presence = newTensor[uint8]([elementsPresentList.len, elementOrder.len])
+        presence = newTensor[int8]([elementsPresentList.len, elementN])
         lineN: int = 0
         elN: int = 0
 
@@ -47,10 +49,9 @@ proc getPresenceTensor*(path: string): Tensor[uint8] =
         lineN += 1
     result = presence
 
-proc getPresenceBitArrays*(path: string): seq[BitArray] =
-    let elementsPresentList = readFile(path).splitLines()
+proc getPresenceBitArrays*(): seq[BitArray] =
     var
-        presence = newBitArray(elementOrder.len)
+        presence = newBitArray(elementN)
         elN: int = 0
 
     for line in elementsPresentList:
@@ -61,18 +62,14 @@ proc getPresenceBitArrays*(path: string): seq[BitArray] =
                 presence[elN] = true
             elN += 1
         result.add(presence)
-        presence = newBitArray(elementOrder.len)
+        presence = newBitArray(elementN)
 
-proc getPresenceBoolArrays*(path: string): seq[seq[bool]] =
-    let 
-        elementsPresentList = readFile(path).splitLines()
-        alloyN = elementsPresentList.len
-        elN = elementOrder.len
+proc getPresenceBoolArrays*(): seq[seq[bool]] =
     var
         elI: int = 0
         lineI: int = 0
         
-    result = newSeqWith(alloyN, newSeq[bool](elN))
+    result = newSeqWith(alloyN, newSeq[bool](elementN))
 
     for line in elementsPresentList:
         let elements = line.split(",")
@@ -84,13 +81,12 @@ proc getPresenceBoolArrays*(path: string): seq[seq[bool]] =
         lineI += 1
 
 proc preventedData*(elList: BitArray, presenceBitArrays: seq[BitArray]): int  =
-    let elN = elList.len
-    var elBoolSeq = newSeq[bool](elN)
-    for i in 0 ..< elN:
+    var elBoolSeq = newSeq[bool](elementN)
+    for i in 0..<elementN:
         elBoolSeq[i] = elList.unsafeGet(i)
 
     func isPrevented(presenceBitArray: BitArray): bool =
-        for i in 0..<elN:
+        for i in 0..<elementN:
             if elBoolSeq[i] and presenceBitArray.unsafeGet(i):
                 return true
         return false
@@ -99,13 +95,12 @@ proc preventedData*(elList: BitArray, presenceBitArrays: seq[BitArray]): int  =
             result += 1
 
 proc preventedData*(elList: BitArray, presenceBoolArrays: seq[seq[bool]]): int  =
-    let elN = elList.len
-    var elBoolSeq = newSeq[bool](elN)
-    for i in 0 ..< elN:
+    var elBoolSeq = newSeq[bool](elementN)
+    for i in 0 ..< elementN:
         elBoolSeq[i] = elList.unsafeGet(i)
 
     func isPrevented(presenceBoolArray: seq[bool]): bool =
-        for i in 0..<elN:
+        for i in 0..<elementN:
             if elBoolSeq[i] and presenceBoolArray[i]:
                 return true
         return false
@@ -113,7 +108,7 @@ proc preventedData*(elList: BitArray, presenceBoolArrays: seq[seq[bool]]): int  
         if isPrevented(pm):
             result += 1
 
-proc preventedData*(elList: Tensor[uint8], presenceTensor: Tensor[uint8]): int =
+proc preventedData*(elList: Tensor[int8], presenceTensor: Tensor[int8]): int =
     let c = presenceTensor *. elList
     result = c.max(axis=1).asType(int).sum()
 
@@ -132,7 +127,7 @@ func hash*(elSol: ElSolution): Hash =
     hash(elSol.elBA)
 
 proc `$`*(elSol: ElSolution): string =
-    for i in 0..elSol.elBA.len-1:
+    for i in 0..<elementN:
         if elSol.elBA[i]:
             result.add(elementOrder[i])
     result.add("->")
@@ -146,16 +141,16 @@ proc setPrevented*(elSol: var ElSolution, presenceArrays: seq[BitArray] | seq[se
     elSol.prevented = preventedData(elSol.elBA, presenceArrays)
 
 proc randomize*(elSol: var ElSolution): void =
-    for i in 0..elSol.elBA.len-1:
+    for i in 0..<elementN:
         elSol.elBA[i] = (rand(1) > 0)
 
 proc getNextNodes*(elSol: ElSolution, 
                    exclusions: BitArray, 
                    presenceBitArrays: seq[BitArray] | seq[seq[bool]]): seq[ElSolution] =
-    for i in 0..<elSol.elBA.len:
+    for i in 0..<elementN:
         if not elSol.elBA[i] and not exclusions[i]:
-            var newElBA = newBitArray(elSol.elBA.len)
-            for bit in 0..elSol.elBA.len-1:
+            var newElBA = newBitArray(elementN)
+            for bit in 0..<elementN:
                 newElBA[bit] =  elSol.elBA[bit]
             newElBA[i] = true
             result.add(newElSolution(newElBA, presenceBitArrays))
@@ -195,21 +190,21 @@ when isMainModule:
 
     if "--covBenchmark" in args or "-cb" in args:
         block:
-            echo "Running coverage benchmark with uint8 Tensor representation"
+            echo "Running coverage benchmark with int8 Tensor representation"
 
-            let presenceTensor = getPresenceTensor(config.datasetPath)
-            var b = zeros[uint8](shape = [1, 37])
+            let presenceTensor = getPresenceTensor()
+            var b = zeros[int8](shape = [1, 37])
             b[0, 0..5] = 1
             echo b
 
             benchmark "arraymancer+randomizing":
-                discard preventedData(randomTensor[uint8](shape = [1, 37], sample_source = [0.uint8,1.uint8]), 
+                discard preventedData(randomTensor[int8](shape = [1, 37], sample_source = [0.int8,1.int8]), 
                                         presenceTensor)
             echo "Prevented count:", preventedData(b, presenceTensor)
 
         block:
             echo "\nRunning coverage benchmark with BitArray representation"
-            let presenceBitArrays = getPresenceBitArrays(config.datasetPath)
+            let presenceBitArrays = getPresenceBitArrays()
             var bb = newBitArray(37)
             for i in 0..5: bb[i] = true
             echo bb
@@ -225,7 +220,7 @@ when isMainModule:
 
         block:
             echo "\nRunning coverage benchmark with bool arrays representation (BitArray graph retained)"
-            let presenceBoolArrays = getPresenceBoolArrays(config.datasetPath)
+            let presenceBoolArrays = getPresenceBoolArrays()
             var bb = newBitArray(37)
             for i in 0..5: bb[i] = true
             echo bb
@@ -243,7 +238,7 @@ when isMainModule:
             echo "\nRunning coverage benchmark with BitArray representation:"
             let 
                 bb = newBitArray(37)
-                presenceBitArrays = getPresenceBitArrays(config.datasetPath)
+                presenceBitArrays = getPresenceBitArrays()
 
             var esTemp = newElSolution(bb, presenceBitArrays)
             echo esTemp.getNextNodes(newBitArray(37), presenceBitArrays)
@@ -270,7 +265,7 @@ when isMainModule:
         block:
             echo "\nRunning coverage benchmark with bool arrays representation (BitArray graph retained)"
             let bb = newBitArray(37)
-            let presenceBoolArrays = getPresenceBoolArrays(config.datasetPath)
+            let presenceBoolArrays = getPresenceBoolArrays()
             var esTemp = newElSolution(bb, presenceBoolArrays)
 
             benchmark "Expanding to 37 nodes 1000 times from empty":
@@ -293,7 +288,7 @@ when isMainModule:
             echo "Last solution on heap: ", solutions[0]
     
     if "--development" in args or "-d" in args:
-        let presenceBitArrays = getPresenceBoolArrays(config.datasetPath)
+        let presenceBitArrays = getPresenceBoolArrays()
         
         var solutions = initHeapQueue[ElSolution]()
 
