@@ -81,13 +81,13 @@ proc getPresenceBoolArrays*(): seq[seq[bool]] =
         lineI += 1
 
 proc preventedData*(elList: BitArray, presenceBitArrays: seq[BitArray]): int  =
-    var elBoolSeq = newSeq[bool](elementN)
+    var elBoolArray: array[elementN, bool]
     for i in 0..<elementN:
-        elBoolSeq[i] = elList.unsafeGet(i)
+        elBoolArray[i] = elList.unsafeGet(i)
 
     func isPrevented(presenceBitArray: BitArray): bool =
         for i in 0..<elementN:
-            if elBoolSeq[i] and presenceBitArray.unsafeGet(i):
+            if elBoolArray[i] and presenceBitArray.unsafeGet(i):
                 return true
         return false
     for pm in presenceBitArrays:
@@ -95,13 +95,13 @@ proc preventedData*(elList: BitArray, presenceBitArrays: seq[BitArray]): int  =
             result += 1
 
 proc preventedData*(elList: BitArray, presenceBoolArrays: seq[seq[bool]]): int  =
-    var elBoolSeq = newSeq[bool](elementN)
-    for i in 0 ..< elementN:
-        elBoolSeq[i] = elList.unsafeGet(i)
+    var elBoolArray: array[elementN, bool]
+    for i in 0..<elementN:
+        elBoolArray[i] = elList.unsafeGet(i)
 
     func isPrevented(presenceBoolArray: seq[bool]): bool =
         for i in 0..<elementN:
-            if elBoolSeq[i] and presenceBoolArray[i]:
+            if elBoolArray[i] and presenceBoolArray[i]:
                 return true
         return false
     for pm in presenceBoolArrays:
