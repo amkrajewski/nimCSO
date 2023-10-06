@@ -49,9 +49,9 @@ proc getPresenceTensor*(): Tensor[int8] =
         lineN += 1
     result = presence
 
-proc getPresenceBitArrays*(): seq[BitArray] =
+func getPresenceBitArrays*(): seq[BitArray] =
     var
-        presence = newBitArray(elementN)
+        presence = BitArray()
         elN: int = 0
 
     for line in elementsPresentList:
@@ -62,9 +62,9 @@ proc getPresenceBitArrays*(): seq[BitArray] =
                 presence[elN] = true
             elN += 1
         result.add(presence)
-        presence = newBitArray(elementN)
+        presence = BitArray()
 
-proc getPresenceBoolArrays*(): seq[seq[bool]] =
+func getPresenceBoolArrays*(): seq[seq[bool]] =
     var
         elI: int = 0
         lineI: int = 0
@@ -80,10 +80,8 @@ proc getPresenceBoolArrays*(): seq[seq[bool]] =
             elI += 1
         lineI += 1
 
-proc preventedData*(elList: BitArray, presenceBitArrays: seq[BitArray]): int  =
-    var elBoolArray: array[elementN, bool]
-    for i in 0..<elementN:
-        elBoolArray[i] = elList.unsafeGet(i)
+func preventedData*(elList: BitArray, presenceBitArrays: seq[BitArray]): int  =
+    let elBoolArray: array[elementN, bool] = elList.toBoolArray
 
     func isPrevented(presenceBitArray: BitArray): bool =
         for i in 0..<elementN:
@@ -94,10 +92,8 @@ proc preventedData*(elList: BitArray, presenceBitArrays: seq[BitArray]): int  =
         if isPrevented(pm):
             result += 1
 
-proc preventedData*(elList: BitArray, presenceBoolArrays: seq[seq[bool]]): int  =
-    var elBoolArray: array[elementN, bool]
-    for i in 0..<elementN:
-        elBoolArray[i] = elList.unsafeGet(i)
+func preventedData*(elList: BitArray, presenceBoolArrays: seq[seq[bool]]): int  =
+    let elBoolArray: array[elementN, bool] = elList.toBoolArray
 
     func isPrevented(presenceBoolArray: seq[bool]): bool =
         for i in 0..<elementN:
@@ -133,25 +129,24 @@ proc `$`*(elSol: ElSolution): string =
     result.add("->")
     result.add(elSol.prevented.intToStr())
 
-proc `<`*(a, b: ElSolution): bool = a.prevented < b.prevented
+func `<`*(a, b: ElSolution): bool = a.prevented < b.prevented
 
-proc `>`*(a, b: ElSolution): bool = a.prevented > b.prevented
+func `>`*(a, b: ElSolution): bool = a.prevented > b.prevented
 
-proc setPrevented*(elSol: var ElSolution, presenceArrays: seq[BitArray] | seq[seq[bool]]): void =
+func setPrevented*(elSol: var ElSolution, presenceArrays: seq[BitArray] | seq[seq[bool]]): void =
     elSol.prevented = preventedData(elSol.elBA, presenceArrays)
 
 proc randomize*(elSol: var ElSolution): void =
     for i in 0..<elementN:
         elSol.elBA[i] = (rand(1) > 0)
 
-proc getNextNodes*(elSol: ElSolution, 
+func getNextNodes*(elSol: ElSolution, 
                    exclusions: BitArray, 
                    presenceBitArrays: seq[BitArray] | seq[seq[bool]]): seq[ElSolution] =
     for i in 0..<elementN:
         if not elSol.elBA[i] and not exclusions[i]:
-            var newElBA = newBitArray(elementN)
-            for bit in 0..<elementN:
-                newElBA[bit] =  elSol.elBA[bit]
+            var newElBA: BitArray
+            newElBA = elSol.elBA
             newElBA[i] = true
             result.add(newElSolution(newElBA, presenceBitArrays))
 
@@ -205,13 +200,13 @@ when isMainModule:
         block:
             echo "\nRunning coverage benchmark with BitArray representation"
             let presenceBitArrays = getPresenceBitArrays()
-            var bb = newBitArray(37)
+            var bb = BitArray()
             for i in 0..5: bb[i] = true
             echo bb
 
             benchmark "bitty+randomizing":
                 var esTemp = ElSolution()
-                esTemp.elBA = newBitArray(37)
+                esTemp.elBA = BitArray()
                 esTemp.randomize()
                 esTemp.setPrevented(presenceBitArrays)
             let particularResult = newElSolution(bb, presenceBitArrays)
@@ -221,12 +216,12 @@ when isMainModule:
         block:
             echo "\nRunning coverage benchmark with bool arrays representation (BitArray graph retained)"
             let presenceBoolArrays = getPresenceBoolArrays()
-            var bb = newBitArray(37)
+            var bb = BitArray()
             for i in 0..5: bb[i] = true
             echo bb
             benchmark "bit&boolArrays+randomizing":
                 var esTemp = ElSolution()
-                esTemp.elBA = newBitArray(37)
+                esTemp.elBA = BitArray()
                 esTemp.randomize()
                 esTemp.setPrevented(presenceBoolArrays)
             let particularResult = newElSolution(bb, presenceBoolArrays)
@@ -237,11 +232,11 @@ when isMainModule:
         block:
             echo "\nRunning coverage benchmark with BitArray representation:"
             let 
-                bb = newBitArray(37)
+                bb = BitArray()
                 presenceBitArrays = getPresenceBitArrays()
 
             var esTemp = newElSolution(bb, presenceBitArrays)
-            echo esTemp.getNextNodes(newBitArray(37), presenceBitArrays)
+            echo esTemp.getNextNodes(BitArray(), presenceBitArrays)
             benchmark "Expanding to 37 nodes 1000 times from empty":
                 discard esTemp.getNextNodes(bb, presenceBitArrays)
 
@@ -252,9 +247,9 @@ when isMainModule:
             var 
                 solutions = initHeapQueue[ElSolution]()
                 toExpand: ElSolution
-                toExclude = newBitArray(37)
+                toExclude = BitArray()
 
-            solutions.push(newElSolution(newBitArray(37), presenceBitArrays))
+            solutions.push(newElSolution(BitArray(), presenceBitArrays))
             benchmark "Expanding 1000 steps (results dataset-dependent!)":
                 toExpand = solutions.pop()
                 for sol in getNextNodes(toExpand, toExclude, presenceBitArrays):
@@ -264,7 +259,7 @@ when isMainModule:
 
         block:
             echo "\nRunning coverage benchmark with bool arrays representation (BitArray graph retained)"
-            let bb = newBitArray(37)
+            let bb = BitArray()
             let presenceBoolArrays = getPresenceBoolArrays()
             var esTemp = newElSolution(bb, presenceBoolArrays)
 
@@ -278,8 +273,8 @@ when isMainModule:
             var 
                 solutions = initHeapQueue[ElSolution]()
                 toExpand: ElSolution
-                toExclude = newBitArray(37)
-            solutions.push(newElSolution(newBitArray(37), presenceBoolArrays))
+                toExclude = BitArray()
+            solutions.push(newElSolution(BitArray(), presenceBoolArrays))
             benchmark "Expanding 1000 steps (results dataset-dependent!)":
                 toExpand = solutions.pop()
                 for sol in getNextNodes(toExpand, toExclude, presenceBoolArrays):
@@ -292,11 +287,11 @@ when isMainModule:
         
         var solutions = initHeapQueue[ElSolution]()
 
-        benchmark "exploring":
-            solutions.push(newElSolution(newBitArray(37), presenceBitArrays))
+        benchmarkOnce "exploring":
+            solutions.push(newElSolution(BitArray(), presenceBitArrays))
             var toExpand: ElSolution
-            for order in 1..37:
-                var toExclude = newBitArray(37)
+            for order in 1..<elementN:
+                var toExclude = BitArray()
                 var topSolutionOrder: int = 0
                 while true:
                     toExpand = solutions.pop()
@@ -307,7 +302,7 @@ when isMainModule:
                     if topSolutionOrder >= order:
                         break
                     
-                echo order, "=>", solutions[0], " => exlored:", len(solutions)
+                echo order, "=>", solutions[0], " => Tree Size:", len(solutions)
 
     
     echo "\nnimCSO Done!"
