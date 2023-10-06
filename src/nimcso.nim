@@ -9,8 +9,8 @@ import std/heapqueue
 import std/hashes
 
 import arraymancer
-import yaml, streams
-import bitty
+import yaml
+import mybitty/bitty
 
 when compileOption("profiler"):
   import nimprof
