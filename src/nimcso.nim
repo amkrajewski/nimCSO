@@ -188,27 +188,27 @@ when isMainModule:
             echo "Running coverage benchmark with int8 Tensor representation"
 
             let presenceTensor = getPresenceTensor()
-            var b = zeros[int8](shape = [1, 37])
+            var b = zeros[int8](shape = [1, elementN])
             b[0, 0..5] = 1
             echo b
 
             benchmark "arraymancer+randomizing":
-                discard preventedData(randomTensor[int8](shape = [1, 37], sample_source = [0.int8,1.int8]), 
+                discard preventedData(randomTensor[int8](shape = [1, elementN], sample_source = [0.int8,1.int8]), 
                                         presenceTensor)
             echo "Prevented count:", preventedData(b, presenceTensor)
 
         block:
             echo "\nRunning coverage benchmark with BitArray representation"
             let presenceBitArrays = getPresenceBitArrays()
-            var bb = BitArray()
-            for i in 0..5: bb[i] = true
-            echo bb
 
             benchmark "bitty+randomizing":
                 var esTemp = ElSolution()
-                esTemp.elBA = BitArray()
                 esTemp.randomize()
                 esTemp.setPrevented(presenceBitArrays)
+
+            var bb = BitArray()
+            for i in 0..5: bb[i] = true
+            echo bb
             let particularResult = newElSolution(bb, presenceBitArrays)
             echo particularResult
             echo "Prevented count:", particularResult.prevented
@@ -216,14 +216,14 @@ when isMainModule:
         block:
             echo "\nRunning coverage benchmark with bool arrays representation (BitArray graph retained)"
             let presenceBoolArrays = getPresenceBoolArrays()
+            benchmark "bit&boolArrays+randomizing":
+                var esTemp = ElSolution()
+                esTemp.randomize()
+                esTemp.setPrevented(presenceBoolArrays)
+                
             var bb = BitArray()
             for i in 0..5: bb[i] = true
             echo bb
-            benchmark "bit&boolArrays+randomizing":
-                var esTemp = ElSolution()
-                esTemp.elBA = BitArray()
-                esTemp.randomize()
-                esTemp.setPrevented(presenceBoolArrays)
             let particularResult = newElSolution(bb, presenceBoolArrays)
             echo particularResult
             echo "Prevented count:", particularResult.prevented
@@ -237,10 +237,10 @@ when isMainModule:
 
             var esTemp = newElSolution(bb, presenceBitArrays)
             echo esTemp.getNextNodes(BitArray(), presenceBitArrays)
-            benchmark "Expanding to 37 nodes 1000 times from empty":
+            benchmark "Expanding to elementN nodes 1000 times from empty":
                 discard esTemp.getNextNodes(bb, presenceBitArrays)
 
-            benchmark "Expanding to 1-37 nodes 1000 times from random":
+            benchmark "Expanding to 1-elementN nodes 1000 times from random":
                 esTemp.randomize()
                 discard esTemp.getNextNodes(bb, presenceBitArrays)
             
@@ -263,10 +263,10 @@ when isMainModule:
             let presenceBoolArrays = getPresenceBoolArrays()
             var esTemp = newElSolution(bb, presenceBoolArrays)
 
-            benchmark "Expanding to 37 nodes 1000 times from empty":
+            benchmark "Expanding to elementN nodes 1000 times from empty":
                 discard esTemp.getNextNodes(bb, presenceBoolArrays)
 
-            benchmark "Expanding to 1-37 nodes 1000 times from random":
+            benchmark "Expanding to 1-elementN nodes 1000 times from random":
                 esTemp.randomize()
                 discard esTemp.getNextNodes(bb, presenceBoolArrays)
             
