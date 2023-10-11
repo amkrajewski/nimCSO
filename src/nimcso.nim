@@ -1,3 +1,4 @@
+# The MIT License (MIT)
 # Copyrigth (C) 2023 Adam M. Krajewski
 
 import std/strutils

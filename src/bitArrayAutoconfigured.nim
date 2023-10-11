@@ -1,3 +1,7 @@
+# The MIT License (MIT)
+# Copyrigth (C) 2023 Adam M. Krajewski
+# Copyright (c) 2020 Andre von Houck
+
 import std/hashes
 import std/bitops
 import yaml
