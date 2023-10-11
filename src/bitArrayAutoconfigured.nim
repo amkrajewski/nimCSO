@@ -16,11 +16,8 @@ const config = static:
     load(s, config)
     config
 
-const elementOrder* = config.elementOrder
-const elementN* = elementOrder.len
-const elementsPresentList = readFile(config.datasetPath).splitLines()
-const alloyN* = elementsPresentList.len
-
+const elementOrder = config.elementOrder
+const elementN = elementOrder.len
 
 func divUp(a, b: int): int =
   ## Like div, but rounds up instead of down.
@@ -38,7 +35,7 @@ when defined(release):
   {.push checks: off.}
 
 func firstFalse*(b: BitArray): (bool, int) =
-  for i in 0 ..< b.bits.len:
+  for i in 0 ..< lenInt64:
     if b.bits[i] == 0:
       return (true, i * 64)
     if b.bits[i] != uint64.high:
@@ -90,7 +87,7 @@ func `[]=`*(b: var BitArray, i: int, v: bool) =
 
 func `==`*(a, b: var BitArray): bool =
   ## Are two bit arrays the same.
-  for i in 0 ..< a.bits.len:
+  for i in 0 ..< lenInt64:
     if a.bits[i] != b.bits[i]:
       return false
   return true
@@ -98,19 +95,19 @@ func `==`*(a, b: var BitArray): bool =
 func `and`*(a, b: BitArray): BitArray =
   ## And(s) two bit arrays returning a new bit array.
   result = BitArray()
-  for i in 0 ..< a.bits.len:
+  for i in 0 ..< lenInt64:
     result.bits[i] = a.bits[i] and b.bits[i]
 
 func `or`*(a, b: BitArray): BitArray =
   ## Or(s) two bit arrays returning a new bit array.
   result = BitArray()
-  for i in 0 ..< a.bits.len:
+  for i in 0 ..< lenInt64:
     result.bits[i] = a.bits[i] or b.bits[i]
 
 func `not`*(a: BitArray): BitArray =
   ## Not(s) or inverts a and returns a new bit array.
   result = BitArray()
-  for i in 0 ..< a.bits.len:
+  for i in 0 ..< lenInt64:
     result.bits[i] = not a.bits[i]
 
 func `$`*(b: BitArray): string =
@@ -124,12 +121,12 @@ func `$`*(b: BitArray): string =
 
 func count*(b: BitArray): int =
   ## Returns the number of bits set.
-  for i in 0 ..< b.bits.len:
+  for i in 0 ..< lenInt64:
     result += countSetBits(b.bits[i])
 
 func clear*(b: var BitArray) =
   ## Unsets all of the bits.
-  for i in 0 ..< b.bits.len:
+  for i in 0 ..< lenInt64:
     b.bits[i] = 0
 
 func hash*(b: BitArray): Hash =
