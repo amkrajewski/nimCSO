@@ -10,7 +10,7 @@ import std/hashes
 
 import arraymancer
 import yaml
-import mybitty/bitty
+import bitArrayAutoconfigured
 
 when compileOption("profiler"):
   import nimprof

@@ -28,6 +28,7 @@ func divUp(a, b: int): int =
   return a div b + extra
 
 const lenInt64 = elementN.divUp(64)
+echo "Using ", lenInt64, " uint64s to store ", elementN, " elements."
 
 type BitArray* = object
   ## Creates an array of bits all packed in together.
