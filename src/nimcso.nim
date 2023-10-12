@@ -2,6 +2,8 @@
 # Copyrigth (C) 2023 Adam M. Krajewski
 
 import std/strutils
+import std/sets
+import std/sugar
 import std/times
 import std/os
 import std/sequtils
@@ -31,12 +33,22 @@ const config = static:
 
 const elementOrder* = config.elementOrder
 const elementN* = elementOrder.len
-const elementsPresentList = readFile(config.datasetPath).splitLines()
+const elementsPresentList = static:
+    let elementSet = toHashSet(elementOrder)
+    var result = newSeq[string]()
+    for line in readFile(config.datasetPath).splitLines():
+        let elements = toHashSet(line.split(",").map(el => el.strip()))
+        if elements<=elementSet:
+            result.add(line)
+            echo elements
+    result
 const alloyN* = elementsPresentList.len
+
+######## Dataset Ingestion
 
 proc getPresenceTensor*(): Tensor[int8] =
     var
-        presence = newTensor[int8]([elementsPresentList.len, elementN])
+        presence = newTensor[int8]([alloyN, elementN])
         lineN: int = 0
         elN: int = 0
 
@@ -81,6 +93,8 @@ func getPresenceBoolArrays*(): seq[seq[bool]] =
             elI += 1
         lineI += 1
 
+######## Dataset-Solution Interactions
+
 func preventedData*(elList: BitArray, presenceBitArrays: seq[BitArray]): int  =
     let elBoolArray: array[elementN, bool] = elList.toBoolArray
 
@@ -109,7 +123,7 @@ proc preventedData*(elList: Tensor[int8], presenceTensor: Tensor[int8]): int =
     let c = presenceTensor *. elList
     result = c.max(axis=1).asType(int).sum()
 
-### Solution class implementation
+######## Solution class implementation
 
 type ElSolution* = ref object 
     elBA*: BitArray
@@ -141,6 +155,8 @@ proc randomize*(elSol: var ElSolution): void =
     for i in 0..<elementN:
         elSol.elBA[i] = (rand(1) > 0)
 
+######## Exploration-Related Procedures
+
 func getNextNodes*(elSol: ElSolution, 
                    exclusions: BitArray, 
                    presenceBitArrays: seq[BitArray] | seq[seq[bool]]): seq[ElSolution] =
@@ -151,7 +167,9 @@ func getNextNodes*(elSol: ElSolution,
             newElBA[i] = true
             result.add(newElSolution(newElBA, presenceBitArrays))
 
-### Helper procedures
+
+
+######## Helper Procedures
 
 template benchmark(benchmarkName: string, code: untyped) =
   block:
