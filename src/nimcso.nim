@@ -197,133 +197,137 @@ To use form command line, provide parameters. Currently supported usage:
 
 """
 
+######## Core Routines
+
+proc covBenchmark =
+    block:
+        echo "Running coverage benchmark with int8 Tensor representation"
+
+        let presenceTensor = getPresenceTensor()
+        var b = zeros[int8](shape = [1, elementN])
+        b[0, 0..5] = 1
+        echo b
+
+        benchmark "arraymancer+randomizing":
+            discard preventedData(randomTensor[int8](shape = [1, elementN], sample_source = [0.int8,1.int8]), 
+                                    presenceTensor)
+        echo "Prevented count:", preventedData(b, presenceTensor)
+
+    block:
+        echo "\nRunning coverage benchmark with BitArray representation"
+        let presenceBitArrays = getPresenceBitArrays()
+
+        benchmark "bitty+randomizing":
+            var esTemp = ElSolution()
+            esTemp.randomize()
+            esTemp.setPrevented(presenceBitArrays)
+
+        var bb = BitArray()
+        for i in 0..5: bb[i] = true
+        echo bb
+        let particularResult = newElSolution(bb, presenceBitArrays)
+        echo particularResult
+        echo "Prevented count:", particularResult.prevented
+
+    block:
+        echo "\nRunning coverage benchmark with bool arrays representation (BitArray graph retained)"
+        let presenceBoolArrays = getPresenceBoolArrays()
+        benchmark "bit&boolArrays+randomizing":
+            var esTemp = ElSolution()
+            esTemp.randomize()
+            esTemp.setPrevented(presenceBoolArrays)
+            
+        var bb = BitArray()
+        for i in 0..5: bb[i] = true
+        echo bb
+        let particularResult = newElSolution(bb, presenceBoolArrays)
+        echo particularResult
+        echo "Prevented count:", particularResult.prevented
+
+proc expBenchmark = 
+    block:
+        echo "Running coverage benchmark with int8 Tensor representation"
+
+        let presenceTensor = getPresenceTensor()
+        var b = zeros[int8](shape = [1, elementN])
+        b[0, 0..5] = 1
+        echo b
+
+        benchmark "arraymancer+randomizing":
+            discard preventedData(randomTensor[int8](shape = [1, elementN], sample_source = [0.int8,1.int8]), 
+                                    presenceTensor)
+        echo "Prevented count:", preventedData(b, presenceTensor)
+
+    block:
+        echo "\nRunning coverage benchmark with BitArray representation"
+        let presenceBitArrays = getPresenceBitArrays()
+
+        benchmark "bitty+randomizing":
+            var esTemp = ElSolution()
+            esTemp.randomize()
+            esTemp.setPrevented(presenceBitArrays)
+
+        var bb = BitArray()
+        for i in 0..5: bb[i] = true
+        echo bb
+        let particularResult = newElSolution(bb, presenceBitArrays)
+        echo particularResult
+        echo "Prevented count:", particularResult.prevented
+
+    block:
+        echo "\nRunning coverage benchmark with bool arrays representation (BitArray graph retained)"
+        let presenceBoolArrays = getPresenceBoolArrays()
+        benchmark "bit&boolArrays+randomizing":
+            var esTemp = ElSolution()
+            esTemp.randomize()
+            esTemp.setPrevented(presenceBoolArrays)
+            
+        var bb = BitArray()
+        for i in 0..5: bb[i] = true
+        echo bb
+        let particularResult = newElSolution(bb, presenceBoolArrays)
+        echo particularResult
+        echo "Prevented count:", particularResult.prevented
+
+proc development = 
+    let presenceBitArrays = getPresenceBoolArrays()
+        
+    var solutions = initHeapQueue[ElSolution]()
+
+    benchmarkOnce "exploring":
+        solutions.push(newElSolution(BitArray(), presenceBitArrays))
+        var toExpand: ElSolution
+        for order in 1..<elementN:
+            var toExclude = BitArray()
+            var topSolutionOrder: int = 0
+            while true:
+                toExpand = solutions.pop()
+                for sol in getNextNodes(toExpand, toExclude, presenceBitArrays):
+                    solutions.push(sol)
+                toExclude = toExclude or toExpand.elBA
+                topSolutionOrder = count(solutions[0].elBA)
+                if topSolutionOrder >= order:
+                    break
+                
+            echo order, "=>", solutions[0], " => Tree Size:", len(solutions)
+
+
+######## Main Routine
+
 when isMainModule:
     let args = commandLineParams()
     if args.len == 0:
         echoHelp()
 
     if "--covBenchmark" in args or "-cb" in args:
-        block:
-            echo "Running coverage benchmark with int8 Tensor representation"
-
-            let presenceTensor = getPresenceTensor()
-            var b = zeros[int8](shape = [1, elementN])
-            b[0, 0..5] = 1
-            echo b
-
-            benchmark "arraymancer+randomizing":
-                discard preventedData(randomTensor[int8](shape = [1, elementN], sample_source = [0.int8,1.int8]), 
-                                        presenceTensor)
-            echo "Prevented count:", preventedData(b, presenceTensor)
-
-        block:
-            echo "\nRunning coverage benchmark with BitArray representation"
-            let presenceBitArrays = getPresenceBitArrays()
-
-            benchmark "bitty+randomizing":
-                var esTemp = ElSolution()
-                esTemp.randomize()
-                esTemp.setPrevented(presenceBitArrays)
-
-            var bb = BitArray()
-            for i in 0..5: bb[i] = true
-            echo bb
-            let particularResult = newElSolution(bb, presenceBitArrays)
-            echo particularResult
-            echo "Prevented count:", particularResult.prevented
-
-        block:
-            echo "\nRunning coverage benchmark with bool arrays representation (BitArray graph retained)"
-            let presenceBoolArrays = getPresenceBoolArrays()
-            benchmark "bit&boolArrays+randomizing":
-                var esTemp = ElSolution()
-                esTemp.randomize()
-                esTemp.setPrevented(presenceBoolArrays)
-                
-            var bb = BitArray()
-            for i in 0..5: bb[i] = true
-            echo bb
-            let particularResult = newElSolution(bb, presenceBoolArrays)
-            echo particularResult
-            echo "Prevented count:", particularResult.prevented
+        covBenchmark()
 
     if "--expBenchmark" in args or "-eb" in args:
-        block:
-            echo "\nRunning coverage benchmark with BitArray representation:"
-            let 
-                bb = BitArray()
-                presenceBitArrays = getPresenceBitArrays()
-
-            var esTemp = newElSolution(bb, presenceBitArrays)
-            echo esTemp.getNextNodes(BitArray(), presenceBitArrays)
-            benchmark "Expanding to elementN nodes 1000 times from empty":
-                discard esTemp.getNextNodes(bb, presenceBitArrays)
-
-            benchmark "Expanding to 1-elementN nodes 1000 times from random":
-                esTemp.randomize()
-                discard esTemp.getNextNodes(bb, presenceBitArrays)
-            
-            var 
-                solutions = initHeapQueue[ElSolution]()
-                toExpand: ElSolution
-                toExclude = BitArray()
-
-            solutions.push(newElSolution(BitArray(), presenceBitArrays))
-            benchmark "Expanding 1000 steps (results dataset-dependent!)":
-                toExpand = solutions.pop()
-                for sol in getNextNodes(toExpand, toExclude, presenceBitArrays):
-                    solutions.push(sol)
-                toExclude = toExclude or toExpand.elBA
-            echo "Last solution on heap: ", solutions[0]
-
-        block:
-            echo "\nRunning coverage benchmark with bool arrays representation (BitArray graph retained)"
-            let bb = BitArray()
-            let presenceBoolArrays = getPresenceBoolArrays()
-            var esTemp = newElSolution(bb, presenceBoolArrays)
-
-            benchmark "Expanding to elementN nodes 1000 times from empty":
-                discard esTemp.getNextNodes(bb, presenceBoolArrays)
-
-            benchmark "Expanding to 1-elementN nodes 1000 times from random":
-                esTemp.randomize()
-                discard esTemp.getNextNodes(bb, presenceBoolArrays)
-            
-            var 
-                solutions = initHeapQueue[ElSolution]()
-                toExpand: ElSolution
-                toExclude = BitArray()
-            solutions.push(newElSolution(BitArray(), presenceBoolArrays))
-            benchmark "Expanding 1000 steps (results dataset-dependent!)":
-                toExpand = solutions.pop()
-                for sol in getNextNodes(toExpand, toExclude, presenceBoolArrays):
-                    solutions.push(sol)
-                toExclude = toExclude or toExpand.elBA
-            echo "Last solution on heap: ", solutions[0]
+        expBenchmark()
     
     if "--development" in args or "-d" in args:
-        let presenceBitArrays = getPresenceBoolArrays()
-        
-        var solutions = initHeapQueue[ElSolution]()
+        development()
 
-        benchmarkOnce "exploring":
-            solutions.push(newElSolution(BitArray(), presenceBitArrays))
-            var toExpand: ElSolution
-            for order in 1..<elementN:
-                var toExclude = BitArray()
-                var topSolutionOrder: int = 0
-                while true:
-                    toExpand = solutions.pop()
-                    for sol in getNextNodes(toExpand, toExclude, presenceBitArrays):
-                        solutions.push(sol)
-                    toExclude = toExclude or toExpand.elBA
-                    topSolutionOrder = count(solutions[0].elBA)
-                    if topSolutionOrder >= order:
-                        break
-                    
-                echo order, "=>", solutions[0], " => Tree Size:", len(solutions)
-
-    
     echo "\nnimCSO Done!"
 
 
