@@ -155,6 +155,10 @@ proc randomize*(elSol: var ElSolution): void =
     for i in 0..<elementN:
         elSol.elBA[i] = (rand(1) > 0)
 
+proc mutate*(elSol: var ElSolution): void =
+    let i = rand(elementN)
+    elSol.elBA[i] = not elSol.elBA[i]
+
 ######## Exploration-Related Procedures
 
 func getNextNodes*(elSol: ElSolution, 
