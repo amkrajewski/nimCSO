@@ -10,6 +10,7 @@ import std/sequtils
 import std/random
 import std/heapqueue
 import std/hashes
+import std/math
 
 import arraymancer
 import yaml
@@ -40,7 +41,6 @@ const elementsPresentList = static:
         let elements = toHashSet(line.split(",").map(el => el.strip()))
         if elements<=elementSet:
             result.add(line)
-            echo elements
     result
 const alloyN* = elementsPresentList.len
 
@@ -172,27 +172,37 @@ func getNextNodes*(elSol: ElSolution,
 ######## Helper Procedures
 
 template benchmark(benchmarkName: string, code: untyped) =
-  block:
-    let t0 = epochTime()
-    for i in 1..1000:
-        code
-    let elapsed = (epochTime() - t0) * 1000
-    let elapsedStr = elapsed.formatFloat(format = ffDecimal, precision = 1)
-    echo "CPU Time [", benchmarkName, "] ", elapsedStr, "us"
+    block:
+        let t0 = epochTime()
+        for i in 1..1000:
+            code
+        let elapsed = (epochTime() - t0) * 1000
+        let elapsedStr = elapsed.formatFloat(format = ffDecimal, precision = 1)
+        echo "CPU Time [", benchmarkName, "] ", elapsedStr, "us"
 
 template benchmarkOnce(benchmarkName: string, code: untyped) =
-  block:
-    let t0 = epochTime()
-    code
-    let elapsed = (epochTime() - t0) * 1000
-    let elapsedStr = elapsed.formatFloat(format = ffDecimal, precision = 1)
-    echo "CPU Time [", benchmarkName, "] ", elapsedStr, "ms"
+    block:
+        let t0 = epochTime()
+        code
+        let elapsed = (epochTime() - t0) * 1000
+        let elapsedStr = elapsed.formatFloat(format = ffDecimal, precision = 1)
+        echo "CPU Time [", benchmarkName, "] ", elapsedStr, "ms"
+
+template loopEstimate(iterN: int, code: untyped) =
+    block:
+        let t0 = epochTime()
+        for i in 1..1000:
+            code
+        let t1 = epochTime() - t0
+        echo "Loop ETA Estimate: " & $initDuration(milliseconds = (t1 * iterN.float).int) & "\n"
+        
 
 proc echoHelp() = echo """
 To use form command line, provide parameters. Currently supported usage:
 
 --covBenchmark | -cb     --> Run small coverage benchmarks under two implementations.
 --expBenchmark | -eb     --> Run small node expansion benchmarks.
+--bruteForce   | -bf     --> Provide ETA and run brute force algorithm. Note that it is not feasible for more than 20ish elements.
 --develpment   | -d      --> Run development code.
 
 """
@@ -299,7 +309,7 @@ proc expBenchmark =
         echo "Last solution on heap: ", solutions[0]
 
 proc development = 
-    let presenceBitArrays = getPresenceBoolArrays()
+    let presenceBitArrays = getPresenceBitArrays()
         
     var solutions = initHeapQueue[ElSolution]()
 
@@ -321,6 +331,31 @@ proc development =
             echo order, "=>", solutions[0], " => Tree Size:", len(solutions)
 
 
+proc bruteForce =
+    assert elementN <= 64, "Brute force is not feasible for more than around 30 elements, thus it is not implemented for above 64 elements."
+    let presenceBitArrays = getPresenceBitArrays()
+    const solutionN = 2^elementN - 1
+
+    loopEstimate solutionN:
+        let elBA = BitArray(bits:[1])
+        let elSol = newElSolution(elBA, presenceBitArrays)
+        let order = elBA.count
+
+    const solutionRange = 0.uint64..solutionN.uint64
+    var topSolutions: array[elementN+1, ElSolution]
+    benchmarkOnce "exploring":
+        for c in solutionRange:
+            let elBA = BitArray(bits:[c])
+            let elSol = newElSolution(elBA, presenceBitArrays)
+            let order = elBA.count
+            if topSolutions[order] == nil:
+                topSolutions[order] = elSol
+            elif topSolutions[order] > elSol:
+                topSolutions[order] = elSol
+        for sol in topSolutions:
+            echo sol
+
+
 ######## Main Routine
 
 when isMainModule:
@@ -336,6 +371,9 @@ when isMainModule:
     
     if "--development" in args or "-d" in args:
         development()
+
+    if "--bruteForce" in args or "-bf" in args:
+        bruteForce()
 
     echo "\nnimCSO Done!"
 
