@@ -156,8 +156,16 @@ proc randomize*(elSol: var ElSolution): void =
         elSol.elBA[i] = (rand(1) > 0)
 
 proc mutate*(elSol: var ElSolution): void =
-    let i = rand(elementN)
+    let i = rand(elementN-1)
     elSol.elBA[i] = not elSol.elBA[i]
+
+proc crossover*(elSol1: var ElSolution, elSol2: var ElSolution): void =
+    let i = rand(elementN)
+    for j in i..<elementN:
+        let temp = elSol1.elBA[j]
+        elSol1.elBA[j] = elSol2.elBA[j]
+        elSol2.elBA[j] = temp
+
 
 ######## Exploration-Related Procedures
 
