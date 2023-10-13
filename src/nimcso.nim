@@ -159,12 +159,30 @@ proc mutate*(elSol: var ElSolution): void =
     let i = rand(elementN-1)
     elSol.elBA[i] = not elSol.elBA[i]
 
-proc crossover*(elSol1: var ElSolution, elSol2: var ElSolution): void =
-    let i = rand(elementN)
-    for j in i..<elementN:
-        let temp = elSol1.elBA[j]
-        elSol1.elBA[j] = elSol2.elBA[j]
-        elSol2.elBA[j] = temp
+proc crossover*(elSol1: var ElSolution, elSol2: var ElSolution, presenceArrays: seq[BitArray] | seq[seq[bool]]): void =
+    var
+        setElements: seq[int] = elSol1.elBA.toSetPositions
+        elBA1 = BitArray()
+        elBA2 = BitArray()
+    for i in elSol2.elBA.toSetPositions:
+        if setElements.contains(i):
+            setElements.del(setElements.find(i))
+            elBA1[i] = true
+            elBA2[i] = true
+        else:
+            setElements.add(i)
+    setElements.shuffle()
+    while true:
+        if setElements.len == 0:
+            break
+        elBA1[setElements.pop()] = true
+        if setElements.len == 0:
+            break
+        elBA2[setElements.pop()] = true
+    elSol1.elBA = elBA1
+    elSol2.elBA = elBA2
+    elSol1.setPrevented(presenceArrays)
+    elSol2.setPrevented(presenceArrays)
 
 
 ######## Exploration-Related Procedures
