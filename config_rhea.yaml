@@ -1,0 +1,24 @@
+taskName: RCCA_Senkov2018
+taskDescription: RCCA Palette in Senkov 2018 Review
+datasetPath: alloyList.txt
+
+elementOrder:
+- Mo
+- Ta
+- V
+- W
+- Ti
+- Zr
+- Hf
+- Nb
+- Cr
+- Al
+- Si
+- Co
+- Ni
+- Re
+- Fe
+- Y
+- B
+- C
+- N
