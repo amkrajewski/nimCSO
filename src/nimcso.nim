@@ -154,6 +154,8 @@ func `<`*(a, b: ElSolution): bool = a.prevented < b.prevented
 
 func `>`*(a, b: ElSolution): bool = a.prevented > b.prevented
 
+proc `==`*(a, b: ElSolution): bool = a.elBA == b.elBA
+
 func setPrevented*(elSol: var ElSolution, presenceArrays: seq[BitArray] | seq[seq[bool]]): void =
     elSol.prevented = preventedData(elSol.elBA, presenceArrays)
 
