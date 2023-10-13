@@ -400,6 +400,59 @@ proc bruteForce =
         for sol in topSolutions:
             echo sol
 
+proc geneticSearch =
+    let presenceBitArrays = getPresenceBitArrays()
+
+    benchmarkOnce "exploring":
+        var solutions = initHeapQueue[ElSolution]()
+        for sol in getNextNodes(ElSolution(), BitArray(), presenceBitArrays):
+            solutions.push(sol)
+        echo solutions[0]
+
+        for order in 2..<elementN:
+            solutions = initHeapQueue[ElSolution]()
+            # Initialize with random 100 solutions
+            for i in 1..1000:
+                solutions.push(newElSolutionRandomN(order, presenceBitArrays))
+            # Iterate UP TO 1,000 times (until converged)
+            var bestValuesSeq = @[solutions[0].prevented]
+            for i in 0..1000:
+                var 
+                    top20set = initOrderedSet[ElSolution]()
+                    newSolutions = initOrderedSet[ElSolution]()
+                # Acquire top solutions
+                let topSolution = solutions.pop()
+                bestValuesSeq.add(topSolution.prevented)
+                top20set.incl(topSolution)
+                while len(top20set) < 100 and len(solutions) > 0:
+                    top20set.incl(solutions.pop())
+                let top20seq = top20set.toSeq
+                # Generate new solutions through mutations
+                for sol in top20seq:
+                    var tempSol = ElSolution(elBA: sol.elBA)
+                    tempSol.mutate(presenceBitArrays)
+                    newSolutions.incl(sol)
+                    newSolutions.incl(tempSol)
+                # Generate new solutions through crossovers
+                for i in countup(1, len(top20seq)-1, 2):
+                    var tempSol1 = ElSolution(elBA: top20seq[i-1].elBA)
+                    var tempSol2 = ElSolution(elBA: top20seq[i].elBA)
+                    crossover(tempSol1, tempSol2, presenceBitArrays)
+                    newSolutions.incl(tempSol1)
+                    newSolutions.incl(tempSol2)
+                # Push new solutions to queue
+                for sol in newSolutions:
+                    solutions.push(sol)
+                # Check if converged
+                if i>10:
+                    if bestValuesSeq[^10] == bestValuesSeq[^1]:
+                        break
+
+            echo order, "=>", solutions[0], " => Queue Size:", len(solutions)
+            
+
+    
+
 
 ######## Main Routine
 
