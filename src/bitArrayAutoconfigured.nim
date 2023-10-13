@@ -14,14 +14,16 @@ type Config = object
     elementOrder: seq[string]
     datasetPath: string
 
-const config = static:
+const 
+  configPath {.strdefine.}: string = "config.yaml"
+  config = static:
     var config: Config
-    let s = readFile("config.yaml")
+    let s = readFile(configPath)
     load(s, config)
     config
 
-const elementOrder = config.elementOrder
-const elementN = elementOrder.len
+  elementOrder = config.elementOrder
+  elementN = elementOrder.len
 
 func divUp(a, b: int): int =
   ## Like div, but rounds up instead of down.

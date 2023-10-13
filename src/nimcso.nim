@@ -26,23 +26,26 @@ type Config = object
     elementOrder: seq[string]
     datasetPath: string
 
-const config = static:
-    var config: Config
-    let s = readFile("config.yaml")
-    load(s, config)
-    config
+const 
+    configPath {.strdefine.}: string = "config.yaml"
+    config = static:
+        echo configPath
+        var config: Config
+        let s = readFile(configPath)
+        load(s, config)
+        config
 
-const elementOrder* = config.elementOrder
-const elementN* = elementOrder.len
-const elementsPresentList = static:
-    let elementSet = toHashSet(elementOrder)
-    var result = newSeq[string]()
-    for line in readFile(config.datasetPath).splitLines():
-        let elements = toHashSet(line.split(",").map(el => el.strip()))
-        if elements<=elementSet:
-            result.add(line)
-    result
-const alloyN* = elementsPresentList.len
+    elementOrder* = config.elementOrder
+    elementN* = elementOrder.len
+    elementsPresentList = static:
+        let elementSet = toHashSet(elementOrder)
+        var result = newSeq[string]()
+        for line in readFile(config.datasetPath).splitLines():
+            let elements = toHashSet(line.split(",").map(el => el.strip()))
+            if elements<=elementSet:
+                result.add(line)
+        result
+    alloyN* = elementsPresentList.len
 
 ######## Dataset Ingestion
 
