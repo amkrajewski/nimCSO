@@ -134,6 +134,12 @@ proc newElSolution*(elBA: BitArray, pBA: seq[BitArray] | seq[seq[bool]]): ElSolu
     result.elBA = elBA
     result.prevented = preventedData(elBA, pBA)
 
+proc newElSolutionRandomN*(order: int, pBA: seq[BitArray] | seq[seq[bool]]): ElSolution =
+    result = ElSolution(elBA: BitArray())
+    while result.elBA.count < order:
+        result.elBA[rand(elementN-1)] = true
+    result.prevented = preventedData(result.elBA, pBA)
+
 func hash*(elSol: ElSolution): Hash =
     hash(elSol.elBA)
 
