@@ -155,9 +155,14 @@ proc randomize*(elSol: var ElSolution): void =
     for i in 0..<elementN:
         elSol.elBA[i] = (rand(1) > 0)
 
-proc mutate*(elSol: var ElSolution): void =
-    let i = rand(elementN-1)
-    elSol.elBA[i] = not elSol.elBA[i]
+proc mutate*(elSol: var ElSolution, presenceArrays: seq[BitArray] | seq[seq[bool]]): void =
+    let 
+        i = rand(elementN-1)
+        j = rand(elementN-1)
+    let temp = elSol.elBA[i]
+    elSol.elBA[i] = elSol.elBA[j]
+    elSol.elBA[j] = temp
+    elSol.setPrevented(presenceArrays)
 
 proc crossover*(elSol1: var ElSolution, elSol2: var ElSolution, presenceArrays: seq[BitArray] | seq[seq[bool]]): void =
     var
