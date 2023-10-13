@@ -376,13 +376,15 @@ proc development =
 
 proc bruteForce =
     assert elementN <= 64, "Brute force is not feasible for more than around 30 elements, thus it is not implemented for above 64 elements."
+    echo "\nRunning brute force algorithm for " & $elementN & " elements."
     let presenceBitArrays = getPresenceBitArrays()
     const solutionN = 2^elementN - 1
+    echo "Solution space size: ", solutionN
 
     loopEstimate solutionN:
         let elBA = BitArray(bits:[1])
-        let elSol = newElSolution(elBA, presenceBitArrays)
-        let order = elBA.count
+        discard newElSolution(elBA, presenceBitArrays)
+        discard elBA.count
 
     const solutionRange = 0.uint64..solutionN.uint64
     var topSolutions: array[elementN+1, ElSolution]
@@ -391,7 +393,7 @@ proc bruteForce =
             let elBA = BitArray(bits:[c])
             let elSol = newElSolution(elBA, presenceBitArrays)
             let order = elBA.count
-            if topSolutions[order] == nil:
+            if topSolutions[order].isNil:
                 topSolutions[order] = elSol
             elif topSolutions[order] > elSol:
                 topSolutions[order] = elSol
