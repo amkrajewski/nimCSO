@@ -243,10 +243,11 @@ template loopEstimate(iterN: int, code: untyped) =
 proc echoHelp() = echo """
 To use form command line, provide parameters. Currently supported usage:
 
---covBenchmark | -cb     --> Run small coverage benchmarks under two implementations.
---expBenchmark | -eb     --> Run small node expansion benchmarks.
---bruteForce   | -bf     --> Provide ETA and run brute force algorithm. Note that it is not feasible for more than 20ish elements.
---develpment   | -d      --> Run development code.
+--covBenchmark  | -cb     --> Run small coverage benchmarks under two implementations.
+--expBenchmark  | -eb     --> Run small node expansion benchmarks.
+--bruteForce    | -bf     --> Provide ETA and run brute force algorithm. Note that it is not feasible for more than 20ish elements.
+--geneticSearch | -gs     --> Run a genetic search algorithm.
+--develpment    | -d      --> Run development code.
 
 """
 
@@ -472,6 +473,9 @@ when isMainModule:
 
     if "--bruteForce" in args or "-bf" in args:
         bruteForce()
+
+    if "--geneticSearch" in args or "-gs" in args:
+        geneticSearch()
 
     echo "\nnimCSO Done!"
 
