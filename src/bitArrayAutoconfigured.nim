@@ -149,3 +149,9 @@ func toBoolArray*(b: BitArray): array[elementN, bool] =
   ## Converts the bit array to a sequence of bools.
   for i in 0 ..< elementN:
     result[i] = b.unsafeGet(i)
+
+func toSetPositions*(b: BitArray): seq[int] =
+  ## Converts the bit array to a set of positions.
+  for i in 0 ..< elementN:
+    if b.unsafeGet(i):
+      result.add i
