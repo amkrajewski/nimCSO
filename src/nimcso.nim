@@ -1,5 +1,5 @@
 # The MIT License (MIT)
-# Copyrigth (C) 2023 Adam M. Krajewski
+# Copyright (C) 2023 Adam M. Krajewski
 
 import std/strutils
 import std/sets
@@ -47,7 +47,7 @@ const
         result
     alloyN* = elementsPresentList.len
 
-######## Dataset Ingestion
+# Dataset Ingestion
 
 proc getPresenceTensor*(): Tensor[int8] =
     var
@@ -96,7 +96,7 @@ func getPresenceBoolArrays*(): seq[seq[bool]] =
             elI += 1
         lineI += 1
 
-######## Dataset-Solution Interactions
+# Dataset-Solution Interactions
 
 func preventedData*(elList: BitArray, presenceBitArrays: seq[BitArray]): int  =
     let elBoolArray: array[elementN, bool] = elList.toBoolArray
@@ -126,7 +126,7 @@ proc preventedData*(elList: Tensor[int8], presenceTensor: Tensor[int8]): int =
     let c = presenceTensor *. elList
     result = c.max(axis=1).asType(int).sum()
 
-######## Solution class implementation
+# Solution class implementation
 
 type ElSolution* = ref object 
     elBA*: BitArray
@@ -201,7 +201,7 @@ proc crossover*(elSol1: var ElSolution, elSol2: var ElSolution, presenceArrays: 
     elSol2.setPrevented(presenceArrays)
 
 
-######## Exploration-Related Procedures
+# Exploration-Related Procedures
 
 func getNextNodes*(elSol: ElSolution, 
                    exclusions: BitArray, 
@@ -215,7 +215,7 @@ func getNextNodes*(elSol: ElSolution,
 
 
 
-######## Helper Procedures
+# Helper Procedures
 
 template benchmark(benchmarkName: string, code: untyped) =
     block:
@@ -254,7 +254,7 @@ To use form command line, provide parameters. Currently supported usage:
 
 """
 
-######## Core Routines
+# Core Routines
 
 proc covBenchmark =
     block:
@@ -458,7 +458,7 @@ proc geneticSearch =
     
 
 
-######## Main Routine
+# Main Routine
 
 when isMainModule:
     let args = commandLineParams()
