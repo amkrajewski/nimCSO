@@ -27,7 +27,7 @@ import yaml
 import bitArrayAutoconfigured
 
 when compileOption("profiler"):
-  import nimprof
+    import nimprof
 
 # Load config YAML file
 type Config = object
@@ -36,7 +36,7 @@ type Config = object
     elementOrder: seq[string]
     datasetPath: string
 
-const 
+const
     configPath {.strdefine.}: string = "config.yaml"
     config = static:
         echo configPath
@@ -46,17 +46,17 @@ const
         config
 
     elementOrder* = config.elementOrder ## Compile-time-established configuration for the task
-    elementN* = elementOrder.len  ## Compile-time-established configuration for the task
+    elementN* = elementOrder.len ## Compile-time-established configuration for the task
     elementsPresentList = static:
         let elementSet = toHashSet(elementOrder)
         var result = newSeq[string]()
         for line in readFile(config.datasetPath).splitLines():
             let elements = toHashSet(line.split(",").map(el => el.strip()))
-            if elements<=elementSet:
+            if elements <= elementSet:
                 result.add(line)
         result
     ## Compile-time-established configuration for the task
-    alloyN* = elementsPresentList.len  ## Compile-time-established configuration for the task
+    alloyN* = elementsPresentList.len ## Compile-time-established configuration for the task
 
 # Dataset Ingestion
 
@@ -95,7 +95,7 @@ func getPresenceBoolArrays*(): seq[seq[bool]] =
     var
         elI: int = 0
         lineI: int = 0
-        
+
     result = newSeqWith(alloyN, newSeq[bool](elementN))
 
     for line in elementsPresentList:
@@ -109,7 +109,7 @@ func getPresenceBoolArrays*(): seq[seq[bool]] =
 
 # Dataset-Solution Interactions
 
-func preventedData*(elList: BitArray, presenceBitArrays: seq[BitArray]): int  =
+func preventedData*(elList: BitArray, presenceBitArrays: seq[BitArray]): int =
     let elBoolArray: array[elementN, bool] = elList.toBoolArray
 
     func isPrevented(presenceBitArray: BitArray): bool =
@@ -121,7 +121,7 @@ func preventedData*(elList: BitArray, presenceBitArrays: seq[BitArray]): int  =
         if isPrevented(pm):
             result += 1
 
-func preventedData*(elList: BitArray, presenceBoolArrays: seq[seq[bool]]): int  =
+func preventedData*(elList: BitArray, presenceBoolArrays: seq[seq[bool]]): int =
     let elBoolArray: array[elementN, bool] = elList.toBoolArray
 
     func isPrevented(presenceBoolArray: seq[bool]): bool =
@@ -135,20 +135,22 @@ func preventedData*(elList: BitArray, presenceBoolArrays: seq[seq[bool]]): int  
 
 proc preventedData*(elList: Tensor[int8], presenceTensor: Tensor[int8]): int =
     let c = presenceTensor *. elList
-    result = c.max(axis=1).asType(int).sum()
+    result = c.max(axis = 1).asType(int).sum()
 
 # Solution class implementation
 
-type ElSolution* = ref object 
+type ElSolution* = ref object
     elBA*: BitArray
-    prevented*: int 
+    prevented*: int
 
-proc newElSolution*(elBA: BitArray, pBA: seq[BitArray] | seq[seq[bool]]): ElSolution =
+proc newElSolution*(elBA: BitArray,
+                    pBA: seq[BitArray] | seq[seq[bool]]): ElSolution =
     result = ElSolution()
     result.elBA = elBA
     result.prevented = preventedData(elBA, pBA)
 
-proc newElSolutionRandomN*(order: int, pBA: seq[BitArray] | seq[seq[bool]]): ElSolution =
+proc newElSolutionRandomN*(order: int,
+                           pBA: seq[BitArray] | seq[seq[bool]]): ElSolution =
     result = ElSolution(elBA: BitArray())
     while result.elBA.count < order:
         result.elBA[rand(elementN-1)] = true
@@ -170,7 +172,8 @@ func `>`*(a, b: ElSolution): bool = a.prevented > b.prevented
 
 proc `==`*(a, b: ElSolution): bool = a.elBA == b.elBA
 
-func setPrevented*(elSol: var ElSolution, presenceArrays: seq[BitArray] | seq[seq[bool]]): void =
+func setPrevented*(elSol: var ElSolution,
+                   presenceArrays: seq[BitArray] | seq[seq[bool]]): void =
     elSol.prevented = preventedData(elSol.elBA, presenceArrays)
 
 proc randomize*(elSol: var ElSolution): void =
@@ -178,7 +181,7 @@ proc randomize*(elSol: var ElSolution): void =
         elSol.elBA[i] = (rand(1) > 0)
 
 proc mutate*(elSol: var ElSolution, presenceArrays: seq[BitArray] | seq[seq[bool]]): void =
-    let 
+    let
         i = rand(elementN-1)
         j = rand(elementN-1)
     let temp = elSol.elBA[i]
@@ -186,7 +189,8 @@ proc mutate*(elSol: var ElSolution, presenceArrays: seq[BitArray] | seq[seq[bool
     elSol.elBA[j] = temp
     elSol.setPrevented(presenceArrays)
 
-proc crossover*(elSol1: var ElSolution, elSol2: var ElSolution, presenceArrays: seq[BitArray] | seq[seq[bool]]): void =
+proc crossover*(elSol1: var ElSolution, elSol2: var ElSolution,
+                presenceArrays: seq[BitArray] | seq[seq[bool]]): void =
     var
         setElements: seq[int] = elSol1.elBA.toSetPositions
         elBA1 = BitArray()
@@ -214,8 +218,8 @@ proc crossover*(elSol1: var ElSolution, elSol2: var ElSolution, presenceArrays: 
 
 # Exploration-Related Procedures
 
-func getNextNodes*(elSol: ElSolution, 
-                   exclusions: BitArray, 
+func getNextNodes*(elSol: ElSolution,
+                   exclusions: BitArray,
                    presenceBitArrays: seq[BitArray] | seq[seq[bool]]): seq[ElSolution] =
     for i in 0..<elementN:
         if not elSol.elBA[i] and not exclusions[i]:
@@ -251,8 +255,9 @@ template loopEstimate(iterN: int, code: untyped) =
         for i in 1..1000:
             code
         let t1 = epochTime() - t0
-        echo "Loop ETA Estimate: " & $initDuration(milliseconds = (t1 * iterN.float).int) & "\n"
-        
+        echo "Loop ETA Estimate: " &
+            $initDuration(milliseconds = (t1 * iterN.float).int) & "\n"
+
 
 proc echoHelp() = echo """
 To use form command line, provide parameters. Currently supported usage:
@@ -277,7 +282,7 @@ proc covBenchmark =
         echo b
 
         benchmark "arraymancer+randomizing":
-            discard preventedData(randomTensor[int8](shape = [1, elementN], sample_source = [0.int8,1.int8]), 
+            discard preventedData(randomTensor[int8](shape = [1, elementN], sample_source = [0.int8, 1.int8]),
                                     presenceTensor)
         echo "Prevented count:", preventedData(b, presenceTensor)
 
@@ -304,7 +309,7 @@ proc covBenchmark =
             var esTemp = ElSolution()
             esTemp.randomize()
             esTemp.setPrevented(presenceBoolArrays)
-            
+
         var bb = BitArray()
         for i in 0..5: bb[i] = true
         echo bb
@@ -312,10 +317,10 @@ proc covBenchmark =
         echo particularResult
         echo "Prevented count:", particularResult.prevented
 
-proc expBenchmark = 
+proc expBenchmark =
     block:
         echo "\nRunning coverage benchmark with BitArray representation:"
-        let 
+        let
             bb = BitArray()
             presenceBitArrays = getPresenceBitArrays()
 
@@ -327,8 +332,8 @@ proc expBenchmark =
         benchmark "Expanding to 1-elementN nodes 1000 times from random":
             esTemp.randomize()
             discard esTemp.getNextNodes(bb, presenceBitArrays)
-        
-        var 
+
+        var
             solutions = initHeapQueue[ElSolution]()
             toExpand: ElSolution
             toExclude = BitArray()
@@ -353,8 +358,8 @@ proc expBenchmark =
         benchmark "Expanding to 1-elementN nodes 1000 times from random":
             esTemp.randomize()
             discard esTemp.getNextNodes(bb, presenceBoolArrays)
-        
-        var 
+
+        var
             solutions = initHeapQueue[ElSolution]()
             toExpand: ElSolution
             toExclude = BitArray()
@@ -366,9 +371,9 @@ proc expBenchmark =
             toExclude = toExclude or toExpand.elBA
         echo "Last solution on heap: ", solutions[0]
 
-proc development = 
+proc development =
     let presenceBitArrays = getPresenceBitArrays()
-        
+
     var solutions = initHeapQueue[ElSolution]()
 
     benchmarkOnce "exploring":
@@ -385,7 +390,7 @@ proc development =
                 topSolutionOrder = count(solutions[0].elBA)
                 if topSolutionOrder >= order:
                     break
-                
+
             echo order, "=>", solutions[0], " => Tree Size:", len(solutions)
 
 
@@ -397,7 +402,7 @@ proc bruteForce =
     echo "Solution space size: ", solutionN
 
     loopEstimate solutionN:
-        let elBA = BitArray(bits:[1])
+        let elBA = BitArray(bits: [1])
         discard newElSolution(elBA, presenceBitArrays)
         discard elBA.count
 
@@ -405,7 +410,7 @@ proc bruteForce =
     var topSolutions: array[elementN+1, ElSolution]
     benchmarkOnce "exploring":
         for c in solutionRange:
-            let elBA = BitArray(bits:[c])
+            let elBA = BitArray(bits: [c])
             let elSol = newElSolution(elBA, presenceBitArrays)
             let order = elBA.count
             if topSolutions[order].isNil:
@@ -432,7 +437,7 @@ proc geneticSearch =
             # Iterate UP TO 1,000 times (until converged)
             var bestValuesSeq = @[solutions[0].prevented]
             for i in 0..1000:
-                var 
+                var
                     top20set = initOrderedSet[ElSolution]()
                     newSolutions = initOrderedSet[ElSolution]()
                 # Acquire top solutions
@@ -459,15 +464,11 @@ proc geneticSearch =
                 for sol in newSolutions:
                     solutions.push(sol)
                 # Check if converged
-                if i>10:
+                if i > 10:
                     if bestValuesSeq[^10] == bestValuesSeq[^1]:
                         break
 
             echo order, "=>", solutions[0], " => Queue Size:", len(solutions)
-            
-
-    
-
 
 # Main Routine
 
@@ -481,7 +482,7 @@ when isMainModule:
 
     if "--expBenchmark" in args or "-eb" in args:
         expBenchmark()
-    
+
     if "--development" in args or "-d" in args:
         development()
 
