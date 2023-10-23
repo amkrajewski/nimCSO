@@ -4,6 +4,7 @@ version       = "0.3.0"
 author        = "Adam M. Krajewski"
 description   = "NIM Composition Space Optimization"
 license       = "MIT"
+bin           = @["nimcso/nimcso"]
 
 # Dependencies
 
