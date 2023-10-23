@@ -149,6 +149,15 @@ proc newElSolution*(elBA: BitArray,
     result.elBA = elBA
     result.prevented = preventedData(elBA, pBA)
 
+proc newElSolution(elementSet: seq[string],
+                   pBA: seq[BitArray] | seq[seq[bool]]): ElSolution =
+    assert toHashSet(elementSet) <= toHashSet(elementOrder), "Element set is not a subset of the element order defined in the config."
+    var elBA = BitArray()
+    for i in 0..<elementN:
+        if elementOrder[i] in elementSet:
+            elBA[i] = true
+    result = newElSolution(elBA, pBA)
+
 proc newElSolutionRandomN*(order: int,
                            pBA: seq[BitArray] | seq[seq[bool]]): ElSolution =
     result = ElSolution(elBA: BitArray())
