@@ -380,7 +380,7 @@ proc expBenchmark =
             toExclude = toExclude or toExpand.elBA
         echo "Last solution on heap: ", solutions[0]
 
-proc algorithmSearch(verbose: bool = true): seq[ElSolution] =
+proc algorithmSearch*(verbose: bool = true): seq[ElSolution] =
     let presenceBitArrays = getPresenceBitArrays()
 
     var solutions = initHeapQueue[ElSolution]()
@@ -404,7 +404,7 @@ proc algorithmSearch(verbose: bool = true): seq[ElSolution] =
             result.add(solutions[0])
 
 
-proc bruteForce(verbose: bool = true): seq[ElSolution] =
+proc bruteForce*(verbose: bool = true): seq[ElSolution] =
     assert elementN <= 64, "Brute force is not feasible for more than around 30 elements, thus it is not implemented for above 64 elements."
     if verbose: echo "\nRunning brute force algorithm for " & $elementN & " elements."
     let presenceBitArrays = getPresenceBitArrays()
@@ -431,7 +431,7 @@ proc bruteForce(verbose: bool = true): seq[ElSolution] =
             if verbose: echo sol
             result.add(sol)
 
-proc geneticSearch(verbose: bool = true): seq[ElSolution] =
+proc geneticSearch*(verbose: bool = true): seq[ElSolution] =
     let presenceBitArrays = getPresenceBitArrays()
 
     benchmarkOnce "exploring", verbose:
