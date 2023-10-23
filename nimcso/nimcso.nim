@@ -255,8 +255,7 @@ template loopEstimate(iterN: int, code: untyped) =
         for i in 1..1000:
             code
         let t1 = epochTime() - t0
-        echo "Loop ETA Estimate: " &
-            $initDuration(milliseconds = (t1 * iterN.float).int) & "\n"
+        echo "Loop ETA Estimate: " & $initDuration(milliseconds = (t1 * iterN.float).int) & "\n"
 
 
 proc echoHelp() = echo """

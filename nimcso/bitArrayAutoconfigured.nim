@@ -28,7 +28,7 @@ const
 func divUp(a, b: int): int =
     ## Like div, but rounds up instead of down.
     let extra = if a mod b > 0: 1 else: 0
-  return a div b + extra
+    return a div b + extra
 
 const lenInt64 = elementN.divUp(64)
 echo "Using ", lenInt64, " uint64s to store ", elementN, " elements."
