@@ -1,6 +1,13 @@
 # The MIT License (MIT)
 # Copyright (C) 2023 Adam M. Krajewski
 
+## # Test
+## ## Test2
+
+runnableExamples:
+    let presenceTensor = getPresenceTensor()
+
+# Standard library imports
 import std/strutils
 import std/sets
 import std/sugar
@@ -12,8 +19,11 @@ import std/heapqueue
 import std/hashes
 import std/math
 
+# Third-party library imports
 import arraymancer
 import yaml
+
+# NimCSO imports
 import bitArrayAutoconfigured
 
 when compileOption("profiler"):
@@ -35,8 +45,8 @@ const
         load(s, config)
         config
 
-    elementOrder* = config.elementOrder
-    elementN* = elementOrder.len
+    elementOrder* = config.elementOrder ## Compile-time-established configuration for the task
+    elementN* = elementOrder.len  ## Compile-time-established configuration for the task
     elementsPresentList = static:
         let elementSet = toHashSet(elementOrder)
         var result = newSeq[string]()
@@ -45,7 +55,8 @@ const
             if elements<=elementSet:
                 result.add(line)
         result
-    alloyN* = elementsPresentList.len
+    ## Compile-time-established configuration for the task
+    alloyN* = elementsPresentList.len  ## Compile-time-established configuration for the task
 
 # Dataset Ingestion
 
