@@ -232,22 +232,22 @@ func getNextNodes*(elSol: ElSolution,
 
 # Helper Procedures
 
-template benchmark(benchmarkName: string, code: untyped) =
+template benchmark(benchmarkName: string, verbose: bool, code: untyped) =
     block:
         let t0 = epochTime()
         for i in 1..1000:
             code
         let elapsed = (epochTime() - t0) * 1000
         let elapsedStr = elapsed.formatFloat(format = ffDecimal, precision = 1)
-        echo "CPU Time [", benchmarkName, "] ", elapsedStr, "us"
+        if verbose: echo "CPU Time [", benchmarkName, "] ", elapsedStr, "us"
 
-template benchmarkOnce(benchmarkName: string, code: untyped) =
+template benchmarkOnce(benchmarkName: string, verbose: bool, code: untyped) =
     block:
         let t0 = epochTime()
         code
         let elapsed = (epochTime() - t0) * 1000
         let elapsedStr = elapsed.formatFloat(format = ffDecimal, precision = 1)
-        echo "CPU Time [", benchmarkName, "] ", elapsedStr, "ms"
+        if verbose: echo "CPU Time [", benchmarkName, "] ", elapsedStr, "ms"
 
 template loopEstimate(iterN: int, code: untyped) =
     block:
@@ -281,7 +281,7 @@ proc covBenchmark =
         b[0, 0..5] = 1
         echo b
 
-        benchmark "arraymancer+randomizing":
+        benchmark "arraymancer+randomizing", verbose=true:
             discard preventedData(randomTensor[int8](shape = [1, elementN], sample_source = [0.int8, 1.int8]),
                                     presenceTensor)
         echo "Prevented count:", preventedData(b, presenceTensor)
@@ -290,7 +290,7 @@ proc covBenchmark =
         echo "\nRunning coverage benchmark with BitArray representation"
         let presenceBitArrays = getPresenceBitArrays()
 
-        benchmark "bitty+randomizing":
+        benchmark "bitty+randomizing", verbose=true:
             var esTemp = ElSolution()
             esTemp.randomize()
             esTemp.setPrevented(presenceBitArrays)
@@ -305,7 +305,7 @@ proc covBenchmark =
     block:
         echo "\nRunning coverage benchmark with bool arrays representation (BitArray graph retained)"
         let presenceBoolArrays = getPresenceBoolArrays()
-        benchmark "bit&boolArrays+randomizing":
+        benchmark "bit&boolArrays+randomizing", verbose=true:
             var esTemp = ElSolution()
             esTemp.randomize()
             esTemp.setPrevented(presenceBoolArrays)
@@ -326,10 +326,10 @@ proc expBenchmark =
 
         var esTemp = newElSolution(bb, presenceBitArrays)
         echo esTemp.getNextNodes(BitArray(), presenceBitArrays)
-        benchmark "Expanding to elementN nodes 1000 times from empty":
+        benchmark "Expanding to elementN nodes 1000 times from empty", verbose=true:
             discard esTemp.getNextNodes(bb, presenceBitArrays)
 
-        benchmark "Expanding to 1-elementN nodes 1000 times from random":
+        benchmark "Expanding to 1-elementN nodes 1000 times from random", verbose=true:
             esTemp.randomize()
             discard esTemp.getNextNodes(bb, presenceBitArrays)
 
@@ -339,7 +339,7 @@ proc expBenchmark =
             toExclude = BitArray()
 
         solutions.push(newElSolution(BitArray(), presenceBitArrays))
-        benchmark "Expanding 1000 steps (results dataset-dependent!)":
+        benchmark "Expanding 1000 steps (results dataset-dependent!)", verbose=true:
             toExpand = solutions.pop()
             for sol in getNextNodes(toExpand, toExclude, presenceBitArrays):
                 solutions.push(sol)
@@ -352,10 +352,10 @@ proc expBenchmark =
         let presenceBoolArrays = getPresenceBoolArrays()
         var esTemp = newElSolution(bb, presenceBoolArrays)
 
-        benchmark "Expanding to elementN nodes 1000 times from empty":
+        benchmark "Expanding to elementN nodes 1000 times from empty", verbose=true:
             discard esTemp.getNextNodes(bb, presenceBoolArrays)
 
-        benchmark "Expanding to 1-elementN nodes 1000 times from random":
+        benchmark "Expanding to 1-elementN nodes 1000 times from random", verbose=true:
             esTemp.randomize()
             discard esTemp.getNextNodes(bb, presenceBoolArrays)
 
@@ -364,19 +364,19 @@ proc expBenchmark =
             toExpand: ElSolution
             toExclude = BitArray()
         solutions.push(newElSolution(BitArray(), presenceBoolArrays))
-        benchmark "Expanding 1000 steps (results dataset-dependent!)":
+        benchmark "Expanding 1000 steps (results dataset-dependent!)", verbose=true:
             toExpand = solutions.pop()
             for sol in getNextNodes(toExpand, toExclude, presenceBoolArrays):
                 solutions.push(sol)
             toExclude = toExclude or toExpand.elBA
         echo "Last solution on heap: ", solutions[0]
 
-proc algorithmSearch: seq[ElSolution] =
+proc algorithmSearch(verbose: bool = true): seq[ElSolution] =
     let presenceBitArrays = getPresenceBitArrays()
 
     var solutions = initHeapQueue[ElSolution]()
 
-    benchmarkOnce "exploring":
+    benchmarkOnce "exploring", verbose:
         solutions.push(newElSolution(BitArray(), presenceBitArrays))
         var toExpand: ElSolution
         for order in 1..<elementN:
@@ -391,16 +391,16 @@ proc algorithmSearch: seq[ElSolution] =
                 if topSolutionOrder >= order:
                     break
 
-            echo order, "=>", solutions[0], " => Tree Size:", len(solutions)
+            if verbose: echo order, "=>", solutions[0], " => Tree Size:", len(solutions)
             result.add(solutions[0])
 
 
-proc bruteForce: seq[ElSolution] =
+proc bruteForce(verbose: bool = true): seq[ElSolution] =
     assert elementN <= 64, "Brute force is not feasible for more than around 30 elements, thus it is not implemented for above 64 elements."
-    echo "\nRunning brute force algorithm for " & $elementN & " elements."
+    if verbose: echo "\nRunning brute force algorithm for " & $elementN & " elements."
     let presenceBitArrays = getPresenceBitArrays()
     const solutionN = 2^elementN - 1
-    echo "Solution space size: ", solutionN
+    if verbose: echo "Solution space size: ", solutionN
 
     loopEstimate solutionN:
         let elBA = BitArray(bits: [1])
@@ -409,7 +409,7 @@ proc bruteForce: seq[ElSolution] =
 
     const solutionRange = 0.uint64..solutionN.uint64
     var topSolutions: array[elementN+1, ElSolution]
-    benchmarkOnce "exploring":
+    benchmarkOnce "exploring", verbose:
         for c in solutionRange:
             let elBA = BitArray(bits: [c])
             let elSol = newElSolution(elBA, presenceBitArrays)
@@ -419,17 +419,17 @@ proc bruteForce: seq[ElSolution] =
             elif topSolutions[order] > elSol:
                 topSolutions[order] = elSol
         for sol in topSolutions:
-            echo sol
+            if verbose: echo sol
             result.add(sol)
 
-proc geneticSearch: seq[ElSolution] =
+proc geneticSearch(verbose: bool = true): seq[ElSolution] =
     let presenceBitArrays = getPresenceBitArrays()
 
-    benchmarkOnce "exploring":
+    benchmarkOnce "exploring", verbose:
         var solutions = initHeapQueue[ElSolution]()
         for sol in getNextNodes(ElSolution(), BitArray(), presenceBitArrays):
             solutions.push(sol)
-        echo solutions[0]
+        if verbose: echo solutions[0]
         result.add(solutions[0])
 
         for order in 2..<elementN:
@@ -471,7 +471,7 @@ proc geneticSearch: seq[ElSolution] =
                     if bestValuesSeq[^10] == bestValuesSeq[^1]:
                         break
 
-            echo order, "=>", solutions[0], " => Queue Size:", len(solutions)
+            if verbose: echo order, "=>", solutions[0], " => Queue Size:", len(solutions)
             result.add(solutions[0])
 
 # Main Routine
