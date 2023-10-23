@@ -7,8 +7,16 @@ on:
       - .github/workflows/documentation.yaml'
   workflow_dispatch:
 
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
 jobs:
   generateDocumentation:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -19,10 +27,16 @@ jobs:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
       - run: nimble refresh
       - run: nimble install
+
       - name: Build documentation
         run: nim doc --project --index:on --outdir:docs  nimcso/nimcso
-      - name: Commit documentation to repository
-        uses: EndBug/add-and-commit@v9
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v3
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v2
         with:
-          message: '(auto) Documentation'
-          add: 'docs/**'
+          path: 'docs'
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v2
