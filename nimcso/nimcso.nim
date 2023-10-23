@@ -371,7 +371,7 @@ proc expBenchmark =
             toExclude = toExclude or toExpand.elBA
         echo "Last solution on heap: ", solutions[0]
 
-proc algorithmSearch =
+proc algorithmSearch: seq[ElSolution] =
     let presenceBitArrays = getPresenceBitArrays()
 
     var solutions = initHeapQueue[ElSolution]()
@@ -392,9 +392,10 @@ proc algorithmSearch =
                     break
 
             echo order, "=>", solutions[0], " => Tree Size:", len(solutions)
+            result.add(solutions[0])
 
 
-proc bruteForce =
+proc bruteForce: seq[ElSolution] =
     assert elementN <= 64, "Brute force is not feasible for more than around 30 elements, thus it is not implemented for above 64 elements."
     echo "\nRunning brute force algorithm for " & $elementN & " elements."
     let presenceBitArrays = getPresenceBitArrays()
@@ -419,8 +420,9 @@ proc bruteForce =
                 topSolutions[order] = elSol
         for sol in topSolutions:
             echo sol
+            result.add(sol)
 
-proc geneticSearch =
+proc geneticSearch: seq[ElSolution] =
     let presenceBitArrays = getPresenceBitArrays()
 
     benchmarkOnce "exploring":
@@ -428,6 +430,7 @@ proc geneticSearch =
         for sol in getNextNodes(ElSolution(), BitArray(), presenceBitArrays):
             solutions.push(sol)
         echo solutions[0]
+        result.add(solutions[0])
 
         for order in 2..<elementN:
             solutions = initHeapQueue[ElSolution]()
@@ -469,6 +472,7 @@ proc geneticSearch =
                         break
 
             echo order, "=>", solutions[0], " => Queue Size:", len(solutions)
+            result.add(solutions[0])
 
 # Main Routine
 
@@ -484,13 +488,13 @@ when isMainModule:
         expBenchmark()
 
     if "--development" in args or "-d" in args or "--algorithmSearch" in args or "-as" in args:
-        algorithmSearch()
+        discard algorithmSearch()
 
     if "--bruteForce" in args or "-bf" in args:
-        bruteForce()
+        discard bruteForce()
 
     if "--geneticSearch" in args or "-gs" in args:
-        geneticSearch()
+        discard geneticSearch()
 
     echo "\nnimCSO Done!"
 
