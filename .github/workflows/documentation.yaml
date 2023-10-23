@@ -17,7 +17,8 @@ jobs:
         with:
           nim-version: '2.0.0'
           repo-token: ${{ secrets.GITHUB_TOKEN }}
-      - run: nimble install 
+      - run: nimble refresh
+      - run: nimble install
       - name: Build documentation
         run: nim doc --project --index:on --outdir:docs  nimcso/nimcso
       - name: Commit documentation to repository
