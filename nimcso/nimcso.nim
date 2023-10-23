@@ -261,11 +261,12 @@ template loopEstimate(iterN: int, code: untyped) =
 proc echoHelp() = echo """
 To use form command line, provide parameters. Currently supported usage:
 
---covBenchmark  | -cb     --> Run small coverage benchmarks under two implementations.
---expBenchmark  | -eb     --> Run small node expansion benchmarks.
---bruteForce    | -bf     --> Provide ETA and run brute force algorithm. Note that it is not feasible for more than 20ish elements.
---geneticSearch | -gs     --> Run a genetic search algorithm.
---develpment    | -d      --> Run development code.
+--covBenchmark    | -cb   --> Run small coverage benchmarks under two implementations.
+--expBenchmark    | -eb   --> Run small node expansion benchmarks.
+--bruteForce      | -bf   --> Provide ETA and run brute force algorithm. Note that it is not feasible for more than 20ish elements.
+--geneticSearch   | -gs   --> Run a genetic search algorithm.
+--algorithmSearch | -as   --> Run a custom problem-informed best-first search algorithm.
+--develpment      | -d    --> DEPRECATED: Run development code.
 
 """
 
@@ -370,7 +371,7 @@ proc expBenchmark =
             toExclude = toExclude or toExpand.elBA
         echo "Last solution on heap: ", solutions[0]
 
-proc development =
+proc algorithmSearch =
     let presenceBitArrays = getPresenceBitArrays()
 
     var solutions = initHeapQueue[ElSolution]()
@@ -482,8 +483,8 @@ when isMainModule:
     if "--expBenchmark" in args or "-eb" in args:
         expBenchmark()
 
-    if "--development" in args or "-d" in args:
-        development()
+    if "--development" in args or "-d" in args or "--algorithmSearch" in args or "-as" in args:
+        algorithmSearch()
 
     if "--bruteForce" in args or "-bf" in args:
         bruteForce()
