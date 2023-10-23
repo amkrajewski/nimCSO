@@ -29,7 +29,7 @@ jobs:
       - run: nimble install
 
       - name: Build documentation
-        run: nim doc --project --index:on --outdir:docs  nimcso/nimcso
+        run: nim doc --project --index:on --outdir:docs --git.url:https://github.com/amkrajewski/nimCSO --git.commit:main nimcso/nimcso
 
       - name: Setup Pages
         uses: actions/configure-pages@v3
