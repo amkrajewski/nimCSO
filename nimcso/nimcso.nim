@@ -237,6 +237,25 @@ func getNextNodes*(elSol: ElSolution,
             newElBA[i] = true
             result.add(newElSolution(newElBA, presenceBitArrays))
 
+# Result persistence into CSV
+
+proc saveResults*(results: seq[ElSolution], path: string, separator: string = "-"): void =
+    var f = open(path, fmWrite)
+    f.writeLine("Removed Elements, Allowed Elements, Prevented, Allowed")
+    for elSol in results:
+        var 
+            elList1 = newSeq[string]()
+            elList2 = newSeq[string]()
+        for i in 0..<elementN:
+            if elSol.elBA[i]:
+                elList1.add(elementOrder[i])
+            else:
+                elList2.add(elementOrder[i])
+        let
+            prevented = elSol.prevented
+            allowed = alloyN - prevented
+        f.write(elList1.join(separator), ", ", elList2.join(separator), ", ", prevented.intToStr(), ", ", allowed.intToStr(), "\n")
+    f.close()
 
 
 # Helper Procedures
