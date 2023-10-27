@@ -18,6 +18,7 @@ import std/random
 import std/heapqueue
 import std/hashes
 import std/math
+import std/algorithm
 
 # Third-party library imports
 import arraymancer
@@ -169,7 +170,7 @@ proc newElSolution*(elBA: BitArray,
     result.elBA = elBA
     result.prevented = preventedData(elBA, pBA)
 
-proc newElSolution(elementSet: seq[string],
+proc newElSolution*(elementSet: seq[string],
                    pBA: seq[BitArray] | seq[seq[bool]]): ElSolution =
     assert toHashSet(elementSet) <= toHashSet(elementOrder), "Element set is not a subset of the element order defined in the config."
     var elBA = BitArray()
@@ -316,6 +317,8 @@ To use form command line, provide parameters. Currently supported usage:
 
 --covBenchmark    | -cb   --> Run small coverage benchmarks under two implementations.
 --expBenchmark    | -eb   --> Run small node expansion benchmarks.
+--leastPreventing | -lp   --> Run a search for single-elements preventing the least data, i.e. the least common elements.
+--mostCommon      | -mc   --> Run a search for most common elements.
 --bruteForce      | -bf   --> Provide ETA and run brute force algorithm. Note that it is not feasible for more than 20ish elements.
 --geneticSearch   | -gs   --> Run a genetic search algorithm.
 --algorithmSearch | -as   --> Run a custom problem-informed best-first search algorithm.
@@ -575,6 +578,12 @@ when isMainModule:
 
     if "--geneticSearch" in args or "-gs" in args:
         discard geneticSearch()
+
+    if "--leastPreventing" in args or "-lp" in args:
+        discard leastPreventing()
+
+    if "--mostCommon" in args or "-mc" in args:
+        discard mostCommon()
 
     echo "\nnimCSO Done!"
 
