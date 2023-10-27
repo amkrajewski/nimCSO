@@ -25,7 +25,7 @@ import arraymancer
 import yaml
 
 # NimCSO imports
-import bitArrayAutoconfigured
+import nimcso/bitArrayAutoconfigured
 
 when compileOption("profiler"):
     import nimprof
