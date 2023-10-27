@@ -365,13 +365,16 @@ proc expBenchmark =
             solutions = initHeapQueue[ElSolution]()
             toExpand: ElSolution
             toExclude = BitArray()
-
+    
         solutions.push(newElSolution(BitArray(), presenceBitArrays))
         benchmark "Expanding 1000 steps (results dataset-dependent!)", verbose=true:
             toExpand = solutions.pop()
             for sol in getNextNodes(toExpand, toExclude, presenceBitArrays):
                 solutions.push(sol)
             toExclude = toExclude or toExpand.elBA
+            if len(solutions) == 1:
+                echo "\n******  Test completed too fast -> the solution tree exhausted before 1000 steps.  ******"
+                break
         echo "Last solution on heap: ", solutions[0]
 
     block:
@@ -397,6 +400,9 @@ proc expBenchmark =
             for sol in getNextNodes(toExpand, toExclude, presenceBoolArrays):
                 solutions.push(sol)
             toExclude = toExclude or toExpand.elBA
+            if len(solutions) == 1:
+                echo "\n******  Test completed too fast -> the solution tree exhausted before 1000 steps.  ******"
+                break
         echo "Last solution on heap: ", solutions[0]
 
 proc algorithmSearch*(verbose: bool = true): seq[ElSolution] =
