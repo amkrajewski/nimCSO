@@ -430,6 +430,20 @@ proc expBenchmark =
                 break
         echo "Last solution on heap: ", solutions[0]
 
+proc leastPreventing*(verbose: bool = true): seq[ElSolution] =
+    let presenceBitArrays = getPresenceBitArrays()
+    benchmarkOnce "Searching for element removals preventing the least data:", verbose:
+        var solutions = initHeapQueue[ElSolution]()
+        for i in 0..<elementN:
+            var elSol = ElSolution()
+            elSol.elBA[i] = true
+            elSol.setPrevented(presenceBitArrays)
+            solutions.push(elSol)
+        for i in 0..<elementN:
+            let sol = solutions.pop()
+            if verbose: echo sol
+            result.add(sol)
+
 proc algorithmSearch*(verbose: bool = true): seq[ElSolution] =
     let presenceBitArrays = getPresenceBitArrays()
 
