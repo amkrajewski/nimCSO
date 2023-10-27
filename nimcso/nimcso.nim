@@ -259,7 +259,7 @@ func getNextNodes*(elSol: ElSolution,
 
 # Result persistence into CSV
 
-proc saveResults*(results: seq[ElSolution], path: string, separator: string = "-"): void =
+proc saveResults*(results: seq[ElSolution], path: string = "results.csv", separator: string = "-"): void =
     var f = open(path, fmWrite)
     f.writeLine("Removed Elements, Allowed Elements, Prevented, Allowed")
     for elSol in results:
