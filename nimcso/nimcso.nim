@@ -445,8 +445,11 @@ proc leastPreventing*(verbose: bool = true): seq[ElSolution] =
             result.add(sol)
 
 proc mostCommon*(verbose: bool = true): seq[ElSolution] =
-    bind leastPreventing
-    leastPreventing(verbose)
+    let lpSol = leastPreventing(false).reversed()
+    if verbose:
+        for sol in lpSol: echo sol
+    result = lpSol
+
 
 proc algorithmSearch*(verbose: bool = true): seq[ElSolution] =
     let presenceBitArrays = getPresenceBitArrays()
