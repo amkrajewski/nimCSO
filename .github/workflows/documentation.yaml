@@ -30,7 +30,7 @@ jobs:
 
       - name: Build documentation
         run: |
-          nim doc --project --index:on --outdir:docs --git.url:https://github.com/amkrajewski/nimCSO --git.commit:main nimcso/nimcso
+          nim doc --project --index:on --outdir:docs --git.url:https://github.com/amkrajewski/nimCSO --git.commit:main src/nimcso
           cp docs/nimcso.html docs/index.html
 
       - name: Setup Pages
