@@ -137,6 +137,20 @@ proc preventedData*(elList: Tensor[int8], presenceTensor: Tensor[int8]): int =
     let c = presenceTensor *. elList
     result = c.max(axis = 1).asType(int).sum()
 
+func presentInData*(elList: BitArray, presenceBitArrays: seq[BitArray]): int =
+    let positionsPresent = elList.toSetPositions()
+
+    func allPresent(presenceBitArray: BitArray): bool =
+        for i in positionsPresent:
+            if not presenceBitArray.unsafeGet(i):
+                return false
+        return true
+
+    for pm in presenceBitArrays:
+        if allPresent(pm):
+            result += 1
+
+
 # Solution class implementation
 
 type ElSolution* = ref object
