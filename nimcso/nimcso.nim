@@ -444,6 +444,10 @@ proc leastPreventing*(verbose: bool = true): seq[ElSolution] =
             if verbose: echo sol
             result.add(sol)
 
+proc mostCommon*(verbose: bool = true): seq[ElSolution] =
+    bind leastPreventing
+    leastPreventing(verbose)
+
 proc algorithmSearch*(verbose: bool = true): seq[ElSolution] =
     let presenceBitArrays = getPresenceBitArrays()
 
