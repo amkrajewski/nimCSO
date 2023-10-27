@@ -257,6 +257,11 @@ proc saveResults*(results: seq[ElSolution], path: string, separator: string = "-
         f.write(elList1.join(separator), ", ", elList2.join(separator), ", ", prevented.intToStr(), ", ", allowed.intToStr(), "\n")
     f.close()
 
+proc saveFilteredDataset*(path: string = "filteredDataset.csv"): void = 
+    var f = open(path, fmWrite)
+    for line in elementsPresentList:
+        f.writeLine(line)
+    f.close()
 
 # Helper Procedures
 
