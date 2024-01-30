@@ -1,5 +1,5 @@
 ---
-title: 'nimsco: A Nim package for Compositional Space Optimization'
+title: 'nimCSO: A Nim package for Compositional Space Optimization'
 tags:
   - Nim
   - materials science
