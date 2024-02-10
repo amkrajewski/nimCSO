@@ -17,7 +17,7 @@ jobs:
       - name: Install Nim with Homebrew
         run: brew install nim
       - name: Install nimCSO (and dependencies)
-        run: nimble install
+        run: nimble install -y
       - name: Compile minCSO
         run: nim c -d:release src/minCSO
       - name: Runtime tests of benchmarks under release mode

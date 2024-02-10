@@ -19,7 +19,7 @@ jobs:
           nim-version: '2.0.0'
           repo-token: ${{ secrets.GITHUB_TOKEN }}
       - name: Install nimCSO (and dependencies)
-        run: nimble install
+        run: nimble install -y
       - name: Compile minCSO
         run: nim c -d:release src/minCSO
       - name: Runtime tests of benchmarks under release mode
