@@ -21,12 +21,12 @@ jobs:
       - name: Install nimCSO (and dependencies)
         run: nimble install -y
       - name: Compile minCSO
-        run: nim c -d:release src/nimCSO.nim
+        run: nim c -d:release src/nimcso
       - name: Runtime tests of benchmarks under release mode
-        run: nim c -r -f -d:release -d:configPath=tests/testConfig1.yaml tests/benchmarksRuntime.nim
+        run: nim c -r -f -d:release -d:configPath=tests/testConfig1.yaml tests/benchmarksRuntime
       - name: Runtime tests of benchmarks under danger mode
-        run: nim c -r -f -d:danger -d:configPath=tests/testConfig1.yaml tests/benchmarksRuntime.nim
+        run: nim c -r -f -d:danger -d:configPath=tests/testConfig1.yaml tests/benchmarksRuntime
       - name: Brute Force under release mode (has to work)
-        run: nim c -r -f -d:release -d:configPath=tests/testConfig1.yaml tests/bruteForce.nim
+        run: nim c -r -f -d:release -d:configPath=tests/testConfig1.yaml tests/bruteForce
       - name: Brute Force under danger mode (should work)
-        run: nim c -r -f -d:danger -d:configPath=tests/testConfig1.yaml tests/bruteForce.nim
+        run: nim c -r -f -d:danger -d:configPath=tests/testConfig1.yaml tests/bruteForce
