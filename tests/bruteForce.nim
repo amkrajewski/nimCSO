@@ -1,7 +1,7 @@
 import std/unittest
 import std/strutils
 
-import ../nimcso/nimcso
+import ../src/nimcso
 
 suite "Corectness Tests":
     setup:

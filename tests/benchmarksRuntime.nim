@@ -1,6 +1,6 @@
 import std/unittest
 
-import ../nimcso/nimcso {.all.}
+import ../src/nimcso {.all.}
 
 suite "Runtime tests for benchmarks":
     test "Coverage Benchmark Run":
