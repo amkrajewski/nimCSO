@@ -4,7 +4,7 @@ on:
   push:
     paths:
       - 'tests/**'
-      - 'nimplex.nim'
+      - 'src/**'
       - '.github/workflows/testingOnPush_Linux.yaml'
   workflow_dispatch:
 
@@ -21,7 +21,7 @@ jobs:
       - name: Install nimCSO (and dependencies)
         run: nimble install -y
       - name: Compile minCSO
-        run: nim c -d:release src/minCSO
+        run: nim c -d:release src/nimCSO
       - name: Runtime tests of benchmarks under release mode
         run: nim c -r -f -d:release -d:configPath=tests/testConfig1.yaml tests/benchmarksRuntime
       - name: Runtime tests of benchmarks under danger mode
