@@ -3,7 +3,8 @@ name: Generate Documentation
 on:
   push:
     paths:
-      - nimcso/**
+      - src/**
+      - docs/**
       - .github/workflows/documentation.yaml
   workflow_dispatch:
 
