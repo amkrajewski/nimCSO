@@ -1,0 +1,32 @@
+name: Windows Tests 
+
+on:
+  push:
+    paths:
+      - 'tests/**'
+      - 'nimplex.nim'
+      - '.github/workflows/testingOnPush_Windows.yaml'
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - uses: jiro4989/setup-nim-action@v1
+        with:
+          nim-version: '2.0.0'
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Install nimCSO (and dependencies)
+        run: nimble install
+      - name: Compile minCSO
+        run: nim c -d:release src/minCSO
+      - name: Runtime tests of benchmarks under release mode
+        run: nim c -r -f -d:release -d:configPath=tests/testConfig1.yaml tests/benchmarksRuntime
+      - name: Runtime tests of benchmarks under danger mode
+        run: nim c -r -f -d:danger -d:configPath=tests/testConfig1.yaml tests/benchmarksRuntime
+      - name: Brute Force under release mode (has to work)
+        run: nim c -r -f -d:release -d:configPath=tests/testConfig1.yaml tests/bruteForce
+      - name: Brute Force under danger mode (should work)
+        run: nim c -r -f -d:danger -d:configPath=tests/testConfig1.yaml tests/bruteForce
