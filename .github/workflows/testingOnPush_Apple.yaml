@@ -1,0 +1,30 @@
+name: MacOS Tests (M1)
+
+on:
+  push:
+    paths:
+      - 'tests/**'
+      - 'src/**'
+      - '.github/workflows/testingOnPush_Apple.yaml'
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: macos-14
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Install Nim with Homebrew
+        run: brew install nim
+      - name: Install nimCSO (and dependencies)
+        run: nimble install
+      - name: Compile minCSO
+        run: nim c -d:release src/minCSO
+      - name: Runtime tests of benchmarks under release mode
+        run: nim c -r -f -d:release -d:configPath=tests/testConfig1.yaml tests/benchmarksRuntime
+      - name: Runtime tests of benchmarks under danger mode
+        run: nim c -r -f -d:danger -d:configPath=tests/testConfig1.yaml tests/benchmarksRuntime
+      - name: Brute Force under release mode (has to work)
+        run: nim c -r -f -d:release -d:configPath=tests/testConfig1.yaml tests/bruteForce
+      - name: Brute Force under danger mode (should work)
+        run: nim c -r -f -d:danger -d:configPath=tests/testConfig1.yaml tests/bruteForce
