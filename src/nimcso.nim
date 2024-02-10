@@ -31,7 +31,7 @@
 runnableExamples:
     let presenceTensor = getPresenceTensor()
 
-# Standard library imports
+# Standard library imports. One per line for easy change tracking.
 import std/strutils
 import std/sets
 import std/sugar
@@ -48,19 +48,21 @@ import std/algorithm
 import arraymancer/Tensor
 import yaml
 
-# NimCSO imports
+# NimCSO submodule imports
 import nimcso/bitArrayAutoconfigured
 
+# Import profiler only when needed
 when compileOption("profiler"):
     import nimprof
 
-# Load config YAML file
+# Define the config object to load from the YAML file
 type Config = object
     taskName: string
     taskDescription: string
     elementOrder: seq[string]
     datasetPath: string
 
+# Load config YAML file at the compile time (static block)
 const
     configPath {.strdefine.}: string = "config.yaml"
     config = static:
@@ -83,7 +85,8 @@ const
     ## Compile-time-established configuration for the task
     alloyN* = elementsPresentList.len ## Compile-time-established configuration for the task
 
-# Dataset Ingestion
+
+# ********* Dataset Ingestion *********
 
 proc getPresenceTensor*(): Tensor[int8] =
     var
@@ -132,7 +135,7 @@ func getPresenceBoolArrays*(): seq[seq[bool]] =
             elI += 1
         lineI += 1
 
-# Dataset-Solution Interactions
+# ********* Dataset-Solution Interactions *********
 
 func preventedData*(elList: BitArray, presenceBitArrays: seq[BitArray]): int =
     let elBoolArray: array[elementN, bool] = elList.toBoolArray
@@ -182,7 +185,7 @@ func presentInData*(elList: BitArray, pBAs: seq[BitArray] | seq[seq[bool]]): int
             result += 1
 
 
-# Solution class implementation
+# ********* Elemental Solution Class Implementation *********
 
 type ElSolution* = ref object
     elBA*: BitArray
@@ -230,6 +233,8 @@ func setPrevented*(elSol: var ElSolution,
                    presenceArrays: seq[BitArray] | seq[seq[bool]]): void =
     elSol.prevented = preventedData(elSol.elBA, presenceArrays)
 
+# ********* Genetic Algorithm Procedures *********
+
 proc randomize*(elSol: var ElSolution): void =
     for i in 0..<elementN:
         elSol.elBA[i] = (rand(1) > 0)
@@ -270,7 +275,7 @@ proc crossover*(elSol1: var ElSolution, elSol2: var ElSolution,
     elSol2.setPrevented(presenceArrays)
 
 
-# Exploration-Related Procedures
+# ********* Exploration-Related Procedures Shared by All Search Methods *********
 
 func getNextNodes*(elSol: ElSolution,
                    exclusions: BitArray,
@@ -282,7 +287,7 @@ func getNextNodes*(elSol: ElSolution,
             newElBA[i] = true
             result.add(newElSolution(newElBA, presenceBitArrays))
 
-# Result persistence into CSV
+# ********* Results Persistence *********
 
 proc saveResults*(results: seq[ElSolution], path: string = "results.csv", separator: string = "-"): void =
     var f = open(path, fmWrite)
@@ -308,7 +313,7 @@ proc saveFilteredDataset*(path: string = "filteredDataset.csv"): void =
         f.writeLine(line)
     f.close()
 
-# Helper Procedures
+# ********* Helper Procedures *********
 
 template benchmark(benchmarkName: string, verbose: bool, code: untyped) =
     block:
@@ -350,7 +355,7 @@ To use form command line, provide parameters. Currently supported usage:
 
 """
 
-# Core Routines
+# ********* Core Routines *********
 
 proc covBenchmark =
     block:
@@ -581,12 +586,17 @@ proc geneticSearch*(verbose: bool = true): seq[ElSolution] =
             if verbose: echo order, "=>", solutions[0], " => Queue Size:", len(solutions)
             result.add(solutions[0])
 
-# Main Routine
+# ********* Main Routine for Command Line Interface *********
 
 when isMainModule:
     let args = commandLineParams()
     if args.len == 0:
         echoHelp()
+        quit 0
+
+    if "--help" in args or "-h" in args:
+        echoHelp()
+        quit 0
 
     if "--covBenchmark" in args or "-cb" in args:
         covBenchmark()
