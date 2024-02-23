@@ -12,12 +12,23 @@ authors:
     orcid: 0000-0002-2266-0099
     affiliation: 1
     corresponding: true
+  - name: Arindam Debnath
+    orcid: 0000-0001-9427-4499
+    affiliation: 1
+  - name: Wesley F. Reinhart
+    orcid: 0000-0001-7256-2123
+    affiliation: "1, 2"
+  - name: Allison M. Beese
+    orcid: 0000-0002-7022-3387
+    affiliation: 1
   - name: Zi-Kui Liu
     orcid: 0000-0003-3346-3696
     affiliation: 1
 affiliations:
- - name: Department of Materials Science and Engineering, The Pennsylvania State University, USA
-   index: 1
+  - name: Department of Materials Science and Engineering, The Pennsylvania State University, USA
+    index: 1
+  - name: Institute for Computational and Data Sciences, The Pennsylvania State University, USA
+    index: 2
 date: 14 September 2023
 #bibliography: [paper/paper.bib]
 bibliography: paper.bib
@@ -42,8 +53,9 @@ Methods and Performance
 
 # Acknowledgements
 
-Acknowledge:
-- Jonathan Siegel at TAMU
+This work has been funded through grants: **NSF-POSE FAIN-2229690**, **ONR N00014-23-2721**, and **DOE-ARPA-E DE-AR0001435**. 
+
+We would also like to acknowledge Dr. Jonathan Siegel at Texas A&M University for valuable discussions and feedback on the project.
 
 
 # References
