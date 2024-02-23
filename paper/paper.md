@@ -49,7 +49,11 @@ The Compositionally Complex Materials (CCMs), and their matal-focused subset of 
 
 # Methods and Performance
 
-Methods and Performance
+## Overview
+
+![Schematic of core nimCSO data flow with a description of key methods. Metaprogramming is used to recompile the software optimized to the human-readable data and configuration files at hand.\label{fig:main}](assets/nimCSO_mainFigure.png){width="300pt"}
+
+
 
 # Acknowledgements
 
