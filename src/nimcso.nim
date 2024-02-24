@@ -27,6 +27,8 @@
 ## 
 ## 
 ## 
+when defined(nimdoc):
+    include ../tests/docs
 
 runnableExamples:
     let presenceTensor = getPresenceTensor()
