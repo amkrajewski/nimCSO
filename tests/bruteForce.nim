@@ -6,11 +6,11 @@ import ../src/nimcso
 suite "Corectness Tests":
     setup:
         let pBitA = getPresenceBitArrays()
-        let pBoolA = getPresenceBoolArrays()
+        let pBoolA = getPresenceBoolArrays() # 
 
         var referenceResult: seq[ElSolution]
 
-        for line in readFile("bruteForce_ref.csv").splitLines():
+        for line in readFile("tests/bruteForce_ref.csv").splitLines():
             let 
                 parts = line.split(",")
                 elList = parts[0].strip().split('-')
