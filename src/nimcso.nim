@@ -292,7 +292,11 @@ func getNextNodes*(elSol: ElSolution,
 
 # ********* Results Persistence *********
 
-proc saveResults*(results: seq[ElSolution], path: string = "results.csv", separator: string = "-"): void =
+proc saveResults*(
+        results: seq[ElSolution], 
+        path: string = "results.csv", 
+        separator: string = "-"
+        ): void =
     var f = open(path, fmWrite)
     f.writeLine("Removed Elements, Allowed Elements, Prevented, Allowed")
     for elSol in results:
@@ -335,13 +339,13 @@ template benchmarkOnce(benchmarkName: string, verbose: bool, code: untyped) =
         let elapsedStr = elapsed.formatFloat(format = ffDecimal, precision = 1)
         if verbose: echo "CPU Time [", benchmarkName, "] ", elapsedStr, "ms"
 
-template loopEstimate(iterN: int, code: untyped) =
+template timeEstimate(iterN: int, code: untyped) =
     block:
         let t0 = epochTime()
         for i in 1..1000:
             code
         let t1 = epochTime() - t0
-        echo "Loop ETA Estimate: " & $initDuration(milliseconds = (t1 * iterN.float).int) & "\n"
+        styledEcho "Task ETA Estimate: ", styleBright, fgMagenta, $initDuration(milliseconds = (t1 * iterN.float).int), resetStyle
 
 
 proc echoHelp() = echo """
@@ -360,7 +364,7 @@ To use form command line, provide parameters. Currently supported usage:
 
 # ********* Core Routines *********
 
-proc covBenchmark =
+proc covBenchmark() =
     block:
         echo "Running coverage benchmark with int8 Tensor representation"
 
@@ -405,7 +409,7 @@ proc covBenchmark =
         echo particularResult
         echo "Prevented count:", particularResult.prevented
 
-proc expBenchmark =
+proc expBenchmark() =
     block:
         echo "\nRunning coverage benchmark with BitArray representation:"
         let
@@ -512,12 +516,12 @@ proc algorithmSearch*(verbose: bool = true): seq[ElSolution] =
 
 proc bruteForce*(verbose: bool = true): seq[ElSolution] =
     assert elementN <= 64, "Brute force is not feasible for more than around 30 elements, thus it is not implemented for above 64 elements."
-    if verbose: echo "\nRunning brute force algorithm for " & $elementN & " elements."
+    if verbose: styledEcho "\nRunning brute force algorithm for ", styleBright, fgMagenta, $elementN, resetStyle, " elements."
     let presenceBitArrays = getPresenceBitArrays()
     const solutionN = 2^elementN - 1
-    if verbose: echo "Solution space size: ", solutionN
+    if verbose: styledEcho "Solution space size: ", styleBright, fgMagenta, $solutionN, resetStyle
 
-    loopEstimate solutionN:
+    timeEstimate solutionN:
         let elBA = BitArray(bits: [1])
         discard newElSolution(elBA, presenceBitArrays)
         discard elBA.count
