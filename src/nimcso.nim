@@ -43,6 +43,7 @@ import std/heapqueue
 import std/hashes
 import std/math
 import std/algorithm
+import std/terminal
 
 # Third-party library imports
 import arraymancer/Tensor
@@ -84,6 +85,9 @@ const
         result
     alloyN* = elementsPresentList.len  ## **Compile-time-established** constant based on your speficic config/data files. **Values in the docs are for the example config/dataset provided**. Allows optimizations of the data handling methods at the compile time.
 
+# Task name and description printout
+styledEcho "Configured for task: ", styleBright, fgMagenta, styleItalic, config.taskName, resetStyle,
+    styleDim, styleItalic, " (", config.taskDescription, ")", resetStyle
 
 # ********* Dataset Ingestion *********
 
@@ -588,6 +592,7 @@ proc geneticSearch*(verbose: bool = true): seq[ElSolution] =
 # ********* Main Routine for Command Line Interface *********
 
 when isMainModule:
+    styledEcho fgGreen, "***** nimCSO (Composition Space Optimization) *****", resetStyle
     let args = commandLineParams()
     if args.len == 0:
         echoHelp()

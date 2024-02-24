@@ -6,6 +6,7 @@ import std/hashes
 import std/bitops
 import yaml
 import std/strutils
+import std/terminal
 
 # Load config YAML file
 type Config = object
@@ -31,7 +32,7 @@ func divUp(a, b: int): int =
     return a div b + extra
 
 const lenInt64 = elementN.divUp(64)
-echo "Using ", lenInt64, " uint64s to store ", elementN, " elements."
+styledEcho "Using ", styleBright, fgMagenta, $lenInt64, " uint64s", resetStyle, " to store ", styleBright, fgMagenta, $elementN, resetStyle, " elements."
 # Side Note: There is a good reason to use uint64 even if the problem is smaller. The reason is performance. A 64-bit CPU is much better at handling 64-bit numbers; thus even if you hard-code the type 
 # of the bit array values to be uint8 or uint16, the compiler will likely align them to fill 64-bit boundaries anyways, so there won't be any memory savings, while it will be slightly slower. E.g.,
 # [1, uint64] -> CPU Time [Expanding to elementN nodes 1000 times from empty] 1011.2us   | -as with default config.yaml at step 24 -> 222.3 MB RAM
