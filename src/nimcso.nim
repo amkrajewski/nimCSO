@@ -72,8 +72,8 @@ const
         load(s, config)
         config
 
-    elementOrder* = config.elementOrder ## Compile-time-established configuration for the task
-    elementN* = elementOrder.len ## Compile-time-established configuration for the task
+    elementOrder* = config.elementOrder  ## **Compile-time-established** constant based on your speficic config/data files. Does not affect which elements are present in the results, but determines the order in which they are handled internally and printed in the results.
+    elementN* = elementOrder.len  ## **Compile-time-established** constant based on your speficic config/data files. Allows us to optimize the data structures and relevant methods for the specific problem at the compile time.
     elementsPresentList = static:
         let elementSet = toHashSet(elementOrder)
         var result = newSeq[string]()
@@ -82,8 +82,7 @@ const
             if elements <= elementSet:
                 result.add(line)
         result
-    ## Compile-time-established configuration for the task
-    alloyN* = elementsPresentList.len ## Compile-time-established configuration for the task
+    alloyN* = elementsPresentList.len  ## **Compile-time-established** constant based on your speficic config/data files. **Values in the docs are for the example config/dataset provided**. Allows optimizations of the data handling methods at the compile time.
 
 
 # ********* Dataset Ingestion *********
