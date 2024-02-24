@@ -11,3 +11,4 @@ docs/build/
 .vscode
 !LICENSE
 **.out
+*_testResult*
