@@ -387,7 +387,8 @@ template benchmark(benchmarkName: string, verbose: bool, code: untyped) =
             code
         let elapsed = (epochTime() - t0) * 1000
         let elapsedStr = elapsed.formatFloat(format = ffDecimal, precision = 1)
-        if verbose: echo "CPU Time [", benchmarkName, "] ", elapsedStr, "us"
+        if verbose: 
+            styledEcho "CPU Time [", benchmarkName, "] ", styleBright, fgGreen, elapsedStr, "μs", resetStyle
 
 template benchmarkOnce(benchmarkName: string, verbose: bool, code: untyped) =
     block:
@@ -395,7 +396,8 @@ template benchmarkOnce(benchmarkName: string, verbose: bool, code: untyped) =
         code
         let elapsed = (epochTime() - t0) * 1000
         let elapsedStr = elapsed.formatFloat(format = ffDecimal, precision = 1)
-        if verbose: echo "CPU Time [", benchmarkName, "] ", elapsedStr, "ms"
+        if verbose: 
+            styledEcho "CPU Time [", benchmarkName, "] ", styleBright, fgGreen, elapsedStr, "ms", resetStyle
 
 template timeEstimate(iterN: int, code: untyped) =
     block:
@@ -424,7 +426,7 @@ To use form command line, provide parameters. Currently supported usage:
 
 proc covBenchmark() =
     block:
-        echo "Running coverage benchmark with int8 Tensor representation"
+        styledEcho fgBlue, "Running coverage benchmark with int8 Tensor representation", resetStyle
 
         let presenceTensor = getPresenceTensor()
         var b = zeros[int8](shape = [1, elementN])
@@ -437,7 +439,7 @@ proc covBenchmark() =
         echo "Prevented count:", preventedData(b, presenceTensor)
 
     block:
-        echo "\nRunning coverage benchmark with BitArray representation"
+        styledEcho fgBlue, "\nRunning coverage benchmark with BitArray representation"
         let presenceBitArrays = getPresenceBitArrays()
 
         benchmark "bitty+randomizing", verbose=true:
@@ -453,7 +455,7 @@ proc covBenchmark() =
         echo "Prevented count:", particularResult.prevented
 
     block:
-        echo "\nRunning coverage benchmark with bool arrays representation (BitArray graph retained)"
+        styledEcho fgBlue, "\nRunning coverage benchmark with bool arrays representation (BitArray graph retained)", resetStyle
         let presenceBoolArrays = getPresenceBoolArrays()
         benchmark "bit&boolArrays+randomizing", verbose=true:
             var esTemp = ElSolution()
@@ -469,7 +471,7 @@ proc covBenchmark() =
 
 proc expBenchmark() =
     block:
-        echo "\nRunning coverage benchmark with BitArray representation:"
+        styledEcho fgBlue, "\nRunning coverage benchmark with BitArray representation:", resetStyle
         let
             bb = BitArray()
             presenceBitArrays = getPresenceBitArrays()
@@ -500,7 +502,7 @@ proc expBenchmark() =
         echo "Last solution on heap: ", solutions[0]
 
     block:
-        echo "\nRunning coverage benchmark with bool arrays representation (BitArray graph retained)"
+        styledEcho fgBlue, "\nRunning coverage benchmark with bool arrays representation (BitArray graph retained)", resetStyle
         let bb = BitArray()
         let presenceBoolArrays = getPresenceBoolArrays()
         var esTemp = newElSolution(bb, presenceBoolArrays)
@@ -671,19 +673,21 @@ when isMainModule:
         expBenchmark()
 
     if "--development" in args or "-d" in args or "--algorithmSearch" in args or "-as" in args:
-        discard algorithmSearch()
+        if "--development" in args or "-d" in args:
+            echo "DEPRECATED and will be removed in the future. Please use --algorithmSearch instead."
+        discard algorithmSearch(verbose=true)
 
     if "--bruteForce" in args or "-bf" in args:
-        discard bruteForce()
+        discard bruteForce(verbose=true)
 
     if "--geneticSearch" in args or "-gs" in args:
-        discard geneticSearch()
+        discard geneticSearch(verbose=true)
 
     if "--leastPreventing" in args or "-lp" in args:
-        discard leastPreventing()
+        discard leastPreventing(verbose=true)
 
     if "--mostCommon" in args or "-mc" in args:
-        discard mostCommon()
+        discard mostCommon(verbose=true)
 
     echo "\nnimCSO Done!"
 
