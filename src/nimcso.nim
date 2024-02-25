@@ -267,21 +267,25 @@ func `>`*(a, b: ElSolution): bool =
     a.prevented > b.prevented
 
 proc `==`*(a, b: ElSolution): bool = 
-    ## Checks equality of two ``ElSolution``s based on the equality of their ``BitArray``s. Please note this is *not* the same as ``>`` and ``<`` operators, which are based on the number of prevented datapoints.
+    ## Checks equality of two ``ElSolution``s based on the equality of their [BitArray]s. Please note this is *not* the same as ``>`` and ``<`` operators, which are based on the number of prevented datapoints.
     a.elBA == b.elBA
 
 func setPrevented*(elSol: var ElSolution,
                    presenceArrays: seq[BitArray] | seq[seq[bool]]): void =
-    ## Calculates and sets the ``prevented`` field of the ``ElSolution`` based on the presence of elements in the dataset encoded in either a sequence of ``BitArray``s or a sequence of sequences of ``bool``s.
+    ## Calculates and sets the ``prevented`` field of the ``var ElSolution`` based on the presence of elements in the dataset encoded in either a sequence of ``BitArray``s or a sequence of sequences of ``bool``s.
     elSol.prevented = preventedData(elSol.elBA, presenceArrays)
 
-# ********* Genetic Algorithm Procedures *********
-
 proc randomize*(elSol: var ElSolution): void =
+    ## Randomizes the ``BitArray`` of the ``var ElSolution`` by setting each bit to a random value, used primarily for benchmarking purposes.
     for i in 0..<elementN:
         elSol.elBA[i] = (rand(1) > 0)
 
+
+# ********* Genetic Algorithm Procedures *********
+
 proc mutate*(elSol: var ElSolution, presenceArrays: seq[BitArray] | seq[seq[bool]]): void =
+    ## Mutates the ``var ElSolution`` by taking its ``BitArray`` and swapping at random two of its bits from the range encoding presence of elements in the dataset. It then recalculates the number of 
+    ## prevented datapoints based on the presence of elements in the dataset encoded in either a sequence of ``BitArray``s or a sequence of sequences of ``bool``s.
     let
         i = rand(elementN-1)
         j = rand(elementN-1)
@@ -292,6 +296,13 @@ proc mutate*(elSol: var ElSolution, presenceArrays: seq[BitArray] | seq[seq[bool
 
 proc crossover*(elSol1: var ElSolution, elSol2: var ElSolution,
                 presenceArrays: seq[BitArray] | seq[seq[bool]]): void =
+    ## Implementation of the crossover here is more elaborate than typical swapping you may see elswere due to constraint of conservation of the number of set bits in the output solutions, so
+    ## that they retain the same order. The proceducre takes two ``var ElSolution``s and:
+    ## 1. Finds positions of non-overlapping bits, while not modifying the overlapping ones.
+    ## 2. Randomizes the order of non-overlapping positions set.
+    ## 3. Sets the bits in the output solutions by picking from the randomized set of non-overlapping positions.
+    ## 
+    ## It is primarily used in the `geneticSearch`_ algorithm.
     var
         setElements: seq[int] = elSol1.elBA.toSetPositions
         elBA1 = BitArray()
