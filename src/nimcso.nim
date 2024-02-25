@@ -213,12 +213,16 @@ type ElSolution* = ref object
 
 proc newElSolution*(elBA: BitArray,
                     pBA: seq[BitArray] | seq[seq[bool]]): ElSolution =
+    ## Creates a new ``ElSolution`` object based on a ``BitArray`` encoding the presence of elements. It uses sequence of ``BitArray``s or a sequence of sequences of ``bool``s to calculate the
+    ## number of prevented datapoints to set the ``prevented`` field.
     result = ElSolution()
     result.elBA = elBA
     result.prevented = preventedData(elBA, pBA)
 
 proc newElSolution*(elementSet: seq[string],
-                   pBA: seq[BitArray] | seq[seq[bool]]): ElSolution =
+                    pBA: seq[BitArray] | seq[seq[bool]]): ElSolution =
+    ## Creates a new ``ElSolution`` object from a sequence of element name ``string``s, which it encodes into a ``BitArray`` based on the `elementOrder`_ defined in the config and passing 
+    ## it to the other `newElSolution`_ procedure it overloads. In the process, it checks if the element set is a subset of the element order defined in the config.
     assert toHashSet(elementSet) <= toHashSet(elementOrder), "Element set is not a subset of the element order defined in the config."
     var elBA = BitArray()
     for i in 0..<elementN:
@@ -228,29 +232,47 @@ proc newElSolution*(elementSet: seq[string],
 
 proc newElSolutionRandomN*(order: int,
                            pBA: seq[BitArray] | seq[seq[bool]]): ElSolution =
+    ## Creates a new ``ElSolution`` object with a random set of ``order`` number of elements present in it by randomly picking setting bits in initially unset ``BitArray`` until it reaches the
+    ## desired number of bits set. It uses sequence of ``BitArray``s or a sequence of sequences of ``bool``s to calculate the number of prevented datapoints to set the ``prevented`` field.
+    ## Primarily used in the `geneticSearch`_ algorithm, but could be used in other contexts as well.
     result = ElSolution(elBA: BitArray())
     while result.elBA.count < order:
         result.elBA[rand(elementN-1)] = true
     result.prevented = preventedData(result.elBA, pBA)
 
 func hash*(elSol: ElSolution): Hash =
+    ## Hashes the solution based on the hash of its ``BitArray`` only and not the number of prevented datapoints. Hashing is used for storage in ``HashSet``s and ``OrderedSet``s. The omission 
+    ## of the number of prevented datapoints is intentional, as it allows checking for the presence of hypothetical solutions among the initialized (calculated) solutions without the need to 
+    ## calculate presence.
     hash(elSol.elBA)
 
 proc `$`*(elSol: ElSolution): string =
+    ## Casts the solution into a string with human-readable list of elements present in it (in the order based on the config) pointing with ``->`` to the number of prevented datapoints.
+    runnableExamples:
+        let elSol = newElSolution(@["Cr", "Fe", "Ni"], getPresenceBitArrays())
+        assert $elSol=="FeCrNi->1484"
+    
     for i in 0..<elementN:
         if elSol.elBA[i]:
             result.add(elementOrder[i])
     result.add("->")
     result.add(elSol.prevented.intToStr())
 
-func `<`*(a, b: ElSolution): bool = a.prevented < b.prevented
+func `<`*(a, b: ElSolution): bool = 
+    ## Compares two ``ElSolution``s based on the number of prevented datapoints. Used for sorting and comparison in the search algorithms.
+    a.prevented < b.prevented 
 
-func `>`*(a, b: ElSolution): bool = a.prevented > b.prevented
+func `>`*(a, b: ElSolution): bool = 
+    ## Compares two ``ElSolution``s based on the number of prevented datapoints. Used for sorting and comparison in the search algorithms.
+    a.prevented > b.prevented
 
-proc `==`*(a, b: ElSolution): bool = a.elBA == b.elBA
+proc `==`*(a, b: ElSolution): bool = 
+    ## Checks equality of two ``ElSolution``s based on the equality of their ``BitArray``s. Please note this is *not* the same as ``>`` and ``<`` operators, which are based on the number of prevented datapoints.
+    a.elBA == b.elBA
 
 func setPrevented*(elSol: var ElSolution,
                    presenceArrays: seq[BitArray] | seq[seq[bool]]): void =
+    ## Calculates and sets the ``prevented`` field of the ``ElSolution`` based on the presence of elements in the dataset encoded in either a sequence of ``BitArray``s or a sequence of sequences of ``bool``s.
     elSol.prevented = preventedData(elSol.elBA, presenceArrays)
 
 # ********* Genetic Algorithm Procedures *********
