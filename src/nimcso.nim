@@ -447,7 +447,7 @@ proc covBenchmark() =
 
         var bb = BitArray()
         for i in 0..5: bb[i] = true
-        echo bb
+        styledEchoAnnotated bb
         let particularResult = newElSolution(bb, presenceBitArrays)
         echo particularResult
         echo "Prevented count:", particularResult.prevented
@@ -462,7 +462,7 @@ proc covBenchmark() =
 
         var bb = BitArray()
         for i in 0..5: bb[i] = true
-        echo bb
+        styledEchoAnnotated bb
         let particularResult = newElSolution(bb, presenceBoolArrays)
         echo particularResult
         echo "Prevented count:", particularResult.prevented

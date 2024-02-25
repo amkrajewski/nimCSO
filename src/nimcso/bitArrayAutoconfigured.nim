@@ -158,34 +158,36 @@ proc styledEchoAnnotated*(b: BitArray) =
     styledEcho styleDim, "|"
 
 func count*(b: BitArray): int =
-    ## Returns the number of bits set.
+    ## Returns the number of set bits in the [BitArray].
     for i in 0 ..< lenInt64:
         result += countSetBits(b.bits[i])
 
 func clear*(b: var BitArray) =
-    ## Unsets all of the bits.
+    ## Unsets all of the bits in the [BitArray].
     for i in 0 ..< lenInt64:
         b.bits[i] = 0
 
 func hash*(b: BitArray): Hash =
-    ## Computes a Hash for the bit array.
+    ## Computes a Hash for the [BitArray] by hasing the array of ``uint64``s.
     hash(b.bits)
 
 iterator items*(b: BitArray): bool =
+    ## Iterates over the bits of the [BitArray] yielding ``true`` or ``false``.
     for i in 0 ..< elementN:
         yield b[i]
 
 iterator pairs*(b: BitArray): (int, bool) =
+    ## Iterates over the bits of the [BitArray] yielding the position and the ``true`` or ``false`` value.
     for i in 0 ..< elementN:
         yield (i, b[i])
 
 func toBoolArray*(b: BitArray): array[elementN, bool] =
-    ## Converts the bit array to a sequence of bools.
+    ## Converts the [BitArray] to an array of ``bool``s.
     for i in 0 ..< elementN:
         result[i] = b.unsafeGet(i)
 
 func toSetPositions*(b: BitArray): seq[int] =
-    ## Converts the bit array to a set of positions.
+    ## Converts the [BitArray] to a sequence of positions of the ``true`` bits.
     for i in 0 ..< elementN:
         if b.unsafeGet(i):
             result.add i
