@@ -130,6 +130,32 @@ func `$`*(b: BitArray): string =
         else:
             result.add "0"
 
+proc styledPrint*(b: BitArray) =
+    ## Prints the [BitArray] in a stylish way, with ``1``s in bright green and ``0``s in dim red.
+    for i in 0..<elementN:
+        if b[i]:
+            stdout.styledWrite styleBright, fgGreen, "1"
+        else:
+            stdout.styledWrite styleDim, fgRed, "0"
+    styledEcho resetStyle
+
+proc styledPrintAnnotated*(b: BitArray) =
+    ## Prints the [BitArray] in a stylish way, with (1) top annotation of the index like ``| 0| 1| 2| ... |10|11| ...``, (2) side annotation of the lenght of the array, 
+    ## and (3) ``1``s in bright green and ``0``s in dim red.
+    # Top annotation
+    stdout.styledWrite styleDim, "    "
+    for i in 1..elementN:
+            stdout.styledWrite styleDim, fgBlack, "|", fgBlue, ($i).align(2)
+    styledEcho styleDim, "|"
+    # Side annotation
+    stdout.styledWrite styleDim, ($elementN).align(3), " "
+    for i in 0..<elementN:
+        if b[i]:
+            stdout.styledWrite styleDim, "|", styleBright, fgGreen, " 1"
+        else:
+            stdout.styledWrite styleDim, "|", fgRed, " 0"
+    styledEcho styleDim, "|"
+
 func count*(b: BitArray): int =
     ## Returns the number of bits set.
     for i in 0 ..< lenInt64:
