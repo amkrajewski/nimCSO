@@ -149,6 +149,8 @@ func getPresenceBoolArrays*(): seq[seq[bool]] =
 # ********* Dataset-Solution Interactions *********
 
 func preventedData*(elList: BitArray, presenceBitArrays: seq[BitArray]): int =
+    ## Returns the number of datapoints prevented by removal of the elements encoded in the ``elList`` ``BitArray`` by comparing it to the sequence of ``BitArray``s encoding presence
+    ## in the dataset.
     let elBoolArray: array[elementN, bool] = elList.toBoolArray
 
     func isPrevented(presenceBitArray: BitArray): bool =
@@ -161,6 +163,8 @@ func preventedData*(elList: BitArray, presenceBitArrays: seq[BitArray]): int =
             result += 1
 
 func preventedData*(elList: BitArray, presenceBoolArrays: seq[seq[bool]]): int =
+    ## Returns the number of datapoints prevented by removal of the elements encoded in the ``elList`` ``BitArray`` by comparing it to the sequence of sequences of ``bool``s encoding presence
+    ## in the dataset. 
     let elBoolArray: array[elementN, bool] = elList.toBoolArray
 
     func isPrevented(presenceBoolArray: seq[bool]): bool =
@@ -173,10 +177,15 @@ func preventedData*(elList: BitArray, presenceBoolArrays: seq[seq[bool]]): int =
             result += 1
 
 proc preventedData*(elList: Tensor[int8], presenceTensor: Tensor[int8]): int =
+    ## Returns the number of datapoints prevented by removal of the elements encoded in the ``elList`` 1D ``Tensor[int8]`` by comparing it to the 2D ``Tensor[int8]`` encoding presence
+    ## in the dataset.
     let c = presenceTensor *. elList
     result = c.max(axis = 1).asType(int).sum()
 
 func presentInData*(elList: BitArray, pBAs: seq[BitArray] | seq[seq[bool]]): int =
+    ## A philosophical opposite of ``preventedData`` procedures. It returns the number of datapoints which have all of the elements encoded by the ``elList`` ``BitArray`` present in them,
+    ## based on either a sequence of ``BitArray``s or a sequence of sequences of ``bool``s encoding presence in the dataset. For single element, it could be obtained by subtracting the 
+    ## prevented data from the total data count, but it gets more complicated for multiple elements.
     let positionsPresent = elList.toSetPositions()
 
     func allPresent(presenceBitArray: BitArray): bool =
