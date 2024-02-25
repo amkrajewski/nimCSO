@@ -286,6 +286,11 @@ proc randomize*(elSol: var ElSolution): void =
 proc mutate*(elSol: var ElSolution, presenceArrays: seq[BitArray] | seq[seq[bool]]): void =
     ## Mutates the ``var ElSolution`` by taking its ``BitArray`` and swapping at random two of its bits from the range encoding presence of elements in the dataset. It then recalculates the number of 
     ## prevented datapoints based on the presence of elements in the dataset encoded in either a sequence of ``BitArray``s or a sequence of sequences of ``bool``s.
+    ## 
+    ## .. image:: ../paper/assets/nimcso_mutate_wide.drawio.png
+    ##    :alt: nimCSO Mutation
+    ## 
+    ## As depicted in the diagram, the mutation procedure is fully random so (1) bit can swap itself, (2) bits can swap causing a flip, or (3) bits can swap with no effect.
     let
         i = rand(elementN-1)
         j = rand(elementN-1)
@@ -301,6 +306,9 @@ proc crossover*(elSol1: var ElSolution, elSol2: var ElSolution,
     ## 1. Finds positions of non-overlapping bits, while not modifying the overlapping ones.
     ## 2. Randomizes the order of non-overlapping positions set.
     ## 3. Sets the bits in the output solutions by picking from the randomized set of non-overlapping positions.
+    ## 
+    ## .. image:: ../paper/assets/nimcso_crosslink.drawio.png
+    ##    :alt: nimCSO Crossover
     ## 
     ## It is primarily used in the `geneticSearch`_ algorithm.
     var
