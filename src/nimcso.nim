@@ -75,8 +75,8 @@ const
         load(s, config)
         config
 
-    elementOrder* = config.elementOrder  ## **Compile-time-established** constant based on your speficic config/data files. Does not affect which elements are present in the results, but determines the order in which they are handled internally and printed in the results.
-    elementN* = elementOrder.len  ## **Compile-time-established** constant based on your speficic config/data files. Allows us to optimize the data structures and relevant methods for the specific problem at the compile time.
+    elementOrder* = config.elementOrder  ## **Compile-time-calculated** constant based on your speficic config/data files. Does not affect which elements are present in the results, but determines the order in which they are handled internally and printed in the results.
+    elementN* = elementOrder.len  ## **Compile-time-calculated** constant based on your speficic config/data files. Allows us to optimize the data structures and relevant methods for the specific problem at the compile time.
     elementsPresentList = static:
         let elementSet = toHashSet(elementOrder)
         var result = newSeq[string]()
@@ -85,8 +85,8 @@ const
             if elements <= elementSet:
                 result.add(line)
         result
-    alloyN* = elementsPresentList.len  ## **Compile-time-established** constant based on your speficic config/data files. **Values in the docs are for the example config/dataset provided**. Allows optimizations of the data handling methods at the compile time.
-
+    alloyN* = elementsPresentList.len  ## **Compile-time-calculated** constant based on your speficic config/data files. Value is **config&dataset-dependent** and corresponds to the number of datapoints ingested from the dataset after filtering datapoints not contributing to the solution space (becasue of elements present in them.)
+    
 # Task name and description printout
 styledEcho "Configured for task: ", styleBright, fgMagenta, styleItalic, config.taskName, resetStyle,
     styleDim, styleItalic, " (", config.taskDescription, ")", resetStyle
@@ -94,6 +94,8 @@ styledEcho "Configured for task: ", styleBright, fgMagenta, styleItalic, config.
 # ********* Dataset Ingestion *********
 
 proc getPresenceTensor*(): Tensor[int8] =
+    ## (Legacy function retained for easy Arraymancer integration for library users) Returns an Arraymancer ``Tensor[int8]`` denoting presence of elements in the dataset 
+    ## (1 if present, 0 if not), which can be then used to calculate the quantity of data prevented by removal of a given set of elements. Operated based on compile-time constants.
     var
         presence = newTensor[int8]([alloyN, elementN])
         lineN: int = 0
@@ -107,9 +109,11 @@ proc getPresenceTensor*(): Tensor[int8] =
                 presence[lineN, elN] = 1
             elN += 1
         lineN += 1
-    result = presence
+    return presence
 
 func getPresenceBitArrays*(): seq[BitArray] =
+    ## Returns a sequence of ``BitArray``s encoding the presence of elements in each row in the dataset within _bits_ of integers stored in each BitArray. It operates based on 
+    ## compile-time constants.
     var
         presence = BitArray()
         elN: int = 0
@@ -125,6 +129,8 @@ func getPresenceBitArrays*(): seq[BitArray] =
         presence = BitArray()
 
 func getPresenceBoolArrays*(): seq[seq[bool]] =
+    ## Returns a sequence of sequences of ``bool``s encoding the presence of elements in each row in the dataset. It is **faster than** ``getPresenceBitArrays`` but **uses more memory**,
+    ## but only one instance is stored in the memory at a time, so it is a better choice for databases with less than many millions of rows. It operates based on compile-time constants.
     var
         elI: int = 0
         lineI: int = 0
