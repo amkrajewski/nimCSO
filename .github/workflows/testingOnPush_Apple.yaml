@@ -38,3 +38,8 @@ jobs:
         run: nim c -r -f -d:release -d:configPath=tests/config.yaml tests/leastPreventing
       - name: Least Preventing / Most Common under danger mode (should work)
         run: nim c -r -f -d:danger -d:configPath=tests/config.yaml tests/leastPreventing
+
+      - name: Algorithm Search under release mode (has to work)
+        run: nim c -r -f -d:release -d:configPath=tests/config.yaml tests/algorithmSearch
+      - name: Algorithm Search under danger mode (should work)
+        run: nim c -r -f -d:danger -d:configPath=tests/config.yaml tests/algorithmSearch
