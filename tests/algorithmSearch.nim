@@ -29,13 +29,13 @@ suite "Corectness Tests":
 
         saveResults(result, "tests/algorithmSearch_testResult.csv", "-")
 
+    if nimcso.configPath=="tests/config.yaml":
+        test "^ Algorithm Search produces the same result as Brute Force for the test configuration (except for the last 3)":
+            let bruteForceResult = bruteForce(verbose=false)
+            let result = algorithmSearch(verbose=false)
 
-    test "^ Algorithm Search produces the same result as Brute Force for the test configuration (except for the last 3)":
-        let bruteForceResult = bruteForce(verbose=false)
-        let result = algorithmSearch(verbose=false)
-
-        for i in 0..<result.len-3:
-            test $result[i]:
-                check result[i] == bruteForceResult[i+1]
+            for i in 0..<result.len-3:
+                test $result[i]:
+                    check result[i] == bruteForceResult[i+1]
 
         

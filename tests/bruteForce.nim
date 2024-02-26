@@ -4,21 +4,22 @@ import std/strutils
 import ../src/nimcso
 
 suite "Corectness Tests":
-    setup:
-        let pBitA = getPresenceBitArrays()
+    # Common setup for all tests without need to repeat it every time
+    let pBitA = getPresenceBitArrays()
 
-        var referenceResult: seq[ElSolution]
+    var referenceResult: seq[ElSolution]
 
-        for line in readFile("tests/bruteForce_ref.csv").splitLines():
-            let 
-                parts = line.split(",")
-                elList = parts[0].strip().split('-')
-                prevented = parts[2].strip().parseInt()
-            var elSol = newElSolution(elList, pBitA)
-            elSol.prevented = prevented
-            referenceResult.add(elSol)
+    for line in readFile("tests/bruteForce_ref.csv").splitLines():
+        let 
+            parts = line.split(",")
+            elList = parts[0].strip().split('-')
+            prevented = parts[2].strip().parseInt()
+        var elSol = newElSolution(elList, pBitA)
+        elSol.prevented = prevented
+        referenceResult.add(elSol)
     
     test "Verify Bit/Bool Array Backend Consistency":
+        # Please note the bakcedn is not the same (it is not a repetition of the same test)
         let pBoolA = getPresenceBoolArrays()
         var referenceResult_BoolA: seq[ElSolution]
 

@@ -73,7 +73,7 @@ type Config = object
 
 # Load config YAML file at the compile time (static block)
 const
-    configPath {.strdefine.}: string = "config.yaml"
+    configPath* {.strdefine.}: string = "config.yaml"
     config = static:
         echo configPath
         var config: Config
@@ -395,9 +395,9 @@ proc saveFilteredDataset*(path: string = "filteredDataset.csv"): void =
 template benchmark(benchmarkName: string, verbose: bool, code: untyped) =
     block:
         let t0 = epochTime()
-        for i in 1..1000:
+        for i in 1..10000:
             code
-        let elapsed = (epochTime() - t0) * 1000
+        let elapsed = (epochTime() - t0) * 100
         let elapsedStr = elapsed.formatFloat(format = ffDecimal, precision = 1)
         if verbose: 
             styledEcho "CPU Time [", benchmarkName, "] ", styleBright, fgGreen, elapsedStr, "μs", resetStyle
@@ -411,13 +411,14 @@ template benchmarkOnce(benchmarkName: string, verbose: bool, code: untyped) =
         if verbose: 
             styledEcho "CPU Time [", benchmarkName, "] ", styleBright, fgGreen, elapsedStr, "ms", resetStyle
 
-template timeEstimate(iterN: int, code: untyped) =
+template timeEstimate(iterN: int, verbose: bool, code: untyped) =
     block:
         let t0 = epochTime()
         for i in 1..1000:
             code
         let t1 = epochTime() - t0
-        styledEcho "Task ETA Estimate: ", styleBright, fgMagenta, $initDuration(milliseconds = (t1 * iterN.float).int), resetStyle
+        if verbose:
+            styledEcho "Task ETA Estimate: ", styleBright, fgMagenta, $initDuration(milliseconds = (t1 * iterN.float).int), resetStyle
 
 
 proc echoHelp() = echo """
@@ -572,13 +573,15 @@ proc mostCommon*(verbose: bool = true): seq[ElSolution] =
 
 
 proc algorithmSearch*(verbose: bool = true): seq[ElSolution] =
+    ## Runs a custom search algorithm
+    if verbose: styledEcho "\nRunning Algorithm Search for ", styleBright, fgMagenta, $elementN, resetStyle, " elements."
     let presenceBitArrays = getPresenceBitArrays()
-
     var solutions = initHeapQueue[ElSolution]()
 
     benchmarkOnce "exploring", verbose:
         solutions.push(newElSolution(BitArray(), presenceBitArrays))
         var toExpand: ElSolution
+        # Iterate over all solution orders
         for order in 1..<elementN:
             var toExclude = BitArray()
             var topSolutionOrder: int = 0
@@ -598,12 +601,12 @@ proc algorithmSearch*(verbose: bool = true): seq[ElSolution] =
 
 proc bruteForce*(verbose: bool = true): seq[ElSolution] =
     assert elementN <= 64, "Brute force is not feasible for more than around 30 elements, thus it is not implemented for above 64 elements."
-    if verbose: styledEcho "\nRunning brute force algorithm for ", styleBright, fgMagenta, $elementN, resetStyle, " elements."
+    if verbose: styledEcho "\nRunning Brute Force search for ", styleBright, fgMagenta, $elementN, resetStyle, " elements."
     let presenceBitArrays = getPresenceBitArrays()
     const solutionN = 2^elementN - 1
     if verbose: styledEcho "Solution space size: ", styleBright, fgMagenta, $solutionN, resetStyle
 
-    timeEstimate solutionN:
+    timeEstimate solutionN, verbose:
         let elBA = BitArray(bits: [1])
         discard newElSolution(elBA, presenceBitArrays)
         discard elBA.count
