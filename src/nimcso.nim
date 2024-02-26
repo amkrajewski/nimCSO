@@ -1,6 +1,12 @@
 # The MIT License (MIT)
 # Copyright (C) 2023 Adam M. Krajewski
 
+# Pragmas with compiler and linker options
+{.passC: "-flto -ffast-math".} 
+{.passL: "-flto".} 
+
+## .. importdoc::  nimcso/bitArrayAutoconfigured.nim
+## 
 ## # Summary 
 ## **nim** **C**omposition **S**pace **O**ptimization is a high-performance, low-level tool for selecting sets of components (dimensions) in compositional spaces, which optimize the data availability 
 ## given a constraint on the number of components to be selected. Ability to do so is crucial for deploying machine learning (ML) algorithms, so that they can be designed in a way balancing their
@@ -341,6 +347,9 @@ proc crossover*(elSol1: var ElSolution, elSol2: var ElSolution,
 func getNextNodes*(elSol: ElSolution,
                    exclusions: BitArray,
                    presenceBitArrays: seq[BitArray] | seq[seq[bool]]): seq[ElSolution] =
+    ## Takes the current [ElSolution] and compares it with ``exclusions`` ``BitArray`` to determine all possible next steps (removing additional element from dataset) that do not 
+    ## overlap with the exclusions. Used primarily in the `algorithmSearch`_ routine to explore the solution space without visiting the same solution twice. Performance can be tested
+    ## with the `expBenchmark`_ routine.
     for i in 0..<elementN:
         if not elSol.elBA[i] and not exclusions[i]:
             var newElBA: BitArray
@@ -355,6 +364,8 @@ proc saveResults*(
         path: string = "results.csv", 
         separator: string = "-"
         ): void =
+    ## Saves results from any routine (stored in a sequence of [ElSolution]s) into to a CSV file with columns "Removed Elements", "Allowed Elements", "Prevented", "Allowed", into a file
+    ## at the ``path``. The ``separator`` is used to separate the element names, and it is set to a dash ``-`` by default resulting in easily readable strig (e.g., ``Cr-Fe-Ni-Mo``).
     var f = open(path, fmWrite)
     f.writeLine("Removed Elements, Allowed Elements, Prevented, Allowed")
     for elSol in results:
@@ -373,6 +384,7 @@ proc saveResults*(
     f.close()
 
 proc saveFilteredDataset*(path: string = "filteredDataset.csv"): void = 
+    ## Saves the filtered dataset (containing only the datapoints contributing to the solution space as defined by set of ``elementOrder``) into a file at the ``path``.
     var f = open(path, fmWrite)
     for line in elementsPresentList:
         f.writeLine(line)
@@ -425,6 +437,9 @@ To use form command line, provide parameters. Currently supported usage:
 # ********* Core Routines *********
 
 proc covBenchmark() =
+    ## Runs "coverage" benchmarks testing and cross-method consistecy check. For each method, it creates 1,000 random solution candidates of any order, and then calculates the 
+    ## number of prevented datapoints for each of them. For the consistency check, it removes (sets) the first 5 elements and calculates the number of prevented datapoints for the
+    ## resulting solution. The results are printed to the console.
     block:
         styledEcho fgBlue, "Running coverage benchmark with int8 Tensor representation", resetStyle
 
@@ -470,6 +485,9 @@ proc covBenchmark() =
         echo "Prevented count:", particularResult.prevented
 
 proc expBenchmark() =
+    ## Runs "expansion" benchmarks testing and cross-method consistecy check. For both ``seq[bool]`` and ``BitArray`` representations, it check how fast they can (1) expand one step from 
+    ## the initial solution (i.e. elementN expansions), (2) expand one step from a random solution (avg. 1/2 elementN expansions), and (3) expand up to 1,000 steps from the initial solution.
+    ## The results are printed to the console. 
     block:
         styledEcho fgBlue, "\nRunning coverage benchmark with BitArray representation:", resetStyle
         let
@@ -481,7 +499,7 @@ proc expBenchmark() =
         benchmark "Expanding to elementN nodes 1000 times from empty", verbose=true:
             discard esTemp.getNextNodes(bb, presenceBitArrays)
 
-        benchmark "Expanding to 1-elementN nodes 1000 times from random", verbose=true:
+        benchmark "Expanding to 1000 times from random", verbose=true:
             esTemp.randomize()
             discard esTemp.getNextNodes(bb, presenceBitArrays)
 
@@ -510,7 +528,7 @@ proc expBenchmark() =
         benchmark "Expanding to elementN nodes 1000 times from empty", verbose=true:
             discard esTemp.getNextNodes(bb, presenceBoolArrays)
 
-        benchmark "Expanding to 1-elementN nodes 1000 times from random", verbose=true:
+        benchmark "Expanding to 1000 times from random", verbose=true:
             esTemp.randomize()
             discard esTemp.getNextNodes(bb, presenceBoolArrays)
 
