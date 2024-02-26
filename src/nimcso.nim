@@ -548,6 +548,8 @@ proc expBenchmark() =
         echo "Last solution on heap: ", solutions[0]
 
 proc leastPreventing*(verbose: bool = true): seq[ElSolution] =
+    ## Runs a search for single-element solutions preventing the least data, i.e. the least common elements *based on the filtered dataset*. Returns a sequence of [ElSolution]s which can
+    ## be used on its own (by setting ``verbose`` to see it or by using ``saveResults``) or as a starting point for an exploration technique.
     let presenceBitArrays = getPresenceBitArrays()
     benchmarkOnce "Searching for element removals preventing the least data:", verbose:
         var solutions = initHeapQueue[ElSolution]()
@@ -562,6 +564,7 @@ proc leastPreventing*(verbose: bool = true): seq[ElSolution] =
             result.add(sol)
 
 proc mostCommon*(verbose: bool = true): seq[ElSolution] =
+    ## Convenience wrapper for the ``leastPreventing`` routine, which returns its results in reversed order. It was added for the sake of clarity.
     let lpSol = leastPreventing(false).reversed()
     if verbose:
         for sol in lpSol: echo sol
@@ -588,7 +591,8 @@ proc algorithmSearch*(verbose: bool = true): seq[ElSolution] =
                 if topSolutionOrder >= order:
                     break
 
-            if verbose: echo order, "=>", solutions[0], " => Tree Size:", len(solutions)
+            if verbose: 
+                styledEcho styleBright, fgBlue, ($order).align(2), ": ", resetStyle, fgGreen, $solutions[0], styleDim, fgBlack, "  (tree size: ", $len(solutions), ")", resetStyle
             result.add(solutions[0])
 
 
@@ -605,71 +609,94 @@ proc bruteForce*(verbose: bool = true): seq[ElSolution] =
         discard elBA.count
 
     const solutionRange = 0.uint64..solutionN.uint64
-    var topSolutions: array[elementN+1, ElSolution]
-    benchmarkOnce "exploring", verbose:
+    benchmarkOnce "Brute Force", verbose:
+        var topSolutions: array[elementN+1, ElSolution]
+        # Initlialize with with highes possible prevented value (in contrast to the desfault 0)
+        for i in 0..elementN: topSolutions[i] = ElSolution(prevented: int.high)
         for c in solutionRange:
             let elBA = BitArray(bits: [c])
             let elSol = newElSolution(elBA, presenceBitArrays)
             let order = elBA.count
-            if topSolutions[order].isNil:
+            if topSolutions[order] > elSol:
                 topSolutions[order] = elSol
-            elif topSolutions[order] > elSol:
-                topSolutions[order] = elSol
-        for sol in topSolutions:
-            if verbose: echo sol
+            
+        for i in 0..elementN:
+            let sol = topSolutions[i]
             result.add(sol)
+            if verbose: 
+                styledEcho styleBright, fgBlue, ($i).align(2), ": ", resetStyle, fgGreen, $sol, resetStyle
 
-proc geneticSearch*(verbose: bool = true): seq[ElSolution] =
+
+proc geneticSearch*(
+        verbose: bool = true,
+        initialSolutionsN: Natural = 100,
+        searchWidth: Natural = 100,
+        maxIterations: Natural = 1000,
+        minIterations: Natural = 10,
+        mutationsN: Natural = 1
+        ): seq[ElSolution] =
     let presenceBitArrays = getPresenceBitArrays()
 
-    benchmarkOnce "exploring", verbose:
+    benchmarkOnce "Genetic Search", verbose:
         var solutions = initHeapQueue[ElSolution]()
+        # The first solution does not need any expansions
         for sol in getNextNodes(ElSolution(), BitArray(), presenceBitArrays):
             solutions.push(sol)
-        if verbose: echo solutions[0]
+        if verbose: 
+            styledEcho styleBright, fgBlue, " 1: ", resetStyle, fgGreen, $solutions[0], resetStyle
         result.add(solutions[0])
 
         for order in 2..<elementN:
             solutions = initHeapQueue[ElSolution]()
-            # Initialize with random 100 solutions
-            for i in 1..1000:
+
+            # Initialize with random initialSolutionsN solutions
+            for i in 1..initialSolutionsN:
                 solutions.push(newElSolutionRandomN(order, presenceBitArrays))
-            # Iterate UP TO 1,000 times (until converged)
+
+            # Iterate UP TO maxIterations times (until converged)
             var bestValuesSeq = @[solutions[0].prevented]
-            for i in 0..1000:
+            for i in 0..<maxIterations:
                 var
-                    top20set = initOrderedSet[ElSolution]()
+                    topNset = initOrderedSet[ElSolution]()
                     newSolutions = initOrderedSet[ElSolution]()
+
                 # Acquire top solutions
                 let topSolution = solutions.pop()
                 bestValuesSeq.add(topSolution.prevented)
-                top20set.incl(topSolution)
-                while len(top20set) < 100 and len(solutions) > 0:
-                    top20set.incl(solutions.pop())
-                let top20seq = top20set.toSeq
-                # Generate new solutions through mutations
-                for sol in top20seq:
+                topNset.incl(topSolution)
+                while len(topNset) < searchWidth and len(solutions) > 0:
+                    topNset.incl(solutions.pop())
+                let topNseq = topNset.toSeq
+
+                # Generate new solutions through mutations. Retain the original solutions as well.
+                for sol in topNseq:
                     var tempSol = ElSolution(elBA: sol.elBA)
-                    tempSol.mutate(presenceBitArrays)
+                    for j in 1..mutationsN:
+                        tempSol.mutate(presenceBitArrays)
                     newSolutions.incl(sol)
                     newSolutions.incl(tempSol)
-                # Generate new solutions through crossovers
-                for i in countup(1, len(top20seq)-1, 2):
-                    var tempSol1 = ElSolution(elBA: top20seq[i-1].elBA)
-                    var tempSol2 = ElSolution(elBA: top20seq[i].elBA)
+
+                # Generate new solutions through crossovers. Does not retain the original solutions. If the number of solutions is odd, the last one is not used.
+                for i in countup(1, len(topNseq)-1, 2):
+                    var tempSol1 = ElSolution(elBA: topNseq[i-1].elBA)
+                    var tempSol2 = ElSolution(elBA: topNseq[i].elBA)
                     crossover(tempSol1, tempSol2, presenceBitArrays)
                     newSolutions.incl(tempSol1)
                     newSolutions.incl(tempSol2)
+
                 # Push new solutions to queue
                 for sol in newSolutions:
                     solutions.push(sol)
-                # Check if converged
-                if i > 10:
+
+                # Check if converged after minIterations have passed. The convergence is defined as the same best value as 10 iterations ago.
+                if i > minIterations:
                     if bestValuesSeq[^10] == bestValuesSeq[^1]:
                         break
 
-            if verbose: echo order, "=>", solutions[0], " => Queue Size:", len(solutions)
+            if verbose: 
+                styledEcho styleBright, fgBlue, ($order).align(2), ": ", resetStyle, fgGreen, $solutions[0], styleDim, fgBlack, "  (queue size: ", $len(solutions), ")", resetStyle
             result.add(solutions[0])
+
 
 # ********* Main Routine for Command Line Interface *********
 
