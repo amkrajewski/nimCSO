@@ -650,6 +650,12 @@ proc geneticSearch*(
         minIterations: Natural = 10,
         mutationsN: Natural = 1
         ): seq[ElSolution] =
+    ## **(Key Routine)** This custom genetic algotithm utilizes custom [mutate]_ and [crossover]_ procedures preserving the number of elements present (bits set) in their output solutions to
+    ## iteratively improve a set of solutions. It is primarily aimed at (1) problems with more than 40 elements, where neither `bruteForce`_ nor `algorithmSearch`_ are feasible and (2) at 
+    ## cases where the decent solution is needed quickly. Its implementation **allows for arbitrary dimensionality** of the problem and its time complexity will scale linearly with it. You may
+    ## control a set of parameters to adjust the algorithm to your needs, including the number of initial randomly generated solutions ``initialSolutionsN``, the number of solutions to keep 
+    ## carry over to the next iteration ``searchWidth``, the maximum number of iterations ``maxIterations``, the minimum number of iterations the solution has to fail to improve to be 
+    ## considered.
     let presenceBitArrays = getPresenceBitArrays()
 
     benchmarkOnce "Genetic Search", verbose:
