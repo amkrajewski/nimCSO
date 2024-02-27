@@ -19,7 +19,7 @@
 ## 
 ## | Method | Time Per Dataset | Time per Entry | Relative Speed | Representation Size | Relative Size |
 ## |:-------|:---------------------:|:-------------------:|:--------------:|:------------------------:|:-------------:|
-## | Native Python (3.11.8) | 327.4 µs | 152.3 ns | x1 | 871.5 kB | x1 |
-## | NumPy (1.26.4) | 40.1 µs | 18.6 ns | x8.3 | 79.7 ns | x10.9 kB |
-## | nimCSO BitArray (0.5.0) | 9.2 µs | 4.4 ns | x34.6 ns | 50.4 kB | x17.3 |
-## | nimCSO `Integer`s (0.4.2) | 0.79 µs | 0.37 ns | x413 | 16.8 kB | x52 |
+## | Native Python (3.11.8)    | 327.4 µs | 152.3 ns | x1    | 871.5 kB | x1     |
+## | NumPy (1.26.4)            | 40.1 µs  | 18.6 ns  | x8.3  | 79.7 kB  | x10.9  |
+## | nimCSO (0.6.0) BitArray   | 9.2 µs   | 4.4 ns   | x34.6 | 50.4 kB  | x17.3  |
+## | nimCSO (0.6.0) uint64     | 0.79 µs  | 0.37 ns  | x413  | 16.8 kB  | x52    |
