@@ -4,7 +4,10 @@ on:
     paths:
       - paper/**
       - .github/workflows/draft-pdf.yml
-
+    tags-ignore:
+        - '**'
+  workflow_dispatch:
+    
 jobs:
   paper:
     runs-on: ubuntu-latest

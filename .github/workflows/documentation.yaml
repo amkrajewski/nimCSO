@@ -6,6 +6,8 @@ on:
       - src/**
       - docs/**
       - .github/workflows/documentation.yaml
+    tags-ignore:
+      - '**'
   workflow_dispatch:
 
 permissions:
