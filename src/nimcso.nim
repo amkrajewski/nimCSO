@@ -73,7 +73,7 @@ type Config = object
 
 # Load config YAML file at the compile time (static block)
 const
-    configPath* {.strdefine.}: string = "config.yaml"
+    configPath* {.strdefine.}: string = "config.yaml" ## **Compile-time-assigned** constant pointing to the specific ``config.yaml`` file used to compile the current ``nimCSO`` binary. It is exported to allow users to easily assert in scripts that they are using the correct config file.
     config = static:
         echo configPath
         var config: Config
@@ -118,6 +118,22 @@ proc getPresenceTensor*(): Tensor[int8] =
             elN += 1
         lineN += 1
     return presence
+
+proc getPresenceIntArray*(): array[alloyN, uint64] =
+    ## (Legacy function retained for easy Arraymancer integration for library users) Returns an Arraymancer ``Tensor[int8]`` denoting presence of elements in the dataset 
+    ## (1 if present, 0 if not), which can be then used to calculate the quantity of data prevented by removal of a given set of elements. Operated based on compile-time constants.
+    var
+        lineN: int = 0
+        elN: int = 0
+
+    for line in elementsPresentList:
+        let elements = line.split(",")
+        elN = 0
+        for el in elementOrder:
+            if elements.contains(el):
+                result[lineN].setBit(elN)
+            elN += 1
+        lineN += 1
 
 func getPresenceBitArrays*(): seq[BitArray] =
     ## Returns a sequence of ``BitArray``s encoding the presence of elements in each row in the dataset within _bits_ of integers stored in each BitArray. It operates based on 
