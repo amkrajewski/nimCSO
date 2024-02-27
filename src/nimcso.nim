@@ -33,6 +33,10 @@
 ## 
 ## 
 ## 
+## 
+when defined(nimdoc):
+    include ../benchmarks/docs
+
 when defined(nimdoc):
     include ../tests/docs
 
