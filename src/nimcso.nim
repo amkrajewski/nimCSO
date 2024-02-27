@@ -579,7 +579,7 @@ proc algorithmSearch*(verbose: bool = true): seq[ElSolution] =
     ## the algorithm `assumes` that while searching for a given order of solution, elements present in already expanded solutions will not improve those not yet expanded. This 
     ## effectively prunes candidate branches requiring two or more levels of backtracking. This method has generated the same results as combinatoric brute forcing in our tests, as 
     ## demonstrated in the ``tests/algorithmSearch`` script, except for occasional differences in the last explored solution. By default, the [BitArray] representation is used, but
-    ## the [bool] array representation can be used by setting the `presenceArrays` parameter to `getPresenceBoolArrays()`.
+    ## the ``bool`` array representation can be used by setting the ``presenceArrays`` parameter to ``getPresenceBoolArrays()``.
     
     if verbose: styledEcho "\nRunning Algorithm Search for ", styleBright, fgMagenta, $elementN, resetStyle, " elements."
     let presenceBitArrays = getPresenceBitArrays()
@@ -607,6 +607,11 @@ proc algorithmSearch*(verbose: bool = true): seq[ElSolution] =
 
 
 proc bruteForce*(verbose: bool = true): seq[ElSolution] =
+    ## A **high performance** (35 times faster than native Python and 4 times faster than NumPy) and **easily extensible** (leveraging the [ElSolution] type) brute force algorithm for finding 
+    ## the optimal solution for the problem. It enumerates all entries in the `power set` of considered elements by representing them as integers from ``0`` to ``2^elementN - 1`` and 
+    ## using them to initialize ``BitArray``s. It then iteratively evaluates them keeping track of the best solution for each order (number of elements present in the solution), what 
+    ## allows for a **minimal memory footprint** as only several solutions are kept in memory at a time. The results are printed to the console. It is implemented for up to 64 elements,
+    ## as it is not feasible for more than around 30 elements, but it could be extended by simply enumerating solutions as two or more integers and using them to initialize ``BitArray``s.
     assert elementN <= 64, "Brute force is not feasible for more than around 30 elements, thus it is not implemented for above 64 elements."
     if verbose: styledEcho "\nRunning Brute Force search for ", styleBright, fgMagenta, $elementN, resetStyle, " elements."
     let presenceBitArrays = getPresenceBitArrays()
