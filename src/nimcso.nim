@@ -573,7 +573,14 @@ proc mostCommon*(verbose: bool = true): seq[ElSolution] =
 
 
 proc algorithmSearch*(verbose: bool = true): seq[ElSolution] =
-    ## Runs a custom search algorithm
+    ## This custom algorithm iteratively expands and evaluates candidates from a priority queue (binary heap), while leveraging `the fact` that the number of data points lost when 
+    ## removing elements `A` and `B` from the dataset has to be at least as large as when removing either `A` or `B` alone to delay exploration of candidates until they can contribute 
+    ## to the solution. Furthermore, to (1) avoid revisiting the same candidate without keeping track of visited states and (2) further inhibit the exploration of unlikely candidates, 
+    ## the algorithm `assumes` that while searching for a given order of solution, elements present in already expanded solutions will not improve those not yet expanded. This 
+    ## effectively prunes candidate branches requiring two or more levels of backtracking. This method has generated the same results as combinatoric brute forcing in our tests, as 
+    ## demonstrated in the ``tests/algorithmSearch`` script, except for occasional differences in the last explored solution. By default, the [BitArray] representation is used, but
+    ## the [bool] array representation can be used by setting the `presenceArrays` parameter to `getPresenceBoolArrays()`.
+    
     if verbose: styledEcho "\nRunning Algorithm Search for ", styleBright, fgMagenta, $elementN, resetStyle, " elements."
     let presenceBitArrays = getPresenceBitArrays()
     var solutions = initHeapQueue[ElSolution]()
