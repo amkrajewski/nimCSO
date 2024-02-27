@@ -1,5 +1,5 @@
 # The MIT License (MIT)
-# Copyright (C) 2023 Adam M. Krajewski
+# Copyright (C) 2023-2024 Adam M. Krajewski
 
 # Pragmas with compiler and linker options
 {.passC: "-flto -ffast-math".} 
@@ -36,13 +36,9 @@
 when defined(nimdoc):
     include ../tests/docs
 
-runnableExamples:
-    let presenceTensor = getPresenceTensor()
-
 # Standard library imports. One per line for easy change tracking.
 import std/strutils
 import std/sets
-import std/sugar
 import std/times
 import std/os
 import std/sequtils
@@ -87,7 +83,9 @@ const
         let elementSet = toHashSet(elementOrder)
         var result = newSeq[string]()
         for line in readFile(config.datasetPath).splitLines():
-            let elements = toHashSet(line.split(",").map(el => el.strip()))
+            var elements = initHashSet[string]()
+            for e in line.split(","):
+                elements.incl(e.strip())
             if elements <= elementSet:
                 result.add(line)
         result
@@ -573,7 +571,7 @@ proc mostCommon*(verbose: bool = true): seq[ElSolution] =
 
 
 proc algorithmSearch*(verbose: bool = true): seq[ElSolution] =
-    ## This custom algorithm iteratively expands and evaluates candidates from a priority queue (binary heap), while leveraging `the fact` that the number of data points lost when 
+    ## **(Key Routine)** This custom algorithm iteratively expands and evaluates candidates from a priority queue (binary heap), while leveraging `the fact` that the number of data points lost when 
     ## removing elements `A` and `B` from the dataset has to be at least as large as when removing either `A` or `B` alone to delay exploration of candidates until they can contribute 
     ## to the solution. Furthermore, to (1) avoid revisiting the same candidate without keeping track of visited states and (2) further inhibit the exploration of unlikely candidates, 
     ## the algorithm `assumes` that while searching for a given order of solution, elements present in already expanded solutions will not improve those not yet expanded. This 
@@ -607,7 +605,7 @@ proc algorithmSearch*(verbose: bool = true): seq[ElSolution] =
 
 
 proc bruteForce*(verbose: bool = true): seq[ElSolution] =
-    ## A **high performance** (35 times faster than native Python and 4 times faster than NumPy) and **easily extensible** (leveraging the [ElSolution] type) brute force algorithm for finding 
+    ## **(Key Routine)** A **high performance** (35 times faster than native Python and 4 times faster than NumPy) and **easily extensible** (leveraging the [ElSolution] type) brute force algorithm for finding 
     ## the optimal solution for the problem. It enumerates all entries in the `power set` of considered elements by representing them as integers from ``0`` to ``2^elementN - 1`` and 
     ## using them to initialize ``BitArray``s. It then iteratively evaluates them keeping track of the best solution for each order (number of elements present in the solution), what 
     ## allows for a **minimal memory footprint** as only several solutions are kept in memory at a time. The results are printed to the console. It is implemented for up to 64 elements,
@@ -755,7 +753,7 @@ when isMainModule:
     if "--mostCommon" in args or "-mc" in args:
         discard mostCommon(verbose=true)
 
-    echo "\nnimCSO Done!"
+    styledEcho fgGreen, styleBright, "\nnimCSO Done!", resetStyle
 
 
 
