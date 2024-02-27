@@ -34,6 +34,7 @@ jobs:
       - name: Build documentation
         run: |
           nim doc --project --index:on --outdir:docs --git.url:https://github.com/amkrajewski/nimCSO --git.commit:main src/nimcso
+          sed -i '0,/src\/nimcso/s//nimCSO/;0,/src\/nimcso/s//nimCSO/' docs/nimcso.html
           cp docs/nimcso.html docs/index.html
 
       - name: Setup Pages
