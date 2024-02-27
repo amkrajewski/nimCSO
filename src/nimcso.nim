@@ -202,6 +202,20 @@ func preventedData*(elList: BitArray, presenceBoolArrays: seq[seq[bool]]): int =
         if isPrevented(pm):
             result += 1
 
+func preventedData*(elList: uint64, presenceIntArray: array[alloyN, uint64]): int =
+    ## Returns the number of datapoints prevented by removal of the elements encoded in the ``elList`` unsigned integer (``uint64``) by comparing it to the compile-time-determined-length array 
+    ## of unsigned integers encoding the presence of elements in each row in the dataset. It **leverages the hardware's native bit operations** whenever possible, and is **blazingly fast** in 
+    ## cases where it can be used.
+
+    func isPrevented(presenceInt: uint64): bool =
+        for i in 0..<elementN:
+            if presenceInt.testBit(i) and elList.testBit(i):
+                return true
+        return false
+    for i in presenceIntArray:
+        if isPrevented(i):
+            result += 1
+
 proc preventedData*(elList: Tensor[int8], presenceTensor: Tensor[int8]): int =
     ## Returns the number of datapoints prevented by removal of the elements encoded in the ``elList`` 1D ``Tensor[int8]`` by comparing it to the 2D ``Tensor[int8]`` encoding presence
     ## in the dataset.
