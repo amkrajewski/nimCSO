@@ -469,7 +469,8 @@ To use form command line, provide parameters. Currently supported usage:
 --expBenchmark    | -eb   --> Run small node expansion benchmarks.
 --leastPreventing | -lp   --> Run a search for single-elements preventing the least data, i.e. the least common elements.
 --mostCommon      | -mc   --> Run a search for most common elements.
---bruteForce      | -bf   --> Provide ETA and run brute force algorithm. Note that it is not feasible for more than 20ish elements.
+--bruteForce      | -bf   --> Run brute force algorithm after getting ETA. Note that it is not feasible for more than 25ish elements.
+--bruteForceInt   | -bfi  --> Run brute force algorithm with faster but not extensible uint64 representation after getting ETA. Up to 64 elements only.
 --geneticSearch   | -gs   --> Run a genetic search algorithm.
 --algorithmSearch | -as   --> Run a custom problem-informed best-first search algorithm.
 --develpment      | -d    --> DEPRECATED: Run development code.
@@ -649,11 +650,11 @@ proc algorithmSearch*(verbose: bool = true): seq[ElSolution] =
 
 proc bruteForce*(verbose: bool = true): seq[ElSolution] =
     ## **(Key Routine)** A **high performance** (35 times faster than native Python and 4 times faster than NumPy) and **easily extensible** (leveraging the [ElSolution] type) brute force algorithm for finding 
-    ## the optimal solution for the problem. It enumerates all entries in the `power set` of considered elements by representing them as integers from ``0`` to ``2^elementN - 1`` and 
-    ## using them to initialize ``BitArray``s. It then iteratively evaluates them keeping track of the best solution for each order (number of elements present in the solution), what 
+    ## the optimal solution for the problem of which N elements to remove from dataset to loose the least daya. It enumerates all entries in the `power set` of considered elements by representing them as integers 
+    ## from ``0`` to ``2^elementN - 1`` and using them to initialize ``BitArray``s. It then iteratively evaluates them keeping track of the best solution for each order (number of elements present in the solution), what 
     ## allows for a **minimal memory footprint** as only several solutions are kept in memory at a time. The results are printed to the console. It is implemented for up to 64 elements,
     ## as it is not feasible for more than around 30 elements, but it could be extended by simply enumerating solutions as two or more integers and using them to initialize ``BitArray``s.
-    assert elementN <= 64, "Brute force is not feasible for more than around 30 elements, thus it is not implemented for above 64 elements."
+    assert elementN <= 64, "Brute Force is not feasible for more than around 30 elements, thus it is not implemented for above 64 elements."
     if verbose: styledEcho "\nRunning Brute Force search for ", styleBright, fgMagenta, $elementN, resetStyle, " elements."
     let presenceBitArrays = getPresenceBitArrays()
     const solutionN = 2^elementN - 1
@@ -686,7 +687,7 @@ proc bruteForceInt*(verbose: bool = true): seq[ElSolution] =
     ## **(Key Routine)** A **really high performance** (400 times faster than native Python and 50 times faster than NumPy) brute force algorithm for finding the optimal solution for the problem of which 
     ## N elements to remove from dataset to loose the least daya. Unlike the standard `bruteForce`_ algorithm does not use the `ElSolution`_ type and **cannot be easily extended** to other use cases and 
     ## **cannot be used for more than 64 elements** without sacrificing the performance, at which point `bruteForce`_ should be much better choice.
-    assert elementN <= 64, "Brute force is not feasible for more than around 30 elements, thus it is not implemented for above 64 elements."
+    assert elementN <= 64, "Brute Force with uint64 representation cannot run on more than 64 elements. You will need to take `bruteForce` instead and implement it for more than 64 elements."
     if verbose: styledEcho "\nRunning brute force algorithm for ", styleBright, fgMagenta, $elementN, resetStyle, " elements."
     let presenceInts = getPresenceIntArray()
     let presenceBitArrays = getPresenceBitArrays()
@@ -822,6 +823,9 @@ when isMainModule:
 
     if "--bruteForce" in args or "-bf" in args:
         discard bruteForce(verbose=true)
+
+    if "--bruteForceInt" in args or "-bfi" in args:
+        discard bruteForceInt(verbose=true)
 
     if "--geneticSearch" in args or "-gs" in args:
         discard geneticSearch(verbose=true)
