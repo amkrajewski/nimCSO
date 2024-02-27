@@ -5,6 +5,7 @@ on:
     paths:
       - src/**
       - docs/**
+      - '**/docs.nim'
       - .github/workflows/documentation.yaml
     tags-ignore:
       - '**'
