@@ -7,8 +7,6 @@ on:
       - docs/**
       - '**/docs.nim'
       - .github/workflows/documentation.yaml
-    tags-ignore:
-      - '**'
   workflow_dispatch:
 
 permissions:
