@@ -120,8 +120,10 @@ proc getPresenceTensor*(): Tensor[int8] =
     return presence
 
 proc getPresenceIntArray*(): array[alloyN, uint64] =
-    ## (Legacy function retained for easy Arraymancer integration for library users) Returns an Arraymancer ``Tensor[int8]`` denoting presence of elements in the dataset 
-    ## (1 if present, 0 if not), which can be then used to calculate the quantity of data prevented by removal of a given set of elements. Operated based on compile-time constants.
+    ## Returns a compile-time-determined-length array of unsigned integers encoding the presence of elements in each row in the dataset, which is as fast and compact as you can get on a 
+    ## 64-bit architecture. It is by far the most limiting representation implemented in ``nimCSO``, which **will not work for datasets with more than 64 elements**, but it is 
+    ## **blazingly fast to access** and process, since we can leverage the hardware's native bit operations, and **uses a couple times less memory** than the ``BitArray`` representation 
+    ## thanks to not having intermediate pointers, which for under 64 elements are the same size as the payload itself.
     var
         lineN: int = 0
         elN: int = 0
@@ -232,6 +234,12 @@ func presentInData*(elList: BitArray, pBAs: seq[BitArray] | seq[seq[bool]]): int
 # ********* Elemental Solution Class Implementation *********
 
 type ElSolution* = ref object
+    ## The ``ElSolution`` object, or *Elemental Solution*, represents a singular solution to the problem of selecting elements to remove from the dataset. It is a reference object with two core fileds, 
+    ## but is meant to be extended beyond that for advanced use cases (e.g., utilizing multi-property heuristics for the search algorithms). These two fields are:
+    ## - ``elBA``: A [BitArray], configured at the compile time, holds the elements removed from the dataset in this solution. It can hold any number of elements. Its size is 64-bit aligned, so any
+    ##   number of elements below 65 will not increase the memory usage.
+    ## - ``prevented``: An ``int`` field, which holds the number of datapoints prevented from being considered due to the removal of the elements encoded in the ``elBA``. It is calculated when the
+    ##   solution is created and can be recalculated with the ``setPrevented`` procedure.
     elBA*: BitArray
     prevented*: int
 
