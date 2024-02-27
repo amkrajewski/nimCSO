@@ -52,6 +52,7 @@ import std/hashes
 import std/math
 import std/algorithm
 import std/terminal
+import std/bitops
 
 # Third-party library imports
 import arraymancer/Tensor
@@ -675,6 +676,42 @@ proc bruteForce*(verbose: bool = true): seq[ElSolution] =
             if topSolutions[order] > elSol:
                 topSolutions[order] = elSol
             
+        for i in 0..elementN:
+            let sol = topSolutions[i]
+            result.add(sol)
+            if verbose: 
+                styledEcho styleBright, fgBlue, ($i).align(2), ": ", resetStyle, fgGreen, $sol, resetStyle
+
+proc bruteForceInt*(verbose: bool = true): seq[ElSolution] =
+    ## **(Key Routine)** A **really high performance** (400 times faster than native Python and 50 times faster than NumPy) brute force algorithm for finding the optimal solution for the problem of which 
+    ## N elements to remove from dataset to loose the least daya. Unlike the standard `bruteForce`_ algorithm does not use the `ElSolution`_ type and **cannot be easily extended** to other use cases and 
+    ## **cannot be used for more than 64 elements** without sacrificing the performance, at which point `bruteForce`_ should be much better choice.
+    assert elementN <= 64, "Brute force is not feasible for more than around 30 elements, thus it is not implemented for above 64 elements."
+    if verbose: styledEcho "\nRunning brute force algorithm for ", styleBright, fgMagenta, $elementN, resetStyle, " elements."
+    let presenceInts = getPresenceIntArray()
+    let presenceBitArrays = getPresenceBitArrays()
+    const solutionN = 2^elementN - 1
+    if verbose: styledEcho "Solution space size: ", styleBright, fgMagenta, $solutionN, resetStyle
+
+    timeEstimate solutionN, verbose:
+        let i = 1.uint64
+        discard preventedData(i, presenceInts)
+        discard i.countSetBits
+
+    const solutionRange = 0.uint64..solutionN.uint64
+    benchmarkOnce "Brute Force", verbose:
+        var topSolutionsScore: array[elementN+1, int]
+        # Initlialize with with highes possible prevented value (in contrast to the desfault 0)
+        for i in 0..elementN: 
+            topSolutionsScore[i] = int.high
+        var topSolutions: array[elementN+1, ElSolution]
+        for c in solutionRange:
+            let order = c.countSetBits
+            let prevented = preventedData(c, presenceInts)
+            if topSolutionsScore[order] > prevented:
+                topSolutionsScore[order] = prevented
+                topSolutions[order] = newElSolution(BitArray(bits: [c]), presenceBitArrays)
+
         for i in 0..elementN:
             let sol = topSolutions[i]
             result.add(sol)
