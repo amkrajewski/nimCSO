@@ -65,12 +65,16 @@ The metaprogramming employed in nimCSO allows for static optimization of the cod
 
 The 
 
-| Method | Time per Dataset | Time per Entry *(Relative)* | Database Size *(Relative)* |
-|:-------|:----------------:|:-------------------------:|:------------------------:|
-| Native `Python` (3.11) | 327.4 µs | 152.3 ns *(x1)*    | 871.5 kB *(x1)*    |
-| `NumPy` (1.26)         | 40.1 µs  | 18.6 ns  *(x8.3)*  | 79.7 kB  *(x10.9)* |
+| Method (version) | Time per Dataset | Time per Entry *(Relative)* | Database Size *(Relative)* |
+|:-----------------------|:--------:|:------------------:|:------------------:|
+| Native `Python` 3.11   | 327.4 µs | 152.3 ns *(x1)*    | 871.5 kB *(x1)*    |
+|------------------------|----------|--------------------|--------------------|
+| `NumPy` `array` 1.26   | 40.1 µs  | 18.6 ns  *(x8.3)*  | 79.7 kB  *(x10.9)* |
+|------------------------|----------|--------------------|--------------------|
 | `nimCSO` (`BitArray`)  | 9.2 µs   | 4.4 ns   *(x34.6)* | 50.4 kB  *(x17.3)* |
+|------------------------|----------|--------------------|--------------------|
 | `nimCSO` (`uint64`)    | 0.79 µs  | 0.37 ns  *(x413)*  | 16.8 kB  *(x52)*   |
+|------------------------|----------|--------------------|--------------------|
 
 Table: Benchmarks of (1) average time to evaluate how many datapoints would be lost if 5 selected components were removed from a dataset with 2,150 data points spanning 37 components, averaged over 10,000 runs, and (2) the size of the data structure representing the dataset. Values were obtained by running scripts in `benchmarks` directory on Apple M2 Max CPU.
 
