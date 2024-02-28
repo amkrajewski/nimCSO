@@ -89,3 +89,12 @@
    url = {https://www.cambridge.org/core/product/identifier/S088429141800153X/type/journal_article},
    year = {2018},
 }
+
+@article{Krajewski2024Nimplex,
+   abstract = {Many disciplines of science and engineering deal with problems related to compositions, ranging from chemical compositions in materials science to portfolio compositions in economics. They exist in non-Euclidean simplex spaces, causing many standard tools to be incorrect or inefficient, which is significant in combinatorically or structurally challenging spaces exemplified by Compositionally Complex Materials (CCMs) and Functionally Graded Materials (FGMs). Here, we explore them conceptually in terms of problem spaces and quantitatively in terms of computational feasibility. This work implements several essential methods specific to the compositional (simplex) spaces through a high-performance open-source library nimplex. Most significantly, we derive and implement an algorithm for constructing a novel n-dimensional simplex graph data structure, which contains all discretized compositions and all possible neighbor-to-neighbor transitions as pointer arrays. Critically, no distance or neighborhood calculations are performed, instead leveraging pure combinatorics and the ordering in procedurally generated simplex grids, keeping the algorithm $\mathcal\{O\}(N)$, so that graphs with billions of transitions take seconds to construct on a laptop. Furthermore, we demonstrate how such graph representations can be combined to express path-planning problem spaces and to incorporate prior knowledge while keeping the problem space homogeneous. This allows for efficient deployment of existing high-performance gradient descent, graph traversal search, and other path optimization algorithms.},
+   author = {Adam M. Krajewski and Allison M. Beese and Wesley F. Reinhart and Zi-Kui Liu},
+   month = {2},
+   title = {Efficient Generation of Grids and Traversal Graphs in Compositional Spaces towards Exploration and Path Planning Exemplified in Materials},
+   url = {http://arxiv.org/abs/2402.03528},
+   year = {2024},
+}
