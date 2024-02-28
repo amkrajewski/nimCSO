@@ -65,12 +65,12 @@ The metaprogramming employed in nimCSO allows for static optimization of the cod
 
 The 
 
-| Method &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | Time per Dataset | Time per Entry | Relative Speed | Database Size | Relative Size |
-|:-------|:----------------:|:--------------:|:--------------:|:-------------:|:-------------:|
-| Native `Python` (3.11) | 327.4 µs | 152.3 ns | x1    | 871.5 kB | x1    |
-| `NumPy` (1.26)         | 40.1 µs  | 18.6 ns  | x8.3  | 79.7 kB  | x10.9 |
-| `nimCSO` (`BitArray`)  | 9.2 µs   | 4.4 ns   | x34.6 | 50.4 kB  | x17.3 |
-| `nimCSO` (`uint64`)    | 0.79 µs  | 0.37 ns  | x413  | 16.8 kB  | x52   |
+| Method | Time per Dataset | Time per Entry *(Relative)* | Database Size *(Relative)* |
+|:-------|:----------------:|:-------------------------:|:------------------------:|
+| Native `Python` (3.11) | 327.4 µs | 152.3 ns *(x1)*    | 871.5 kB *(x1)*    |
+| `NumPy` (1.26)         | 40.1 µs  | 18.6 ns  *(x8.3)*  | 79.7 kB  *(x10.9)* |
+| `nimCSO` (`BitArray`)  | 9.2 µs   | 4.4 ns   *(x34.6)* | 50.4 kB  *(x17.3)* |
+| `nimCSO` (`uint64`)    | 0.79 µs  | 0.37 ns  *(x413)*  | 16.8 kB  *(x52)*   |
 
 Table: Benchmarks of (1) average time to evaluate how many datapoints would be lost if 5 selected components were removed from a dataset with 2,150 data points spanning 37 components, averaged over 10,000 runs, and (2) the size of the data structure representing the dataset. Values were obtained by running scripts in `benchmarks` directory on Apple M2 Max CPU.
 
@@ -93,6 +93,32 @@ The [algorithm-based](#algorithmic-search) method is an efficient for problems w
 
 
 
+
+that iteratively improves a set of solutions by (1) mutating them and (2) crossing them over to create new solutions. The algorithm is designed to preserve the number of elements present (bits set) in their output solutions, which is a critical feature of the problem. The algorithm is primarily aimed at (1) problems with more than 40 elements, where neither `bruteForce` nor `algorithmSearch` are feasible and (2) at cases where the decent solution is needed quickly. Its implementation allows for arbitrary dimensionality of the problem and its time complexity will scale linearly with it. You may control a set of parameters to adjust the algorithm to your needs, including the number of initial randomly generated solutions `initialSolutionsN`, the number of solutions to keep carry over to the next iteration `searchWidth`, the maximum number of iterations `maxIterations`, the minimum number of iterations the solution has to fail to improve to be considered.
+
+
+, but it becomes suboptimal for larger problems.
+
+
+This custom genetic algotithm utilizes 
+
+
+ procedures preserving the number of elements present (bits set) in their output solutions to iteratively improve a set of solutions. 
+
+
+It is primarily aimed at (1) problems with more than 40 elements, where neither `bruteForce`_ nor `algorithmSearch`_ are feasible and (2) at  cases where the decent solution is needed quickly. Its implementation **allows for arbitrary dimensionality** of the problem and its time complexity will scale linearly with it. You may control a set of parameters to adjust the algorithm to your needs, including the number of initial randomly generated solutions ``initialSolutionsN``, the number of solutions to keep  carry over to the next iteration ``searchWidth``, the maximum number of iterations ``maxIterations``, the minimum number of iterations the solution has to fail to improve to be  considered.
+
+
+## Benchmarks
+
+Tracking up to 11.9 million solutions.
+
+| Method | Time (s) | Memory (MB) |
+|--------|----------|-------------|
+| nimCSO (-d:release --threads:on) | 302s | 488 MB |
+| nimCSO (-d:danger --threads:off) | 302s | 488 MB |
+| NumPy (Python 3.11) | 302s | 488 MB |
+| Dict Python 3.11 | 302s | 488 MB |
 
 
 # Acknowledgements
