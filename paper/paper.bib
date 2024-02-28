@@ -1,18 +1,3 @@
-@article{Shaikh2023,
-   abstract = {Developing ductile refractory alloys have remained a challenge. Decreasing the valence electron concentration of refractory alloys has been widely suggested for improving their ductility. However, Re has been used to ductilize W, which goes against the low valency suggestion. The thermodynamic stability of refractory alloys has never been considered while suggesting alloying elements to improve ductility. Here we use first-principles density functional theory simulations to unravel the role of enthalpy of formation in improving the intrinsic ductility of refractory alloys. The intrinsic ductility is assessed using the D-parameter , which is the ratio of surface energy and unstable stacking fault energy. We studied 25 equiatomic binary refractory alloys and found that positive enthalpy of formation improves ductility. The small positive enthalpy of formation could be compensated by sufficiently large entropy; hence the alloy is expected to be a single phase. Our present work explains the role of high-valency and low-valency alloying elements in improving the ductility of refractory alloys. These findings provide a path to design thermodynamically stable and intrinsically ductile high-temperature alloys.},
-   author = {Sufyan M. Shaikh and B.S. Murty and Satyesh K. Yadav},
-   doi = {10.1016/j.jallcom.2022.168597},
-   issn = {09258388},
-   journal = {Journal of Alloys and Compounds},
-   keywords = {Composition fluctuations,Enthalpy,High-temperature alloys,Metals and alloys,Surfaces and interfaces,Transition metal alloys and compounds},
-   month = {4},
-   pages = {168597},
-   title = {Designing a thermodynamically stable and intrinsically ductile refractory alloy},
-   volume = {939},
-   url = {https://linkinghub.elsevier.com/retrieve/pii/S092583882204988X},
-   year = {2023},
-}
-
 @article{Yeh2004,
    abstract = {A new approach for the design of alloys is presented in this study. These "high-entropy alloys" with multi-principal elements were synthesized using well-developed processing technologies. Preliminary results demonstrate examples of the alloys with simple crystal structures, nanostructures, and promising mechanical properties. This approach may be opening a new era in materials science and engineering.},
    author = {Jien Wei Yeh and Swe Kai Chen and Su Jien Lin and Jon Yiew Gan and Tsung Shune Chin and Tao Tsung Shun and Chun Huei Tsau and Shou Yi Chang},
@@ -43,4 +28,64 @@
    year = {2004},
 }
 
+@article{Williams1964,
+   abstract = {ALGORITHM 230 MATRIX PERMUTATION J. BOOTHROYD (Reed 18 Nov. 1963) English Electric-Leo Computers, Kidsgrove, Stoke-on-Trent, England procedure matrixperm(a,b,j,k,s,d,n,p); value n; real a,b; integer array s,d; integcr j,k,n,p; eonlmcnt a procedure using Jensen's device which exchanges rows or colunms of a matrix to achieve a rearrangement specified by the permutation vectors s,d[1 :n]. Elements of s specify the original source locations while elements of d specify the desired destination locations. Normally a and b will be called as sub-scripted variables of the same array. The parameters j,k nominate the subscripts of the dimension affected by the permutation , p is the Jensen parameter. As an example of the use of this procedure, suppose r,c[1 :n] to contain the row and column sub-scripts of the successive matrix pivots used in a matrix inversion of an array a[l:n,l:n]; i.e. r[1], c[1] are the relative sub-scripts of the first pivot r[21, c[2] those of the second pivot and so on. The two calls matrixperm will perform the required rearrangement of rows and columns respectively; begin integer array tag, loc[1 :n]; integer i,t; real w; comment set up initial vector tag number and address arrays ; for i := 1 step 1 until n do tag[i] := loc[i] := i; comment start permutation; for i := 1 step 1 until n do begin t := s[i]; j := loc[t]; k := d[i]; ifj#k then begin for p := 1 step 1 until n do beginw := a; a := b; b := w cud; tag[j] := tag[k]; tag[k] := t; loc[t] := loc[tag[jJ]; loc[tag[jl] := j end jk conditional end i loop end matrixperm ALGORITHM 231 ' ~ MATRIX INVERSION J. BOOTHROYD (Reed 18 Nov. 1963) English Electric-Leo Computers, Kidsgrove, Stoke-on-Trent, England procedure matrixinvert (a,n,eps,singuIar); value n,eps; array a; integer n; real eps; label singular; eomn~ent inverts a matrix in its own space using the Gauss-Jordan method with complete matrix pivoting. I.e., at each stage the pivot has the largest absolute value of any element in the remaining matrix. The coordinates of the successive matrix pivots used at each stage of the reduction are recorded in the successive element positions of the row and column index vectors r and c. These are later called upon by the procedure matrixperm which rearranges the rows and columns of the matrix. If the matrix is singular the procedure exits to an appropriate label in the main program; begin integer i,j,k,l,pivi,pivj,p; real pivot; integer array r,c[1 :hi ; comment set row and column index vectors; for i := 1 step 1 until n do r[i] := c[i] := i; comment find initial pivot; pivi := pivj := 1; for i := 1 step 1 until n do for j := 1 step 1 until n do if abs (a[i,j]) > abs (a[pivi,pivj]) then begin pivi := i; pivj := j end; eomment start reduction; for i := 1 step 1 until n do begin l := r[i]; r[i] := r[pivi] begin comment here include an appropriate output procedure to record i and the current values of r[l:n] and ell:n]; go to singular end; forj := n step-1 until i+1, i-I step-1 until 1 do},
+   author = {J. W. J. Williams},
+   doi = {10.1145/512274.512284},
+   editor = {G. E. Forsythe},
+   issn = {0001-0782},
+   issue = {6},
+   journal = {Communications of the ACM},
+   month = {6},
+   pages = {347-349},
+   title = {Algorithm 232 - Heapsort},
+   volume = {7},
+   url = {https://dl.acm.org/doi/10.1145/512274.512284},
+   year = {1964},
+}
 
+@article{Debnath2021,
+   abstract = {Generative deep learning is powering a wave of new innovations in materials design. In this article, we discuss the basic operating principles of these methods and their advantages over rational design through the lens of a case study on refractory high-entropy alloys for ultra-high-temperature applications. We present our computational infrastructure and workflow for the inverse design of new alloys powered by these methods. Our preliminary results show that generative models can learn complex relationships in order to generate novelty on demand, making them a valuable tool for materials informatics.},
+   author = {Arindam Debnath and Adam M. Krajewski and Hui Sun and Shuang Lin and Marcia Ahn and Wenjie Li and Shanshank Priya and Jogender Singh and Shunli Shang and Allison M. Beese and Zi-Kui Liu and Wesley F. Reinhart},
+   doi = {10.20517/jmi.2021.05},
+   volume = {1},
+   issue = {3},
+   year = {2021},
+   month = {9},
+   journal = {Journal of Materials Informatics},
+   keywords = {High entropy alloys,databases,inverse design}
+}
+   
+@misc{Rumpf2023,
+   author = {Andreas Rumpf},
+   title = {Nim Programming Language v2.0.0},
+   url = {https://nim-lang.org/},
+   year = {2023},
+}
+
+@article{Li2023AnExperiments,
+   abstract = {Refractory multicomponent alloys (RMCAs) have garnered attention as potential materials for high-temperature structural applications, due to their excellent mechanical properties. However, conventional alloy design has limitations in terms of constrained compositional space and a lack of computational databases with adequate coverage. To address this, we present a design framework that leverages machine learning (ML), the CALculation of PHAse Diagram (CALPHAD) method, and experimental validation to efficiently develop refractory alloys. The present study focuses on the Mo-Nb-W ternary system. Six ternary alloys were inversely designed by means of the conditional generative adversarial network (cGAN) and fabricated via arc melting. The ternary alloys exhibit a single BCC phase which is consistent with CALPHAD calculations as well as Scheil simulations. The present interactive design loop between the ML surrogate model and experiments is demonstrated through the accurate hardness prediction, resulting in cGAN models capable of rapid exploration of the higher-order design space. The hardness of the Mo-Nb-W alloys is in the range of 5 – 6 GPa due to their solid solution strengthening.},
+   author = {Wenjie Li and Marcia Ahn and Lavanya Raman and Arindam Debnath and Shuang Lin and Adam M Krajewski and Shunli Shang and Shashank Priya and Wesley F Reinhart and Zi-Kui Liu and Allison M Beese},
+   doi = {10.2139/ssrn.4501281},
+   journal = {(Under Review in International Journal of Refractory Metals and Hard Materials)},
+   keywords = {CALPHAD,hardness,iterative design,machine learning,refractory high entropy alloys},
+   title = {Design and Validation of Refractory Alloys Using Machine Learning, CALPHAD, and Experiments},
+   url = {https://dx.doi.org/10.2139/ssrn.4501281},
+   year = {2023},
+}
+
+@article{Senkov2018,
+   author = {Oleg N. Senkov and Daniel B. Miracle and Kevin J. Chaput and Jean-Philippe Couzinie},
+   doi = {10.1557/jmr.2018.153},
+   issn = {0884-2914},
+   issue = {19},
+   journal = {Journal of Materials Research},
+   keywords = {high entropy alloys,microstructure,overview,properties,srefractory alloys},
+   month = {10},
+   pages = {3092-3128},
+   publisher = {Cambridge University Press},
+   title = {Development and exploration of refractory high entropy alloys—A review},
+   volume = {33},
+   url = {https://www.cambridge.org/core/product/identifier/S088429141800153X/type/journal_article},
+   year = {2018},
+}
