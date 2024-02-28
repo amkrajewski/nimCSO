@@ -65,7 +65,7 @@ The metaprogramming employed in nimCSO allows for static optimization of the cod
 
 The 
 
-| Method | Time per Dataset | Time per Entry | Relative Speed | Database Size | Relative Size |
+| Method &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | Time per Dataset | Time per Entry | Relative Speed | Database Size | Relative Size |
 |:-------|:----------------:|:--------------:|:--------------:|:-------------:|:-------------:|
 | Native `Python` (3.11) | 327.4 µs | 152.3 ns | x1    | 871.5 kB | x1    |
 | `NumPy` (1.26)         | 40.1 µs  | 18.6 ns  | x8.3  | 79.7 kB  | x10.9 |
