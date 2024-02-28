@@ -55,7 +55,7 @@ One of the most promising materials for these applications are Compositionally C
 
 ## Overview
 
-![Schematic of core nimCSO data flow with a description of key methods. Metaprogramming is used to recompile the software optimized to the human-readable data and configuration files at hand.\label{fig:main}](assets/nimCSO_mainFigure.png){width="300pt"}
+![Schematic of core nimCSO data flow with a description of key methods. Metaprogramming is used to compile the software optimized to the human-readable data and configuration files at hand.\label{fig:main}](assets/nimCSO_mainFigure.png){width="300pt"}
 
 The metaprogramming employed in nimCSO allows for static optimization of the code at the compile time.
 
@@ -71,7 +71,7 @@ The
 | `nimCSO`^0.6^  | `BitArray`     | 9.2 µs           | 4.4 ns   *(x34.6)*          | 50.4 kB  *(x17.3)*         |
 +----------------+----------------+------------------+-----------------------------+----------------------------+
 | `nimCSO`^0.6^  |`uint64`        | 0.79 µs          | 0.37 ns  *(x413)*           | 16.8 kB  *(x52)*           |
-+===============+================+==================+=============================+============================+
++================+================+==================+=============================+============================+
 
 Table: Benchmarks of (1) average time to evaluate how many datapoints would be lost if 5 selected components were removed from a dataset with 2,150 data points spanning 37 components, averaged over 10,000 runs, and (2) the size of the data structure representing the dataset. Values were obtained by running scripts in `benchmarks` directory on Apple M2 Max CPU.
 
@@ -92,7 +92,9 @@ The [algorithm-based](#algorithmic-search) method is an efficient for problems w
 
 ![The schematic of `mutate` procedure where bits are swapping randomly, so that (1) bit can swap itself, (2) bits can swap causing a flip, or (3) bits can swap with no effect.\label{fig:mutate}](assets/nimcso_mutate.drawio.png){width="100pt"}
 
+In `crossover` 
 
+![The schematic of uniform `crossover` procedure preserving Hamming weight implemented in `nimCSO`. Overlapping bits are passed directly, while non-overlapping bits are shuffled and distributed at positions present in one of the parents.\label{fig:crossover}](assets/nimcso_crossover.drawio.png){width="300pt"}
 
 
 that iteratively improves a set of solutions by (1) mutating them and (2) crossing them over to create new solutions. The algorithm is designed to preserve the number of elements present (bits set) in their output solutions, which is a critical feature of the problem. The algorithm is primarily aimed at (1) problems with more than 40 elements, where neither `bruteForce` nor `algorithmSearch` are feasible and (2) at cases where the decent solution is needed quickly. Its implementation allows for arbitrary dimensionality of the problem and its time complexity will scale linearly with it. You may control a set of parameters to adjust the algorithm to your needs, including the number of initial randomly generated solutions `initialSolutionsN`, the number of solutions to keep carry over to the next iteration `searchWidth`, the maximum number of iterations `maxIterations`, the minimum number of iterations the solution has to fail to improve to be considered.
@@ -110,7 +112,7 @@ This custom genetic algotithm utilizes
 It is primarily aimed at (1) problems with more than 40 elements, where neither `bruteForce`_ nor `algorithmSearch`_ are feasible and (2) at  cases where the decent solution is needed quickly. Its implementation **allows for arbitrary dimensionality** of the problem and its time complexity will scale linearly with it. You may control a set of parameters to adjust the algorithm to your needs, including the number of initial randomly generated solutions ``initialSolutionsN``, the number of solutions to keep  carry over to the next iteration ``searchWidth``, the maximum number of iterations ``maxIterations``, the minimum number of iterations the solution has to fail to improve to be  considered.
 
 
-## Benchmarks
+# Use Examples
 
 Tracking up to 11.9 million solutions.
 
