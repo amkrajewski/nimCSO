@@ -94,7 +94,7 @@ const
             if elements <= elementSet:
                 result.add(line)
         result
-    alloyN* = elementsPresentList.len  ## **Compile-time-calculated** constant based on your speficic config/data files. Value is **config&dataset-dependent** and corresponds to the number of datapoints ingested from the dataset after filtering datapoints not contributing to the solution space (becasue of elements present in them.)
+    dataN* = elementsPresentList.len  ## **Compile-time-calculated** constant based on your speficic config/data files. Value is **config&dataset-dependent** and corresponds to the number of datapoints ingested from the dataset after filtering datapoints not contributing to the solution space (becasue of elements present in them.)
     
 # Task name and description printout
 styledEcho "Configured for task: ", styleBright, fgMagenta, styleItalic, config.taskName, resetStyle,
@@ -106,7 +106,7 @@ proc getPresenceTensor*(): Tensor[int8] =
     ## (Legacy function retained for easy Arraymancer integration for library users) Returns an Arraymancer ``Tensor[int8]`` denoting presence of elements in the dataset 
     ## (1 if present, 0 if not), which can be then used to calculate the quantity of data prevented by removal of a given set of elements. Operated based on compile-time constants.
     var
-        presence = newTensor[int8]([alloyN, elementN])
+        presence = newTensor[int8]([dataN, elementN])
         lineN: int = 0
         elN: int = 0
 
@@ -120,7 +120,7 @@ proc getPresenceTensor*(): Tensor[int8] =
         lineN += 1
     return presence
 
-proc getPresenceIntArray*(): array[alloyN, uint64] =
+proc getPresenceIntArray*(): array[dataN, uint64] =
     ## Returns a compile-time-determined-length array of unsigned integers encoding the presence of elements in each row in the dataset, which is as fast and compact as you can get on a 
     ## 64-bit architecture. It is by far the most limiting representation implemented in ``nimCSO``, which **will not work for datasets with more than 64 elements**, but it is 
     ## **blazingly fast to access** and process, since we can leverage the hardware's native bit operations, and **uses a couple times less memory** than the ``BitArray`` representation 
@@ -162,7 +162,7 @@ func getPresenceBoolArrays*(): seq[seq[bool]] =
         elI: int = 0
         lineI: int = 0
 
-    result = newSeqWith(alloyN, newSeq[bool](elementN))
+    result = newSeqWith(dataN, newSeq[bool](elementN))
 
     for line in elementsPresentList:
         let elements = line.split(",")
@@ -203,7 +203,7 @@ func preventedData*(elList: BitArray, presenceBoolArrays: seq[seq[bool]]): int =
         if isPrevented(pm):
             result += 1
 
-func preventedData*(elList: uint64, presenceIntArray: array[alloyN, uint64]): int =
+func preventedData*(elList: uint64, presenceIntArray: array[dataN, uint64]): int =
     ## Returns the number of datapoints prevented by removal of the elements encoded in the ``elList`` unsigned integer (``uint64``) by comparing it to the compile-time-determined-length array 
     ## of unsigned integers encoding the presence of elements in each row in the dataset. It **leverages the hardware's native bit operations** whenever possible, and is **blazingly fast** in 
     ## cases where it can be used.
@@ -420,7 +420,7 @@ proc saveResults*(
                 elList2.add(elementOrder[i])
         let
             prevented = elSol.prevented
-            allowed = alloyN - prevented
+            allowed = dataN - prevented
         f.write(elList1.join(separator), ", ", elList2.join(separator), ", ", prevented.intToStr(), ", ", allowed.intToStr(), "\n")
     f.close()
 
