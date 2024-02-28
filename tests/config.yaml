@@ -1,6 +1,6 @@
 taskName: Test1
 taskDescription: Reduced Palette in Senkov 2018 Review
-datasetPath: tests/testAlloyList1.txt
+datasetPath: tests/testDataList.txt
 
 elementOrder:
 - Mo

@@ -27,7 +27,7 @@ block:
     let elapsed = (epochTime() - t0) * 10
     let elapsedStr = elapsed.formatFloat(format = ffDecimal, precision = 1)
     styledEcho "CPU Time [per dataset evaluation] ", styleBright, fgGreen, elapsedStr, "μs", resetStyle
-    let elapsedPC = elapsed / nimcso.alloyN * 1000
+    let elapsedPC = elapsed / nimcso.dataN * 1000
     let elapsedStrPC = elapsedPC.formatFloat(format = ffDecimal, precision = 1)
     styledEcho "CPU Time [per comparison] ", styleBright, fgGreen, elapsedStrPC, "ns\n", resetStyle
 
@@ -49,6 +49,6 @@ block:
     let elapsed = (epochTime() - t0) * 10
     let elapsedStr = elapsed.formatFloat(format = ffDecimal, precision = 3)
     styledEcho "CPU Time [per dataset evaluation] ", styleBright, fgGreen, elapsedStr, "μs", resetStyle
-    let elapsedPC = elapsed / nimcso.alloyN * 1000
+    let elapsedPC = elapsed / nimcso.dataN * 1000
     let elapsedStrPC = elapsedPC.formatFloat(format = ffDecimal, precision = 3)
     styledEcho "CPU Time [per comparison] ", styleBright, fgGreen, elapsedStrPC, "ns", resetStyle

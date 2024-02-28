@@ -1,7 +1,7 @@
 ## # Benchmarking
 ## The key performance advantage of nimCSO comes from how it handles checking how many datapoints would have to be removed if a given set of elements were removed. You can quickly compare performance (speed and memory usage) of nimCSO to other approaches based on (a) native ``Python`` sets and (b) well-optimized ``NumPy`` implementation. 
 ## 
-## In the ``benchmarks`` directory, you will find 3 scripts, which will automatically ingest the example dataset we ship (``alloyList.txt``) with 2,150 data points and try to remove all entries containing elements from a fixed set of 5 ("Fe", "Cr", "Ni", "Co", "Al", "Ti"). This is repeated thousands of times to get a good average, but should not take more than several seconds on a modern machine.
+## In the ``benchmarks`` directory, you will find 3 scripts, which will automatically ingest the example dataset we ship (``dataList.txt``) with 2,150 data points and try to remove all entries containing elements from a fixed set of 5 ("Fe", "Cr", "Ni", "Co", "Al", "Ti"). This is repeated thousands of times to get a good average, but should not take more than several seconds on a modern machine.
 ## 
 ## - ``nimcso.nim`` - The ``nimCSO`` implementation based around ``BitArray``s. From the root of the project, you can run it with a simple:
 ##   ```cmd

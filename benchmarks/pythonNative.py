@@ -1,9 +1,9 @@
 import time
 import sys
 
-with open('alloyList.txt', 'r') as f:
-    alloyList = f.read().splitlines()
-elementalList = [s.split(',') for s in alloyList]
+with open('dataList.txt', 'r') as f:
+    dataList = f.read().splitlines()
+elementalList = [s.split(',') for s in dataList]
 
 memoryUsed = sys.getsizeof(elementalList) + \
     sum(sys.getsizeof(row) for row in elementalList) + \

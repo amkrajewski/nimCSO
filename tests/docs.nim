@@ -7,6 +7,6 @@
 ## nim c -f -r -d:release -d:configPath=tests/config.yaml tests/runAll
 ## ```
 ## 
-## which, as one can see, uses the ``test/config.yaml`` file to configure the tests for a smaller set of elements (to reduce runtime) and a custom alloy data file ``tests/testAlloyList1.txt``,
+## which, as one can see, uses the ``test/config.yaml`` file to configure the tests for a smaller set of elements (to reduce runtime) and a custom data file ``tests/testDataList.txt``,
 ## which includes some elements like unobtanium (``Ub``) to verify filtering works as expected.
 ## 

@@ -2,9 +2,9 @@ import time
 import sys
 import numpy as np
 
-with open('alloyList.txt', 'r') as f:
-    alloyList = f.read().splitlines()
-elementalList = [s.split(',') for s in alloyList]
+with open('dataList.txt', 'r') as f:
+    dataList = f.read().splitlines()
+elementalList = [s.split(',') for s in dataList]
 
 assert len(elementalList)==2150
 elementOrder = ["Fe", "Cr", "Ni", "Co", "Al", "Ti", "Nb", "Cu", "Mo", "Ta", "Zr", "V", "Hf", "W", "Mn", "Si", "Re", "B", "Ru", "C", "Sn", "Mg", "Zn", "Li", "O", "Y", "Pd", "N", "Ca", "Ir", "Sc", "Ge", "Be", "Ag", "Nd", "S", "Ga"]
