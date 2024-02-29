@@ -3,10 +3,11 @@ title: 'nimCSO: A Nim package for Compositional Space Optimization'
 tags:
   - Nim
   - materials science
+  - data science
   - compositionally complex materials
-  - ccm
   - high entropy alloys
-  - hea
+  - high performance computing
+  - metaprogramming
 authors:
   - name: Adam M. Krajewski
     orcid: 0000-0002-2266-0099
@@ -89,28 +90,15 @@ For higher dimensional problems (20-50 components), the brute force search becom
 
 ## Genetic Search
 
-The [algorithm-based](#algorithmic-search) method is an efficient for problems with up to 40 elements with a certain level of guaranteed optimality by design, however for higher dimensionality of the problem it will likely run out of memory on most systems. The genetic search method implemented in `nimCSO` (see `geneticSearch()`) is a evolution strategy to iteratively improve solutions based on custom `mutate` and `crossover` procedures. Both procedures are of uniform type [@Goldberg1989] with additional constraint of Hamming weight [@Knuth] preservation in order to preserve order (number of considered elements) of parents and offspring. In `mutate` this is achieved by using purely random bit swapping, rather than more common flipping, as demonstrated in the Figure \ref{fig:mutate}.
+Beyond 50 components, the [algorithm-based](#algorithm-based-search) method will likely run out of memory on most personal systems. The `geneticSearch` routine solves that through an evolution strategy to iteratively improve solutions based on custom `mutate` and `crossover` procedures. Both are of uniform type [@Goldberg1989] with additional constraint of Hamming weight [@Knuth] preservation in order to preserve number of considered elements in parents and offspring. In `mutate` this is achieved by using purely random bit swapping, rather than more common flipping, as demonstrated in the Figure \ref{fig:mutate}.
 
 ![The schematic of `mutate` procedure where bits are swapping randomly, so that (1) bit can swap itself, (2) bits can swap causing a flip, or (3) bits can swap with no effect.\label{fig:mutate}](assets/nimcso_mutate.drawio.png){width="100pt"}
 
-In `crossover` 
+Meanwhile, in `crossover`, this constraint is satisfied by passing overlapping bits directly, while non-overlapping bits are shuffled and distributed at positions present in one of the parents, as shown in the Figure \ref{fig:crossover}.
 
-![The schematic of uniform `crossover` procedure preserving Hamming weight implemented in `nimCSO`. Overlapping bits are passed directly, while non-overlapping bits are shuffled and distributed at positions present in one of the parents.\label{fig:crossover}](assets/nimcso_crossover.drawio.png){width="300pt"}
+![The schematic of uniform `crossover` procedure preserving Hamming weight implemented in `nimCSO`. \label{fig:crossover}](assets/nimcso_crossover.drawio.png){width="300pt"}
 
-
-that iteratively improves a set of solutions by (1) mutating them and (2) crossing them over to create new solutions. The algorithm is designed to preserve the number of elements present (bits set) in their output solutions, which is a critical feature of the problem. The algorithm is primarily aimed at (1) problems with more than 40 elements, where neither `bruteForce` nor `algorithmSearch` are feasible and (2) at cases where the decent solution is needed quickly. Its implementation allows for arbitrary dimensionality of the problem and its time complexity will scale linearly with it. You may control a set of parameters to adjust the algorithm to your needs, including the number of initial randomly generated solutions `initialSolutionsN`, the number of solutions to keep carry over to the next iteration `searchWidth`, the maximum number of iterations `maxIterations`, the minimum number of iterations the solution has to fail to improve to be considered.
-
-
-, but it becomes suboptimal for larger problems.
-
-
-This custom genetic algotithm utilizes 
-
-
- procedures preserving the number of elements present (bits set) in their output solutions to iteratively improve a set of solutions. 
-
-
-It is primarily aimed at (1) problems with more than 40 elements, where neither `bruteForce`_ nor `algorithmSearch`_ are feasible and (2) at  cases where the decent solution is needed quickly. Its implementation **allows for arbitrary dimensionality** of the problem and its time complexity will scale linearly with it. You may control a set of parameters to adjust the algorithm to your needs, including the number of initial randomly generated solutions ``initialSolutionsN``, the number of solutions to keep  carry over to the next iteration ``searchWidth``, the maximum number of iterations ``maxIterations``, the minimum number of iterations the solution has to fail to improve to be  considered.
+The above are applied iteratively, with best solutions carried to next generation, until the solution converges or the maximum number of iterations is reached. Unlike the other methods, this one is not limited by the number of components and lets user control both time and memory requirements, either to make big problems feasible or to get a good-enough solution quickly in small problems. However, it comes with no optimality guarantees.
 
 
 # Use Examples
