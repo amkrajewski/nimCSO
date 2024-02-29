@@ -21,7 +21,7 @@
 ## (L1 cache latency) and can outperform an efficient native Python implementation over 400 times in terms of speed and 50 times in terms of memory usage (*not* counting interpreter), while 
 ## also outperforming NumPy implementation 35 and 17 times, respectively, when checking a candidate solution.
 ## 
-## .. figure:: assets/nimCSO_mainFigure.png
+## .. figure:: assets/assets/nimCSO_mainFigure.png
 ##   :alt: Main nimCSO figure
 ## 
 ## `nimCSO` is designed to be both (1) a user-ready tool (see figure above), implementing:
