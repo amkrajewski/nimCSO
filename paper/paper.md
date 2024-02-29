@@ -113,9 +113,13 @@ The tool comes with two pre-defined example problems to demonstrate its use. The
 +--------------------------------------------------+----------+-------------+
 | `-d:configPath=config.yaml src/nimcso -gs`       | 5.8s     | 3.2 MB      |
 +--------------------------------------------------+----------+-------------+
-| `-d:configPath=config_rhea.yaml src/nimcso -bf`  | 4.3s     | 3.1 MB      |
+| `-d:configPath=config_rhea.yaml src/nimcso -as`  | 0.076s   | 2.2 MB      |
 +--------------------------------------------------+----------+-------------+
-| `-d:configPath=config_rhea.yaml src/nimcso -bfi` | 0.4s     | 3.3 MB      |
+| `-d:configPath=config_rhea.yaml src/nimcso -gs`  | 0.429s   | 2.1 MB      |
++--------------------------------------------------+----------+-------------+
+| `-d:configPath=config_rhea.yaml src/nimcso -bf`  | 4.171s   | 2.0 MB      |
++--------------------------------------------------+----------+-------------+
+| `-d:configPath=config_rhea.yaml src/nimcso -bfi` | 0.459s   | 2.0 MB      |
 +--------------------------------------------------+----------+-------------+
 
 Table: Four example tasks alongside typical CPU time and memory usage on Apple M2 Max.
