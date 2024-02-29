@@ -118,7 +118,7 @@ The tool comes with two pre-defined example problems to demonstrate its use. The
 | `-d:configPath=config_rhea.yaml src/nimcso -bfi` | 0.4s     | 3.3 MB      |
 +--------------------------------------------------+----------+-------------+
 
-Table: Four example tasks alongside typical CPU time and memory usage. Values were obtained by running scripts in `benchmarks` directory on Apple M2 Max CPU.
+Table: Four example tasks alongside typical CPU time and memory usage on Apple M2 Max.
 
 In case of issues, the help message can be accessed by running the tool with `-h` flag or by refering to documentation at [amkrajewski.github.io/nimCSO](https://amkrajewski.github.io/nimCSO).
 
@@ -129,9 +129,7 @@ A.M.K. was reponsible for conceptualization, methodology, software, testing and 
 
 # Acknowledgements
 
-This work has been funded through grants: **DOE-ARPA-E DE-AR0001435**, **NSF-POSE FAIN-2229690**, and **ONR N00014-23-2721**. 
-
-We would also like to acknowledge Dr. Jonathan Siegel at Texas A&M University for valuable discussions and feedback on the project.
+This work has been funded through grants: **DOE-ARPA-E DE-AR0001435**, **NSF-POSE FAIN-2229690**, and **ONR N00014-23-2721**. We would also like to acknowledge Dr. Jonathan Siegel at Texas A&M University for several valuable discussions and feedback on the project.
 
 
 # References
