@@ -59,7 +59,7 @@ One of the most promising materials for these applications are Compositionally C
 
 ![Schematic of core nimCSO data flow with a description of key methods. Metaprogramming is used to compile the software optimized to the human-readable data and configuration files at hand.\label{fig:main}](assets/nimCSO_mainFigure.png){width="300pt"}
 
-The metaprogramming employed in nimCSO allows for static optimization of the code at the compile time.
+Under the hood, `nimCSO` is built around storing the data and solutions in one of two ways. The first is as bits encoded in an integer (`uint64`), which allows for highest speed and lowest memory consumption possible, but is limited to 64 dimensions and does not allow for easy extension to other use cases, thus as of publication it is used only in the special `bruteForceInt` routine. The second one, used in `bruteForce`, `algorithmSearch`, and `geneticSearch` is through a custom `ElSolution` type containing heuristic value (easily extensible) and `BitArray` payload, which is defined at compile time based on the configuration file to minimize necessary overheads. Both encodings significantly outperform both typical native Python and NumPy implementations, as shown in the Table \ref{tab:benchmarks}.
 
 The 
 
