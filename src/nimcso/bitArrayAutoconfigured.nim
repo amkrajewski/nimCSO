@@ -8,6 +8,8 @@ import yaml
 import std/strutils
 import std/terminal
 
+## **Navigation:** [nimCSO](../nimcso.html) (core library) | [Changelog](../docs/changelog.html) | [nimcso/bitArrayAutoconfigured](bitArrayAutoconfigured.html)
+
 # Load config YAML file
 type Config = object
     taskName: string

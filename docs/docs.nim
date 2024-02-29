@@ -1,5 +1,6 @@
 
-## # Summary 
+## **Navigation:** [nimCSO](nimcso.html) (core library) | [Changelog](docs/changelog.html) | [nimcso/bitArrayAutoconfigured](nimcso/bitArrayAutoconfigured.html)
+## 
 ## **nim** **C**omposition **S**pace **O**ptimization is a high-performance, low-level tool for selecting sets of components (dimensions) in compositional spaces, which optimize the data availability 
 ## given a constraint on the number of components to be selected. Ability to do so is crucial for deploying machine learning (ML) algorithms, so that they can be designed in a way balancing their
 ## accuracy and domain of applicability. Howerver, this becomes a combinatorically hard problem for complex compositions existing in highly dimensional spaces due to the interdependency of components 
