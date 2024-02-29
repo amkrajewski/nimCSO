@@ -7,9 +7,8 @@
 [![Windows Tests](https://github.com/amkrajewski/nimCSO/actions/workflows/testingOnPush_Windows.yaml/badge.svg)](https://github.com/amkrajewski/nimCSO/actions/workflows/testingOnPush_Windows.yaml)
 
 **nim** **C**omposition **S**pace **O**ptimization is a high-performance tool implementing several methods for selecting components (data dimensions) in compositional datasets, which 
-optimize the data availability and density for applications such as machine learning (ML) given a constraint on the number of components to be selected. Ability to do so is crucial for 
-deploying machine learning (ML) algorithms, so that they can be designed in a way balancing their accuracy and domain of applicability. Making said choice is a combinatorically hard 
-problem when data is composed of a large number of independent components due to the interdependency of components being present. Thus, efficiency of the search becomes critical for any
+optimize the data availability and density for applications such as machine learning (ML) given a constraint on the number of components to be selected, so that they can be designed in a way balancing their accuracy and domain of applicability. Making said choice is a *combinatorically hard 
+problem when data is composed of a large number of independent components due to the interdependency of components being present*. Thus, efficiency of the search becomes critical for any
 application where interaction between components is of interest in a modeling effort, ranging:
 - from market **economics**,
 - through **medicine** where drug interactions can have a significant impact on the treatment, 
