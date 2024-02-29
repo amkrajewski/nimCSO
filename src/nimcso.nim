@@ -313,7 +313,7 @@ proc mutate*(elSol: var ElSolution, presenceArrays: seq[BitArray] | seq[seq[bool
     ## Mutates the ``var ElSolution`` by taking its ``BitArray`` and swapping at random two of its bits from the range encoding presence of elements in the dataset. It then recalculates the number of 
     ## prevented datapoints based on the presence of elements in the dataset encoded in either a sequence of ``BitArray``s or a sequence of sequences of ``bool``s.
     ## 
-    ## .. image:: ../paper/assets/nimcso_mutate_wide.drawio.png
+    ## .. image:: assets/assets/nimcso_mutate_wide.drawio.png
     ##    :alt: nimCSO Mutation
     ## 
     ## As depicted in the diagram, the mutation procedure is fully random so (1) bit can swap itself, (2) bits can swap causing a flip, or (3) bits can swap with no effect.
@@ -333,7 +333,7 @@ proc crossover*(elSol1: var ElSolution, elSol2: var ElSolution,
     ## 2. Randomizes the order of non-overlapping positions set.
     ## 3. Sets the bits in the output solutions by picking from the randomized set of non-overlapping positions.
     ## 
-    ## .. image:: ../paper/assets/nimcso_crosslink.drawio.png
+    ## .. image:: assets/assets/nimcso_crosslink.drawio.png
     ##    :alt: nimCSO Crossover
     ## 
     ## It is primarily used in the `geneticSearch`_ algorithm.
@@ -633,6 +633,13 @@ proc bruteForce*(verbose: bool = true): seq[ElSolution] =
     ## from ``0`` to ``2^elementN - 1`` and using them to initialize ``BitArray``s. It then iteratively evaluates them keeping track of the best solution for each order (number of elements present in the solution), what 
     ## allows for a **minimal memory footprint** as only several solutions are kept in memory at a time. The results are printed to the console. It is implemented for up to 64 elements,
     ## as it is not feasible for more than around 30 elements, but it could be extended by simply enumerating solutions as two or more integers and using them to initialize ``BitArray``s.
+    ## 
+    ## Every time you start this algorithm, it will benchmark your system to estimate how much will it take, so that you can avoid waiting forever if you accidentaly run it on too large problem or too slow system, as shown
+    ## in the figure below where both problems apply.
+    ## 
+    ## .. image:: assets/BruteForceETA.png
+    ##    :alt: bruteForceETAExample
+    ## 
     assert elementN <= 64, "Brute Force is not feasible for more than around 30 elements, thus it is not implemented for above 64 elements."
     if verbose: styledEcho "\nRunning Brute Force search for ", styleBright, fgMagenta, $elementN, resetStyle, " elements and ", styleBright, fgMagenta, $dataN, " data points."
     let presenceBitArrays = getPresenceBitArrays()
