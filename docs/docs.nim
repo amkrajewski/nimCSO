@@ -28,34 +28,40 @@
 ## - **Efficient brute force approaches** (for handling up to 25 dimensions)
 ## - **Custom search algorithm** (for up to 40 dimensions)
 ## - **Genetic algorithm** (for any dimensionality)
-## , and also is (2) a scaffold for building even more elaborate methods in the future, including heuristics going beyond  data availability. All configuration is done with a simple 
+## and also is (2) a scaffold for building even more elaborate methods in the future, including heuristics going beyond  data availability. All configuration is done with a simple 
 ## human-readable `YAML` config file and plain text data files, making it easy to modify the search method and its parameters with 
 ## no knowledge of programming and only basic command line skills. A single command is used to recompile (`nim c -f`) and run (`-r`) problem (`-d:configPath=config.yaml`) with `nimCSO` 
 ## (`src/nimcso`) using one of several methods. Advanced users can also quickly customize the provided methods with brief scripts using the `nimCSO` as a data-centric library.
  
 
 ## # Usage
+## ## Quick Start
 ## 
+## ## General 
 ## 
-## ## config.yaml
+## ### config.yaml
 ## The `config.yaml` file is the critical component which defines several required parameters listed below.
 ## - **taskName** - A ``string`` with the name of the task. It does *not* affect the results in any way, except for being printed during runtime for easier identification.
 ## - **taskDescription** - A ``string`` with the description of the task. It does *not* affect the results in any way, except for being printed during runtime for easier identification.
 ## - **datasetPath** - A ``string`` with the path (relative to CWD) with the dataset file. Please see `Dataset files`_ below for details on its content.
 ## - **elementOrder** - A list of ``string``s with the names of the elements in the dataset
 ## 
-## ## Dataset files
+## ### Dataset files
 ## 
 ## The dataset file should contain one set of elements per line separated by commas. The order of rows and "columns" does not matter. The dataset can contain any elements, 
 ## as the one not present in the ``elementOrder`` will be ignored. The dataset should *not* contain any header.
 ## 
 ## 
 ## 
-## # Notes:
-## ## Elemental Solutions
+## ## Notes:
+## ### Elemental Solutions
 ## Throughout this codebase and documentation, you will see ``ElSolution``, which is a short for "Elemental Solution" and represents a solution to the problem of selecting elements
 ## to remove from the dataset. Using word *elements* is not technically precise, as the solution space is built around *components*, which do not have to be elemental entities in your problem, 
 ## and you can model compositions of any kind. However, in the code we consistently refer to "elements" because (1) it is the most common use case and (2) ``elSol`` obviously sounds much better 
 ## than ``comSol``.
 ## 
+## # Installation
+## 
+## 
+## # Citing
 ## 

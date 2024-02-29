@@ -1,4 +1,4 @@
-# nimcso
+# (nim) Composition Space Optimization
 
 [![Static Badge](https://img.shields.io/badge/API-Documentation-e?logo=bookstack&logoColor=white&link=https%3A%2F%2Famkrajewski.github.io%2Fnimcso%2F)](https://nimcso.phaseslab.org)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
@@ -15,8 +15,8 @@ application where interaction between components is of interest in a modeling ef
 - to **materials science**, where the composition and processing history are critical to resulting properties.
 
 We are particularily interested in the latter case of materials science, where we utilize `nimCSO` to optimize ML deployment over our datasets on Compositionally Complex Materials (CCMs) 
-which are largest ever collected (from almost 550 publications) spanning up to 60 dimensions and developed within the [**ULTERA Project (ultera.org)**](https://ultera.org) carried under the 
-[**US DOE ARPA-E ULTIMATE**](https://arpa-e.energy.gov/?q=arpa-e-programs/ultimate) program which aims to develop 
+which are largest ever collected (from almost 550 publications) spanning up to 60 dimensions and developed within the [ULTERA Project (ultera.org)](https://ultera.org) carried under the 
+[US DOE ARPA-E ULTIMATE](https://arpa-e.energy.gov/?q=arpa-e-programs/ultimate) program which aims to develop 
 a new generation of ultra-high temperature materials for aerospace applications, through generative machine learning models [10.20517/jmi.2021.05](https://doi.org/10.20517/jmi.2021.05)
 driving thermodynamic modeling and experimentation [10.2139/ssrn.4689687](https://dx.doi.org/10.2139/ssrn.4689687).
 
@@ -31,7 +31,19 @@ also outperforming NumPy implementation 35 and 17 times, respectively, when chec
 - **Efficient brute force approaches** (for handling up to 25 dimensions)
 - **Custom search algorithm** (for up to 40 dimensions)
 - **Genetic algorithm** (for any dimensionality)
-, and (2) a scaffold for building even more elaborate methods in the future, including heuristics going beyond 
+and (2) a scaffold for building even more elaborate methods in the future, including heuristics going beyond 
 data availability. All configuration is done with a simple human-readable `YAML` config file and plain text data files, making it easy to modify the search method and its parameters with 
 no knowledge of programming and only basic command line skills. A single command is used to recompile (`nim c -f`) and run (`-r`) problem (`-d:configPath=config.yaml`) with `nimCSO` 
 (`src/nimcso`) using one of several methods. Advanced users can also quickly customize the provided methods with brief scripts using the `nimCSO` as a data-centric library.
+
+# Usage
+## Quick Start
+
+
+## Advanced Usage
+
+
+# Installation
+
+
+# Citing
