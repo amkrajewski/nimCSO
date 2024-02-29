@@ -5,35 +5,10 @@
 {.passC: "-flto -ffast-math".} 
 {.passL: "-flto".} 
 
-## .. importdoc::  nimcso/bitArrayAutoconfigured.nim
-## 
-## # Summary 
-## **nim** **C**omposition **S**pace **O**ptimization is a high-performance, low-level tool for selecting sets of components (dimensions) in compositional spaces, which optimize the data availability 
-## given a constraint on the number of components to be selected. Ability to do so is crucial for deploying machine learning (ML) algorithms, so that they can be designed in a way balancing their
-## accuracy and domain of applicability. Howerver, this becomes a combinatorically hard problem for complex compositions existing in highly dimensional spaces due to the interdependency of components 
-## being present. For instance, removing datapoints many low-frequency components 
-## 
-## 
-## 
-## Such spaces are often encountered in materials science, where datasets on Compositionally Complex Materials (CCMs) often span 20-40 chemical elements, while each data point contains 
-## several of them.
-## 
-## 
-## 
-## `nimCSO` 
+when defined(nimdoc):
+    # Core documentation living in the root of the project
+    include ../docs/docs
 
-## This tool employs a set of methods, ranging from (1) brute-force search through (2) genetic algorithms to (3) a newly designed search method. They use custom data structures and procedures written in Nim language, which are compile-time optimized for the specific problem statement and dataset pair, which allows nimCSO to run faster and use 1-2 orders of magnitude less memory than general-purpose data structures. All configuration is done with a simple human-readable config file, allowing easy modification of the search method and its parameters.
-## 
-## 
-## 
-## 
-## 
-## 
-## 
-## 
-## 
-## 
-## 
 when defined(nimdoc):
     include ../benchmarks/docs
 
@@ -64,6 +39,8 @@ import nimcso/bitArrayAutoconfigured
 # Import profiler only when needed
 when compileOption("profiler"):
     import nimprof
+
+# ********* Compile-time Constants and Configurations *********
 
 # Define the config object to load from the YAML file
 type Config = object
