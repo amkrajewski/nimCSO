@@ -6,13 +6,15 @@
 {.passL: "-flto".} 
 
 when defined(nimdoc):
-    # Core documentation living in the root of the project
+    # Core documentation living in the root of the project.
     include ../docs/docs
 
 when defined(nimdoc):
+    # Documentation on benchmarks, living alongside them.
     include ../benchmarks/docs
 
 when defined(nimdoc):
+    # Documentation on the tests being run, living alongside them.
     include ../tests/docs
 
 # Standard library imports. One per line for easy change tracking.
