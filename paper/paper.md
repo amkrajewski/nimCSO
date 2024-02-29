@@ -58,6 +58,8 @@ Another significant example of intended use is to perform similar optimizations 
 
 ## Overview
 
+As shown in the Figure \ref{fig:main}, `nimCSO` can be used as a user-tool based on human-readable configuration and data file containing data "elements", which can be any strings representing problem-specific names of, e.g., market stocks, drug names, or chemical formulas. A single command is then used to recompile (`nim c -f`) and run (`-r`) problem (`-d:configPath=config.yaml`) with `nimCSO` (`src/nimcso`) using one of several methods. The methods can also be quickly customized by advanced users using brief scripts using the `nimCSO` as a library.
+
 ![Schematic of core nimCSO data flow with a description of key methods. Metaprogramming is used to compile the software optimized to the human-readable data and configuration files at hand.\label{fig:main}](assets/nimCSO_mainFigure.png){width="300pt"}
 
 Internally, `nimCSO` is built around storing the data and solutions in one of two ways. The first is as bits inside an integer (`uint64`), which allows for the highest speed and lowest memory consumption possible, but is limited to 64 dimensions and does not allow for easy extension to other use cases, thus as of publication it is used only in a special `bruteForceInt` routine. The second one, used in `bruteForce`, `algorithmSearch`, and `geneticSearch` implements a custom easily extensible `ElSolution` type containing heuristic value and `BitArray` payload, which is defined at compile time based on the configuration file to minimize necessary overheads. Both encodings significantly outperform both typical native Python and NumPy implementations, as shown in the Table 1.
