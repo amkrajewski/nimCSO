@@ -655,7 +655,7 @@ proc bruteForce*(verbose: bool = true): seq[ElSolution] =
     ## allows for a **minimal memory footprint** as only several solutions are kept in memory at a time. The results are printed to the console. It is implemented for up to 64 elements,
     ## as it is not feasible for more than around 30 elements, but it could be extended by simply enumerating solutions as two or more integers and using them to initialize ``BitArray``s.
     assert elementN <= 64, "Brute Force is not feasible for more than around 30 elements, thus it is not implemented for above 64 elements."
-    if verbose: styledEcho "\nRunning Brute Force search for ", styleBright, fgMagenta, $elementN, resetStyle, " elements."
+    if verbose: styledEcho "\nRunning Brute Force search for ", styleBright, fgMagenta, $elementN, resetStyle, " elements and ", styleBright, fgMagenta, $dataN, " data points."
     let presenceBitArrays = getPresenceBitArrays()
     const solutionN = 2^elementN - 1
     if verbose: styledEcho "Solution space size: ", styleBright, fgMagenta, $solutionN, resetStyle
@@ -688,7 +688,7 @@ proc bruteForceInt*(verbose: bool = true): seq[ElSolution] =
     ## N elements to remove from dataset to loose the least daya. Unlike the standard `bruteForce`_ algorithm does not use the `ElSolution`_ type and **cannot be easily extended** to other use cases and 
     ## **cannot be used for more than 64 elements** without sacrificing the performance, at which point `bruteForce`_ should be much better choice.
     assert elementN <= 64, "Brute Force with uint64 representation cannot run on more than 64 elements. You will need to take `bruteForce` instead and implement it for more than 64 elements."
-    if verbose: styledEcho "\nRunning brute force algorithm for ", styleBright, fgMagenta, $elementN, resetStyle, " elements."
+    if verbose: styledEcho "\nRunning brute force algorithm for ", styleBright, fgMagenta, $elementN, resetStyle, " elements and ", styleBright, fgMagenta, $dataN, " data points."
     let presenceInts = getPresenceIntArray()
     let presenceBitArrays = getPresenceBitArrays()
     const solutionN = 2^elementN - 1
