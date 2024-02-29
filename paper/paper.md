@@ -103,23 +103,23 @@ The above are applied iteratively, with best solutions carried to next generatio
 
 # Use Examples
 
-The tool comes with two pre-defined example problems to demonstrate its use. The first one is defined in the default `config.yaml` file and goes through the complete dataset of 2,150 data points spanning 37 components in `dataList.txt` based on the ULTERA Dataset [@Debnath2021]. It is intended to showcase `algorithmSearch` and `geneticSearch` methods, as brute-forcing would take around one day. The second one is defined in `config_rhea.yaml` and uses the same dataset but limited scope of components critical to RHEAs [@Senkov2018], and is intended to showcase `bruteForce` and `bruteForceInt` methods. To run them, one can compile and execute from the root directory with the simple command below appended with one of the tasks from the Table 2.
+The tool comes with two pre-defined example problems to demonstrate its use. The first one is defined in the default `config.yaml` file and goes through the complete dataset of 2,150 data points spanning 37 components in `dataList.txt` based on the ULTERA Dataset [@Debnath2021]. It is intended to showcase `algorithmSearch`/`-as` and `geneticSearch`/`-gs` methods, as brute-forcing would take around one day. The second one is defined in `config_rhea.yaml` and uses the same dataset but limited scope of components critical to RHEAs [@Senkov2018], and is intended to showcase `bruteForce`/`-bf` and `bruteForceInt`/`-bfi` methods. To run them, one can compile and execute from the root directory with the simple command below appended with one of the tasks from the Table 2.
   
-  ```cmd
-  nim c -r -f -d:release [Taks Definition]
-  ```
+```bash
+nim c -r -f -d:release YourTaskDefinition
+```
 
-+--------------------------------------------------+----------+---------------+
-| Taks Definition                                  | Time (s) | RAM Used (MB) |
-+:=================================================+:============+:==========:+
-| `-d:configPath=config.yaml src/nimcso -as`       | 302s     | 488 MB        |
-+--------------------------------------------------+----------+---------------+
-| `-d:configPath=config.yaml src/nimcso -gs`       | 5.8s     | 3.2 MB        |
-+==================================================+==========+===============+
-| `-d:configPath=config_rhea.yaml src/nimcso -bf`  | 4.3s     | 3.1 MB        |
-+--------------------------------------------------+----------+---------------+
-| `-d:configPath=config_rhea.yaml src/nimcso -bfi` | 0.4s     | 3.3 MB        |
-+--------------------------------------------------+----------+---------------+
++--------------------------------------------------+----------+-------------+
+| Task Definition                                  | Time (s) | Memory (MB) |
++:=================================================+:=========+:===========:+
+| `-d:configPath=config.yaml src/nimcso -as`       | 302s     | 488 MB      |
++--------------------------------------------------+----------+-------------+
+| `-d:configPath=config.yaml src/nimcso -gs`       | 5.8s     | 3.2 MB      |
++--------------------------------------------------+----------+-------------+
+| `-d:configPath=config_rhea.yaml src/nimcso -bf`  | 4.3s     | 3.1 MB      |
++--------------------------------------------------+----------+-------------+
+| `-d:configPath=config_rhea.yaml src/nimcso -bfi` | 0.4s     | 3.3 MB      |
++--------------------------------------------------+----------+-------------+
 
 Table: Four example tasks alongside typical CPU time and memory usage. Values were obtained by running scripts in `benchmarks` directory on Apple M2 Max CPU.
 
