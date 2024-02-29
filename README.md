@@ -39,6 +39,10 @@ no knowledge of programming and only basic command line skills. A single command
 # Usage
 ## Quick Start
 
+**To use `nimCSO` you don't even need to install anything, as long as you have a (free) GitHub account, since we prepared a pre-configured Codespace for you!** Simply click on the link below and it will create a cloud development environment for you, with all dependencies installed for you through [Conda](https://docs.conda.io/en/latest/) and [Nimble](https://github.com/nim-lang/nimble) package managers. You can then run `nimCSO` through terminal or play with a Jupyter notebook we prepared.
+
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/amkrajewski/nimCSO?quickstart=1)
+
 
 ## Advanced Usage
 
