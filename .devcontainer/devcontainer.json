@@ -1,0 +1,28 @@
+{
+    "build": { "dockerfile": "./Dockerfile" },
+    "customizations": {
+      "codespaces": {
+        "openFiles": [
+          "examples/README.md"
+        ]
+      },
+      "vscode": {
+        "extensions": [
+          "nimsaem.nimvscode",
+          "ms-python.python",
+          "ms-toolsai.jupyter",
+          "mechatroner.rainbow-csv",
+          "mhutchie.git-graph"
+        ],
+        "settings": {
+          "python.defaultInterpreterPath": "/opt/conda/bin/python"
+        }
+      }
+    },
+    "hostRequirements": {
+        "cpus": 4,
+        "memory": "16gb",
+        "storage": "16gb"
+    }
+}
+  
