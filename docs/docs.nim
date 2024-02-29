@@ -35,9 +35,10 @@
 ## 
 ## 
 ## # Notes:
-## ## ElSolution
-## Throughout this codebase and documentation, you will see ``ElSolution``, which is a short for "Elemental Solution", which represents a solution to the problem of selecting elements
-## to remove from the dataset. This is not technically precise, as the solution space is built around components, which do not have to be elements, and you can define your problem around
-## compositions of any kind. However, here we consistently refer to "elements" because (1) it is the most common use case and (2) ``elSol`` sounds much better than ``comSol``.
+## ## Elemental Solutions
+## Throughout this codebase and documentation, you will see ``ElSolution``, which is a short for "Elemental Solution" and represents a solution to the problem of selecting elements
+## to remove from the dataset. Using word *elements* is not technically precise, as the solution space is built around *components*, which do not have to be elemental entities in your problem, 
+## and you can model compositions of any kind. However, in the code we consistently refer to "elements" because (1) it is the most common use case and (2) ``elSol`` obviously sounds much better 
+## than ``comSol``.
 ## 
 ## 
