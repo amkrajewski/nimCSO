@@ -10,5 +10,6 @@ docs/build/
 .DS_Store
 .vscode
 !LICENSE
+!Dockerfile
 **.out
 *_testResult*
