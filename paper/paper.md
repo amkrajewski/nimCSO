@@ -125,6 +125,9 @@ Tracking up to 11.9 million solutions.
 | NumPy (Python 3.11) | 302s | 488 MB |
 | Dict Python 3.11 | 302s | 488 MB |
 
+# Contributions 
+
+A.M.K. was reponsible for conceptualization, methodology, software, testing and validation, writing of manuscript, and visualization; A.D. was responsible for testing software and results in training machine learning models; A.M.B., W.F.R., Z-K.L. were responsible for funding acquisition, review, and editing. Z-K.L. was also supervising the work.
 
 # Acknowledgements
 
