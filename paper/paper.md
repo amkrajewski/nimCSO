@@ -61,7 +61,6 @@ One of the most promising materials for these applications are Compositionally C
 
 Under the hood, `nimCSO` is built around storing the data and solutions in one of two ways. The first is as bits encoded in an integer (`uint64`), which allows for highest speed and lowest memory consumption possible, but is limited to 64 dimensions and does not allow for easy extension to other use cases, thus as of publication it is used only in the special `bruteForceInt` routine. The second one, used in `bruteForce`, `algorithmSearch`, and `geneticSearch` is through a custom `ElSolution` type containing heuristic value (easily extensible) and `BitArray` payload, which is defined at compile time based on the configuration file to minimize necessary overheads. Both encodings significantly outperform both typical native Python and NumPy implementations, as shown in the Table \ref{tab:benchmarks}.
 
-The 
 
 +----------------+----------------+------------------+-----------------------------+----------------------------+
 | Tool           | Object         | Time per Dataset | Time per Entry *(Relative)* | Database Size *(Relative)* |
@@ -80,7 +79,7 @@ Table: Benchmarks of (1) average time to evaluate how many datapoints would be l
 
 ## Brute-Force Search
 
-
+The brute force search is a naïve method of evaluating all possibilities; however, due to its near zero overhead, it can be the most efficient for small problems. In this implementation, all entries in the *power set* of considered elements are represented as range of integers from $0$ to $2^{elementN} - 1$ and used to initialize `uint64`/`BitArray`s. To minimize memory footprint of solutions (greatly exceeding the number of data points), the algorithm only keeps track of the best solution for number of elements present in the solution. Current implementations are limited to 64 elements, as it is not feasible for more than around 30 elements, but the one based on `BitArray` could be easily extended if needed.
 
 
 ## Algorithmic Search
@@ -131,7 +130,7 @@ A.M.K. was reponsible for conceptualization, methodology, software, testing and 
 
 # Acknowledgements
 
-This work has been funded through grants: **NSF-POSE FAIN-2229690**, **ONR N00014-23-2721**, and **DOE-ARPA-E DE-AR0001435**. 
+This work has been funded through grants: **DOE-ARPA-E DE-AR0001435**, **NSF-POSE FAIN-2229690**, and **ONR N00014-23-2721**. 
 
 We would also like to acknowledge Dr. Jonathan Siegel at Texas A&M University for valuable discussions and feedback on the project.
 
