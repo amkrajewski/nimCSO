@@ -31,6 +31,7 @@ also outperforming NumPy implementation 35 and 17 times, respectively, when chec
 - **Efficient brute force approaches** (for handling up to 25 dimensions)
 - **Custom search algorithm** (for up to 40 dimensions)
 - **Genetic algorithm** (for any dimensionality)
+
 and (2) a scaffold for building even more elaborate methods in the future, including heuristics going beyond 
 data availability. All configuration is done with a simple human-readable `YAML` config file and plain text data files, making it easy to modify the search method and its parameters with 
 no knowledge of programming and only basic command line skills. A single command is used to recompile (`nim c -f`) and run (`-r`) problem (`-d:configPath=config.yaml`) with `nimCSO` 

@@ -1,7 +1,6 @@
 taskName: Default Task
-taskDescription: Optimization of a set of indivisual chemical elements for a large set ot High Entropy Alloys from ULTERA database
+taskDescription: Optimization of a set of individual chemical elements for a large set ot High Entropy Alloys from ULTERA database
 datasetPath: dataList.txt
-
 elementOrder:
 - Fe
 - Cr
