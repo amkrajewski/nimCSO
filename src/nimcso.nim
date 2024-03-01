@@ -32,8 +32,10 @@ import std/terminal
 import std/bitops
 
 # Third-party library imports
-import arraymancer/Tensor
 import yaml
+when not defined(noarraymancer):
+    # Sometimes people may want to skip Arraymancer (100kB smaller binary)
+    import arraymancer/Tensor
 
 # NimCSO submodule imports
 import nimcso/bitArrayAutoconfigured
@@ -80,24 +82,6 @@ styledEcho "Configured for task: ", styleBright, fgMagenta, styleItalic, config.
     styleDim, styleItalic, " (", config.taskDescription, ")", resetStyle
 
 # ********* Dataset Ingestion *********
-
-proc getPresenceTensor*(): Tensor[int8] =
-    ## (Legacy function retained for easy Arraymancer integration for library users) Returns an Arraymancer ``Tensor[int8]`` denoting presence of elements in the dataset 
-    ## (1 if present, 0 if not), which can be then used to calculate the quantity of data prevented by removal of a given set of elements. Operated based on compile-time constants.
-    var
-        presence = newTensor[int8]([dataN, elementN])
-        lineN: int = 0
-        elN: int = 0
-
-    for line in elementsPresentList:
-        let elements = line.split(",")
-        elN = 0
-        for el in elementOrder:
-            if elements.contains(el):
-                presence[lineN, elN] = 1
-            elN += 1
-        lineN += 1
-    return presence
 
 proc getPresenceIntArray*(): array[dataN, uint64] =
     ## Returns a compile-time-determined-length array of unsigned integers encoding the presence of elements in each row in the dataset, which is as fast and compact as you can get on a 
@@ -152,6 +136,25 @@ func getPresenceBoolArrays*(): seq[seq[bool]] =
             elI += 1
         lineI += 1
 
+when not defined(noarraymancer):
+    proc getPresenceTensor*(): Tensor[int8] =
+        ## (Legacy function retained for easy Arraymancer integration for library users) Returns an Arraymancer ``Tensor[int8]`` denoting presence of elements in the dataset 
+        ## (1 if present, 0 if not), which can be then used to calculate the quantity of data prevented by removal of a given set of elements. Operated based on compile-time constants.
+        var
+            presence = newTensor[int8]([dataN, elementN])
+            lineN: int = 0
+            elN: int = 0
+
+        for line in elementsPresentList:
+            let elements = line.split(",")
+            elN = 0
+            for el in elementOrder:
+                if elements.contains(el):
+                    presence[lineN, elN] = 1
+                elN += 1
+            lineN += 1
+        return presence
+
 # ********* Dataset-Solution Interactions *********
 
 func preventedData*(elList: BitArray, presenceBitArrays: seq[BitArray]): int =
@@ -196,11 +199,13 @@ func preventedData*(elList: uint64, presenceIntArray: array[dataN, uint64]): int
         if isPrevented(i):
             result += 1
 
-proc preventedData*(elList: Tensor[int8], presenceTensor: Tensor[int8]): int =
-    ## Returns the number of datapoints prevented by removal of the elements encoded in the ``elList`` 1D ``Tensor[int8]`` by comparing it to the 2D ``Tensor[int8]`` encoding presence
-    ## in the dataset.
-    let c = presenceTensor *. elList
-    result = c.max(axis = 1).asType(int).sum()
+when not defined(noarraymancer):
+    # Sometimes people will want super small binary without Arraymancer
+    proc preventedData*(elList: Tensor[int8], presenceTensor: Tensor[int8]): int =
+        ## Returns the number of datapoints prevented by removal of the elements encoded in the ``elList`` 1D ``Tensor[int8]`` by comparing it to the 2D ``Tensor[int8]`` encoding presence
+        ## in the dataset.
+        let c = presenceTensor *. elList
+        result = c.max(axis = 1).asType(int).sum()
 
 func presentInData*(elList: BitArray, pBAs: seq[BitArray] | seq[seq[bool]]): int =
     ## A philosophical opposite of ``preventedData`` procedures. It returns the number of datapoints which have all of the elements encoded by the ``elList`` ``BitArray`` present in them,
@@ -462,18 +467,20 @@ proc covBenchmark() =
     ## Runs "coverage" benchmarks testing and cross-method consistecy check. For each method, it creates 1,000 random solution candidates of any order, and then calculates the 
     ## number of prevented datapoints for each of them. For the consistency check, it removes (sets) the first 5 elements and calculates the number of prevented datapoints for the
     ## resulting solution. The results are printed to the console.
-    block:
-        styledEcho fgBlue, "Running coverage benchmark with int8 Tensor representation", resetStyle
+    when not defined(noarraymancer):
+        # Sometimes people will want super small binary without Arraymancer
+        block:
+            styledEcho fgBlue, "Running coverage benchmark with int8 Tensor representation", resetStyle
 
-        let presenceTensor = getPresenceTensor()
-        var b = zeros[int8](shape = [1, elementN])
-        b[0, 0..5] = 1
-        echo b
+            let presenceTensor = getPresenceTensor()
+            var b = zeros[int8](shape = [1, elementN])
+            b[0, 0..5] = 1
+            echo b
 
-        benchmark "arraymancer+randomizing", verbose=true:
-            discard preventedData(randomTensor[int8](shape = [1, elementN], sample_source = [0.int8, 1.int8]),
-                                    presenceTensor)
-        echo "Prevented count:", preventedData(b, presenceTensor)
+            benchmark "arraymancer+randomizing", verbose=true:
+                discard preventedData(randomTensor[int8](shape = [1, elementN], sample_source = [0.int8, 1.int8]),
+                                        presenceTensor)
+            echo "Prevented count:", preventedData(b, presenceTensor)
 
     block:
         styledEcho fgBlue, "\nRunning coverage benchmark with BitArray representation"
