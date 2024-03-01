@@ -671,7 +671,7 @@ proc bruteForce*(verbose: bool = true): seq[ElSolution] =
 
 proc bruteForceInt*(verbose: bool = true): seq[ElSolution] =
     ## **(Key Routine)** A **really high performance** (400 times faster than native Python and 50 times faster than NumPy) brute force algorithm for finding the optimal solution for the problem of which 
-    ## N elements to remove from dataset to loose the least daya. Unlike the standard `bruteForce`_ algorithm does not use the `ElSolution`_ type and **cannot be easily extended** to other use cases and 
+    ## N elements to remove from dataset to lose the least data. Unlike the standard `bruteForce`_ algorithm does not use the `ElSolution`_ type and **cannot be easily extended** to other use cases and 
     ## **cannot be used for more than 64 elements** without sacrificing the performance, at which point `bruteForce`_ should be much better choice.
     assert elementN <= 64, "Brute Force with uint64 representation cannot run on more than 64 elements. You will need to take `bruteForce` instead and implement it for more than 64 elements."
     if verbose: styledEcho "\nRunning brute force algorithm for ", styleBright, fgMagenta, $elementN, resetStyle, " elements and ", styleBright, fgMagenta, $dataN, " data points."
