@@ -63,7 +63,18 @@
 ## The dataset file should contain one set of elements per line separated by commas. The order of rows and "columns" does not matter. The dataset can contain any elements, 
 ## as the one not present in the ``elementOrder`` will be ignored. The dataset should *not* contain any header.
 ## 
+## The dataset provided by default with `nimCSO` comes from a snapshot of the ULTERA Database and lists elements in "aggregated" alloys, which means every entry corresponds to a unique HEA 
+## composition-processing-structure triplet (which may have several attached properties). The dataset access is currently limited, but once public you will be able to obtain it (and newer 
+## versions) with Python code like this using the ``pymongo`` library:
 ## 
+## ```python
+## collection = client['ULTERA']['AGGREGATED_Jul2023']
+## elementList = [e['material']['elements'] for e in collection.find({
+##     'material.nComponents': {'$gte': 3},
+##     'metaSet.source': {'$in': ['LIT', 'VAL']},
+##     'properties.source': {'$in': ['EXP', 'DFT']}
+##     })]
+## ```
 ## 
 ## ## Notes:
 ## ### Elemental Solutions

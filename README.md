@@ -44,20 +44,32 @@ no knowledge of programming and only basic command line skills. A single command
 
 [![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/amkrajewski/nimCSO?quickstart=1)
 
+**Note: If you want to install `nimCSO` yourself, follow the instructions in the [Installation](#installation) section.**
+
 ## config.yaml
 
 The `config.yaml` file is the critical component which defines several required parameters listed below. You can either just change the values in the provided `config.yaml` or create a custom one, like the `config_rhea.yaml`, and point to it at the compilation with `-d:configPath=config_rhea.yaml` flag. Inside, you will need to define the following parameters:
 
-- **taskName** - A ``string`` with the name of the task. It does *not* affect the results in any way, except for being printed during runtime for easier identification.
+- **taskName** - A `string` with the name of the task. It does *not* affect the results in any way, except for being printed during runtime for easier identification.
 
-- **taskDescription** - A ``string`` with the description of the task. It does *not* affect the results in any way, except for being printed during runtime for easier identification.
+- **taskDescription** - A `string` with the description of the task. It does *not* affect the results in any way, except for being printed during runtime for easier identification.
 
-- **datasetPath** - A ``string`` with the path (relative to CWD) with the dataset file. Please see `Dataset files`_ below for details on its content.
+- **datasetPath** - A `string` with the path (relative to CWD) with the dataset file. Please see [Dataset files](#dataset-files) below for details on its content. 
 
-- **elementOrder** - A list of ``string``s with the names of the elements in the dataset. The *order* does *not* affect the results in any way, except for the order in which the elements will be printed in the resulting solutions. It *does* determine the order in which they are stored internally though, so if you are an advanced user and, e.g., write a custom heuristic, you may want to take advantage of this to, e.g., assign a list of weights to the elements.
+- **elementOrder** - A list of `string`s with the names of the elements in the dataset. The *order* does *not* affect the results in any way, except for the order in which the elements will be printed in the resulting solutions. It *does* determine the order in which they are stored internally though, so if you are an advanced user and, e.g., write a custom heuristic, you may want to take advantage of this to, e.g., assign a list of weights to the elements.
 
 ## Dataset Files
 
+The dataset provided by default with `nimCSO` comes from a snapshot of the ULTERA Database and lists elements in "aggregated" alloys, which means every entry corresponds to a unique HEA composition-processing-structure triplet (which may have several attached properties). The dataset access is currently limited, but once public you will be able to obtain it (and newer versions) with Python code like this using the `pymongo` library:
+
+```python
+collection = client['ULTERA']['AGGREGATED_Jul2023']
+elementList = [e['material']['elements'] for e in collection.find({
+    'material.nComponents': {'$gte': 3},
+    'metaSet.source': {'$in': ['LIT', 'VAL']},
+    'properties.source': {'$in': ['EXP', 'DFT']}
+    })]
+```
 
 # Installation
 
