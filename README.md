@@ -44,7 +44,6 @@ no knowledge of programming and only basic command line skills. A single command
 
 [![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/amkrajewski/nimCSO?quickstart=1)
 
-
 ## Advanced Usage
 
 

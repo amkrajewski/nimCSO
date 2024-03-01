@@ -71,6 +71,40 @@
 ## 
 ## # Installation
 ## 
+## If you want to use nimCSO on your machine (local or remote), the best course of action is likely to install dependencies and clone the software so that you can get a ready-to-use setup you can also customize.You can do it fairly easily in just a couple minutes. 
 ## 
-## # Citing
+## First you need to install Nim [Nim](https://nim-lang.org/) which on most Unix (Linux/MacOS) systems is as simple as using:
+## 
+## - [**conda**](https://docs.conda.io/en/latest/) (or `mamba`) cross-platform package manager:
+##   ```cmd
+##   conda install -c conda-forge nim
+##   ```
+## 
+## - your distribution's package manager, for instance on Ubuntu/Debian **Linux**:
+##   ```cmd
+##   apt-get install nim
+##   ```
+## 
+## - on **MacOS**, assuming you have [Homebrew](https://brew.sh/) installed:
+##   ```cmd
+##   brew install nim
+##   ```
+## 
+## - on **Windows**, you may want to follow these [installation instructions](https://nim-lang.org/install.html)
+## 
+## Then, you can use the boundeled [Nimble](https://github.com/nim-lang/nimble) tool (package manager for Nim, similar to Rust's *crate* or Python's *pip*) to install two top-level dependencies: 
+## [arraymancer](https://github.com/mratsim/Arraymancer), which is a powerful N-dimensional array library, and [yaml](https://nimyaml.org/index.html) which 
+## parses the configuration files. Its a single command:
+## 
+## ```cmd
+## nimble install  -y arraymancer nimpy
+## ```
+## 
+## Finally, you can clone the repository and compile the library with:
+## ```cmd
+## git clone https://github.com/amkrajewski/nimcso
+## cd nimcso
+## nim c -r -f -d:release src/nimcso
+## ```
+## which will compile the library and print out concise `help` message with available CLI options. And now, you are ready to use `nimCSO` :)
 ## 
