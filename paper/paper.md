@@ -62,7 +62,7 @@ As shown in Figure \ref{fig:main}, `nimCSO` can be used as a user-tool based on 
 
 ![Schematic of core nimCSO data flow with a description of key methods. Metaprogramming is used to compile the software optimized to the human-readable data and configuration files at hand.\label{fig:main}](assets/nimCSO_mainFigure.png){width="300pt"}
 
-Internally, `nimCSO` is built around storing the data and solutions in one of two ways. The first is as bits inside an integer (`uint64`), which allows for the highest speed and lowest memory consumption possible but is limited to 64 dimensions and does not allow for easy extension to other use cases; thus, as of publication, it is used only in a particular `bruteForceInt` routine. The second one, used in `bruteForce`, `algorithmSearch`, and `geneticSearch` implements a custom easily extensible `ElSolution` type containing heuristic value and `BitArray` payload, which is defined at compile time based on the configuration file to minimize necessary overheads. Both encodings outperform typical native Python and NumPy implementations, as shown in Table 1.
+Internally, `nimCSO` is built around storing the data and solutions in one of two ways. The first is as bits inside an integer (`uint64`), which allows for the highest speed and lowest memory consumption possible but is limited to 64 dimensions and does not allow for easy extension to other use cases; thus, as of publication, it is used only in a particular `bruteForceInt` routine. The second one, used in `bruteForce`, `algorithmSearch`, and `geneticSearch`, implements a custom easily extensible `ElSolution` type containing heuristic value and `BitArray` payload, which is defined at compile time based on the configuration file to minimize necessary overheads. Both encodings outperform typical native Python and NumPy implementations, as shown in Table 1.
 
 +----------------+----------------+------------------+-----------------------------+----------------------------+
 | Tool           | Object         | Time per Dataset | Time per Entry *(Relative)* | Database Size *(Relative)* |
@@ -91,15 +91,15 @@ The algorithm implemented in the `algorithmSearch` routine, targeting high dimen
 
 ## Genetic Search
 
-Beyond 50 components, the [algorithm-based](#algorithm-based-search) method will likely run out of memory on most personal systems. The `geneticSearch` routine solves that through an evolution strategy to iteratively improve solutions based on custom `mutate` and `crossover` procedures. Both are of uniform type [@Goldberg1989] with additional constraint of Hamming weight [@Knuth] preservation in order to preserve number of considered elements in parents and offspring. In `mutate` this is achieved by using purely random bit swapping, rather than more common flipping, as demonstrated in the Figure \ref{fig:mutate}.
+Beyond 50 components, the [algorithm-based](#algorithm-based-search) method will likely run out of memory on most personal systems. The `geneticSearch` routine resolves this issue through an evolution strategy to iteratively improve solutions based on custom `mutate` and `crossover` procedures. Both are of uniform type [@Goldberg1989] with additional constraint of Hamming weight [@Knuth] preservation in order to preserve number of considered elements in parents and offspring. In `mutate` this is achieved by using purely random bit swapping, rather than more common flipping, as demonstrated in the Figure \ref{fig:mutate}.
 
-![The schematic of `mutate` procedure where bits are swapping randomly, so that (1) bit can swap itself, (2) bits can swap causing a flip, or (3) bits can swap with no effect.\label{fig:mutate}](assets/nimcso_mutate.drawio.png){width="100pt"}
+![Schematic of `mutate` procedure where bits are swapping randomly, so that (1) bit can swap itself, (2) bits can swap causing a flip, or (3) bits can swap with no effect.\label{fig:mutate}](assets/nimcso_mutate.drawio.png){width="100pt"}
 
-Meanwhile, in `crossover`, this constraint is satisfied by passing overlapping bits directly, while non-overlapping bits are shuffled and distributed at positions present in one of the parents, as shown in the Figure \ref{fig:crossover}.
+Meanwhile, in `crossover`, this constraint is satisfied by passing overlapping bits directly, while non-overlapping bits are shuffled and distributed at positions present in one of the parents, as shown in Figure \ref{fig:crossover}.
 
-![The schematic of uniform `crossover` procedure preserving Hamming weight implemented in `nimCSO`. \label{fig:crossover}](assets/nimcso_crossover.drawio.png){width="300pt"}
+![Schematic of uniform `crossover` procedure preserving Hamming weight implemented in `nimCSO`. \label{fig:crossover}](assets/nimcso_crossover.drawio.png){width="300pt"}
 
-The above are applied iteratively, with best solutions carried to next generation, until the solution converges or the maximum number of iterations is reached. Unlike the other methods, this one is not limited by the number of components and lets user control both time and memory requirements, either to make big problems feasible or to get a good-enough solution quickly in small problems. However, it comes with no optimality guarantees.
+The above are applied iteratively, with best solutions carried to next generation, until the solution converges or the maximum number of iterations is reached. Unlike the other methods, the present method is not limited by the number of components and lets user control both time and memory requirements, either to make big problems feasible or to get a good-enough solution quickly in small problems. However, it comes with no optimality guarantees.
 
 
 # Use Examples
