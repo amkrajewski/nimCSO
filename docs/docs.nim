@@ -49,11 +49,14 @@
 ## ## General 
 ## 
 ## ### config.yaml
-## The `config.yaml` file is the critical component which defines several required parameters listed below.
+## The `config.yaml` file is the critical component which defines several required parameters listed below. You can either just change the values in the provided `config.yaml` or 
+## create a custom one, like the `config_rhea.yaml`, and point to it at the compilation with `-d:configPath=config_rhea.yaml` flag. Inside, you will need to define the following parameters:
 ## - **taskName** - A ``string`` with the name of the task. It does *not* affect the results in any way, except for being printed during runtime for easier identification.
 ## - **taskDescription** - A ``string`` with the description of the task. It does *not* affect the results in any way, except for being printed during runtime for easier identification.
 ## - **datasetPath** - A ``string`` with the path (relative to CWD) with the dataset file. Please see `Dataset files`_ below for details on its content.
-## - **elementOrder** - A list of ``string``s with the names of the elements in the dataset
+## - **elementOrder** - A list of ``string``s with the names of the elements in the dataset. The *order* does *not* affect the results in any way, except for the order in which the 
+##   elements will be printed in the resulting solutions. It *does* determine the order in which they are stored internally though, so if you are an advanced user and, e.g., write a 
+##   custom heuristic, you may want to take advantage of this to, e.g., assign a list of weights to the elements.
 ## 
 ## ### Dataset files
 ## 
@@ -97,7 +100,7 @@
 ## parses the configuration files. Its a single command:
 ## 
 ## ```cmd
-## nimble install  -y arraymancer nimpy
+## nimble install  -y arraymancer yaml
 ## ```
 ## 
 ## Finally, you can clone the repository and compile the library with:
