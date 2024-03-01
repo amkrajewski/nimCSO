@@ -573,6 +573,7 @@ proc leastPreventing*(verbose: bool = true): seq[ElSolution] =
     ## Runs a search for single-element solutions preventing the least data, i.e. the least common elements *based on the filtered dataset*. Returns a sequence of [ElSolution]s which can
     ## be used on its own (by setting ``verbose`` to see it or by using ``saveResults``) or as a starting point for an exploration technique.
     let presenceBitArrays = getPresenceBitArrays()
+    if verbose: echo "\nRunning search for single-elements preventing the least data."
     benchmarkOnce "Searching for element removals preventing the least data:", verbose:
         var solutions = initHeapQueue[ElSolution]()
         for i in 0..<elementN:
@@ -582,14 +583,17 @@ proc leastPreventing*(verbose: bool = true): seq[ElSolution] =
             solutions.push(elSol)
         for i in 0..<elementN:
             let sol = solutions.pop()
-            if verbose: echo sol
+            if verbose: 
+                styledEcho styleBright, fgBlue, ($i).align(2), ": ", resetStyle, fgGreen, $sol, resetStyle
             result.add(sol)
 
 proc mostCommon*(verbose: bool = true): seq[ElSolution] =
     ## Convenience wrapper for the ``leastPreventing`` routine, which returns its results in reversed order. It was added for the sake of clarity.
+    if verbose: echo "\nRunning search for single-elements preventing the most data."
     let lpSol = leastPreventing(false).reversed()
     if verbose:
-        for sol in lpSol: echo sol
+        for i in 0..<elementN:
+            styledEcho styleBright, fgBlue, ($i).align(2), ": ", resetStyle, fgGreen, $lpSol[i], resetStyle
     result = lpSol
 
 
