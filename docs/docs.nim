@@ -49,8 +49,8 @@
 ## ## General 
 ## 
 ## ### config.yaml
-## The `config.yaml` file is the critical component which defines several required parameters listed below. You can either just change the values in the provided `config.yaml` or 
-## create a custom one, like the `config_rhea.yaml`, and point to it at the compilation with `-d:configPath=config_rhea.yaml` flag. Inside, you will need to define the following parameters:
+## The ``config.yaml`` file is the critical component which defines several required parameters listed below. You can either just change the values in the provided `config.yaml` or 
+## create a custom one, like the `config_rhea.yaml`, and point to it at the compilation with ``-d:configPath=config_rhea.yaml`` flag. Inside, you will need to define the following parameters:
 ## - **taskName** - A ``string`` with the name of the task. It does *not* affect the results in any way, except for being printed during runtime for easier identification.
 ## - **taskDescription** - A ``string`` with the description of the task. It does *not* affect the results in any way, except for being printed during runtime for easier identification.
 ## - **datasetPath** - A ``string`` with the path (relative to CWD) with the dataset file. Please see `Dataset files`_ below for details on its content.
@@ -60,11 +60,34 @@
 ## 
 ## ### Dataset files
 ## 
-## The dataset file should contain one set of elements per line separated by commas. The order of rows and "columns" does not matter. The dataset can contain any elements, 
-## as the one not present in the ``elementOrder`` will be ignored. The dataset should *not* contain any header.
+## We wanted to make creating the input dataset as simple and as cross-platform as possible, thus **the dataset file should be plain text file containing one set of elements (in any order) per line separated by commas.** You can use ``.txt`` or ``.csv`` file extensions interchangeably, 
+## with no effect on the ``nimCSO`` behavior, but note that editing CSV with Excel in some countries (e.g., Italy) may casuse issues. The dataset should *not* contain any header. **The 
+## dataset can contain any elements, as the one not present in the ``elementOrder`` will be ignored** at the parsing stage. It will generally look like:
 ## 
-## The dataset provided by default with `nimCSO` comes from a snapshot of the ULTERA Database and lists elements in "aggregated" alloys, which means every entry corresponds to a unique HEA 
-## composition-processing-structure triplet (which may have several attached properties). The dataset access is currently limited, but once public you will be able to obtain it (and newer 
+## ```csv
+## Al,Cr,Hf,Mo,Ni,Re,Ru,Si,Ta,Ti,W
+## Al,Co,Cr,Cu,Fe,Ni,Ti
+## Al,B,C,Co,Cr,Hf,Mo,Ni,Ta,Ti,W,Zr
+## Mo,Nb,Si,Ta,W
+## Co,Fe,Mo,Ni,V
+## Hf,Nb,Ta,Ti,Zr
+## Mo,Nb,Ta,V,W
+## Al,Co,Cr,Fe,Ni,Si,Ti
+## Al,Co,Cr,Cu,Fe,Ni
+## ```
+## 
+## you are also welcome to align the elements in columns, like below,
+## 
+## ```csv
+## Al, B, Co, Cr
+##     B,     Cr, Fe, Ni
+## Al,    Co,     Fe, Ni
+## ```
+## 
+## but having empty fields is not allowed, so ``Al,  ,Co,Cr, , ,W`` would not be parsed correctly.
+## 
+## The dataset provided by default with ``nimCSO`` comes from a snapshot of the ULTERA Database and lists elements in "aggregated" alloys, which means every entry corresponds to a unique HEA 
+## composition-processing-structure triplet (which may have several attached properties). The dataset access is currently limited, but once it is public, you will be able to obtain it (and newer 
 ## versions) with Python code like this using the ``pymongo`` library:
 ## 
 ## ```python
@@ -89,7 +112,7 @@
 ## 
 ## First you need to install Nim [Nim](https://nim-lang.org/) which on most Unix (Linux/MacOS) systems is as simple as using:
 ## 
-## - [**conda**](https://docs.conda.io/en/latest/) (or `mamba`) cross-platform package manager:
+## - [conda](https://docs.conda.io/en/latest/) (or `mamba`) cross-platform package manager:
 ##   ```cmd
 ##   conda install -c conda-forge nim
 ##   ```
