@@ -60,7 +60,31 @@ The `config.yaml` file is the critical component which defines several required 
 
 ## Dataset Files
 
-The dataset provided by default with `nimCSO` comes from a snapshot of the ULTERA Database and lists elements in "aggregated" alloys, which means every entry corresponds to a unique HEA composition-processing-structure triplet (which may have several attached properties). The dataset access is currently limited, but once public you will be able to obtain it (and newer versions) with Python code like this using the `pymongo` library:
+We wanted to make creating the input dataset as simple and as cross-platform as possible, thus **the dataset file should be plain text file containing one set of elements (in any order) per line separated by commas.** You can use `.txt` or `.csv` file extensions interchangeably, with no effect on the `nimCSO` behavior, but note that editing CSV with Excel in some countries (e.g., Italy) may casuse issues. The dataset should *not* contain any header. **The dataset can contain any elements, as the one not present in the `elementOrder` will be ignored** at the parsing stage. It will generally look like:
+
+```csv
+Al,Cr,Hf,Mo,Ni,Re,Ru,Si,Ta,Ti,W
+Al,Co,Cr,Cu,Fe,Ni,Ti
+Al,B,C,Co,Cr,Hf,Mo,Ni,Ta,Ti,W,Zr
+Mo,Nb,Si,Ta,W
+Co,Fe,Mo,Ni,V
+Hf,Nb,Ta,Ti,Zr
+Mo,Nb,Ta,V,W
+Al,Co,Cr,Fe,Ni,Si,Ti
+Al,Co,Cr,Cu,Fe,Ni
+```
+
+you are also welcome to align the elements in columns, like below,
+
+```csv
+Al, B, Co, Cr
+    B,     Cr, Fe, Ni
+Al,    Co,     Fe, Ni
+```
+
+but having empty fields is not allowed, so `Al,  ,Co,Cr, , ,W` would not be parsed correctly.
+
+The dataset provided by default with `nimCSO` comes from a snapshot of the ULTERA Database and lists elements in "aggregated" alloys, which means every entry corresponds to a unique HEA composition-processing-structure triplet (which has from one to several attached properties). The dataset access is currently limited, but once published, you will be able to obtain it (and newer versions) with Python code like this using the `pymongo` library:
 
 ```python
 collection = client['ULTERA']['AGGREGATED_Jul2023']
