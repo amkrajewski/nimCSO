@@ -721,6 +721,10 @@ proc geneticSearch*(
     ## carry over to the next iteration ``searchWidth``, the maximum number of iterations ``maxIterations``, the minimum number of iterations the solution has to fail to improve to be 
     ## considered.
     let presenceBitArrays = getPresenceBitArrays()
+    if verbose: 
+        styledEcho "\nRunning Genetic Search algorithm for ", styleBright, fgMagenta, $elementN, resetStyle, " elements and ", styleBright, fgMagenta, $dataN, " data points."
+        styledEcho "Initiating each level with ", styleBright, fgMagenta, $initialSolutionsN, resetStyle, " random solutions and expanding ", styleBright, fgMagenta, 
+            $searchWidth, resetStyle, " solutions at each level for up to ", styleBright, fgMagenta, $maxIterations, resetStyle, " iterations."
 
     benchmarkOnce "Genetic Search", verbose:
         var solutions = initHeapQueue[ElSolution]()
