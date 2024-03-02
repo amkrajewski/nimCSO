@@ -1,0 +1,23 @@
+taskName: QuickStart
+taskDescription: Just a copy of RCCA Palette from Senkov 2018 Review
+datasetPath: ../dataList.txt
+elementOrder:
+- Mo
+- Ta
+- V
+- W
+- Ti
+- Zr
+- Hf
+- Nb
+- Cr
+- Al
+- Si
+- Co
+- Ni
+- Re
+- Fe
+- Y
+- B
+- C
+- N
