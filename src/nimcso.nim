@@ -32,8 +32,10 @@ import std/terminal
 import std/bitops
 
 # Third-party library imports
-import arraymancer/Tensor
 import yaml
+when not defined(noarraymancer):
+    # Sometimes people may want to skip Arraymancer (100kB smaller binary)
+    import arraymancer/Tensor
 
 # NimCSO submodule imports
 import nimcso/bitArrayAutoconfigured
@@ -80,24 +82,6 @@ styledEcho "Configured for task: ", styleBright, fgMagenta, styleItalic, config.
     styleDim, styleItalic, " (", config.taskDescription, ")", resetStyle
 
 # ********* Dataset Ingestion *********
-
-proc getPresenceTensor*(): Tensor[int8] =
-    ## (Legacy function retained for easy Arraymancer integration for library users) Returns an Arraymancer ``Tensor[int8]`` denoting presence of elements in the dataset 
-    ## (1 if present, 0 if not), which can be then used to calculate the quantity of data prevented by removal of a given set of elements. Operated based on compile-time constants.
-    var
-        presence = newTensor[int8]([dataN, elementN])
-        lineN: int = 0
-        elN: int = 0
-
-    for line in elementsPresentList:
-        let elements = line.split(",")
-        elN = 0
-        for el in elementOrder:
-            if elements.contains(el):
-                presence[lineN, elN] = 1
-            elN += 1
-        lineN += 1
-    return presence
 
 proc getPresenceIntArray*(): array[dataN, uint64] =
     ## Returns a compile-time-determined-length array of unsigned integers encoding the presence of elements in each row in the dataset, which is as fast and compact as you can get on a 
@@ -152,6 +136,25 @@ func getPresenceBoolArrays*(): seq[seq[bool]] =
             elI += 1
         lineI += 1
 
+when not defined(noarraymancer):
+    proc getPresenceTensor*(): Tensor[int8] =
+        ## (Legacy function retained for easy Arraymancer integration for library users) Returns an Arraymancer ``Tensor[int8]`` denoting presence of elements in the dataset 
+        ## (1 if present, 0 if not), which can be then used to calculate the quantity of data prevented by removal of a given set of elements. Operated based on compile-time constants.
+        var
+            presence = newTensor[int8]([dataN, elementN])
+            lineN: int = 0
+            elN: int = 0
+
+        for line in elementsPresentList:
+            let elements = line.split(",")
+            elN = 0
+            for el in elementOrder:
+                if elements.contains(el):
+                    presence[lineN, elN] = 1
+                elN += 1
+            lineN += 1
+        return presence
+
 # ********* Dataset-Solution Interactions *********
 
 func preventedData*(elList: BitArray, presenceBitArrays: seq[BitArray]): int =
@@ -196,11 +199,13 @@ func preventedData*(elList: uint64, presenceIntArray: array[dataN, uint64]): int
         if isPrevented(i):
             result += 1
 
-proc preventedData*(elList: Tensor[int8], presenceTensor: Tensor[int8]): int =
-    ## Returns the number of datapoints prevented by removal of the elements encoded in the ``elList`` 1D ``Tensor[int8]`` by comparing it to the 2D ``Tensor[int8]`` encoding presence
-    ## in the dataset.
-    let c = presenceTensor *. elList
-    result = c.max(axis = 1).asType(int).sum()
+when not defined(noarraymancer):
+    # Sometimes people will want super small binary without Arraymancer
+    proc preventedData*(elList: Tensor[int8], presenceTensor: Tensor[int8]): int =
+        ## Returns the number of datapoints prevented by removal of the elements encoded in the ``elList`` 1D ``Tensor[int8]`` by comparing it to the 2D ``Tensor[int8]`` encoding presence
+        ## in the dataset.
+        let c = presenceTensor *. elList
+        result = c.max(axis = 1).asType(int).sum()
 
 func presentInData*(elList: BitArray, pBAs: seq[BitArray] | seq[seq[bool]]): int =
     ## A philosophical opposite of ``preventedData`` procedures. It returns the number of datapoints which have all of the elements encoded by the ``elList`` ``BitArray`` present in them,
@@ -462,18 +467,20 @@ proc covBenchmark() =
     ## Runs "coverage" benchmarks testing and cross-method consistecy check. For each method, it creates 1,000 random solution candidates of any order, and then calculates the 
     ## number of prevented datapoints for each of them. For the consistency check, it removes (sets) the first 5 elements and calculates the number of prevented datapoints for the
     ## resulting solution. The results are printed to the console.
-    block:
-        styledEcho fgBlue, "Running coverage benchmark with int8 Tensor representation", resetStyle
+    when not defined(noarraymancer):
+        # Sometimes people will want super small binary without Arraymancer
+        block:
+            styledEcho fgBlue, "Running coverage benchmark with int8 Tensor representation", resetStyle
 
-        let presenceTensor = getPresenceTensor()
-        var b = zeros[int8](shape = [1, elementN])
-        b[0, 0..5] = 1
-        echo b
+            let presenceTensor = getPresenceTensor()
+            var b = zeros[int8](shape = [1, elementN])
+            b[0, 0..5] = 1
+            echo b
 
-        benchmark "arraymancer+randomizing", verbose=true:
-            discard preventedData(randomTensor[int8](shape = [1, elementN], sample_source = [0.int8, 1.int8]),
-                                    presenceTensor)
-        echo "Prevented count:", preventedData(b, presenceTensor)
+            benchmark "arraymancer+randomizing", verbose=true:
+                discard preventedData(randomTensor[int8](shape = [1, elementN], sample_source = [0.int8, 1.int8]),
+                                        presenceTensor)
+            echo "Prevented count:", preventedData(b, presenceTensor)
 
     block:
         styledEcho fgBlue, "\nRunning coverage benchmark with BitArray representation"
@@ -573,6 +580,7 @@ proc leastPreventing*(verbose: bool = true): seq[ElSolution] =
     ## Runs a search for single-element solutions preventing the least data, i.e. the least common elements *based on the filtered dataset*. Returns a sequence of [ElSolution]s which can
     ## be used on its own (by setting ``verbose`` to see it or by using ``saveResults``) or as a starting point for an exploration technique.
     let presenceBitArrays = getPresenceBitArrays()
+    if verbose: echo "\nRunning search for single-elements preventing the least data."
     benchmarkOnce "Searching for element removals preventing the least data:", verbose:
         var solutions = initHeapQueue[ElSolution]()
         for i in 0..<elementN:
@@ -582,14 +590,17 @@ proc leastPreventing*(verbose: bool = true): seq[ElSolution] =
             solutions.push(elSol)
         for i in 0..<elementN:
             let sol = solutions.pop()
-            if verbose: echo sol
+            if verbose: 
+                styledEcho styleBright, fgBlue, ($i).align(2), ": ", resetStyle, fgGreen, $sol, resetStyle
             result.add(sol)
 
 proc mostCommon*(verbose: bool = true): seq[ElSolution] =
     ## Convenience wrapper for the ``leastPreventing`` routine, which returns its results in reversed order. It was added for the sake of clarity.
+    if verbose: echo "\nRunning search for single-elements preventing the most data."
     let lpSol = leastPreventing(false).reversed()
     if verbose:
-        for sol in lpSol: echo sol
+        for i in 0..<elementN:
+            styledEcho styleBright, fgBlue, ($i).align(2), ": ", resetStyle, fgGreen, $lpSol[i], resetStyle
     result = lpSol
 
 
@@ -671,7 +682,7 @@ proc bruteForce*(verbose: bool = true): seq[ElSolution] =
 
 proc bruteForceInt*(verbose: bool = true): seq[ElSolution] =
     ## **(Key Routine)** A **really high performance** (400 times faster than native Python and 50 times faster than NumPy) brute force algorithm for finding the optimal solution for the problem of which 
-    ## N elements to remove from dataset to loose the least daya. Unlike the standard `bruteForce`_ algorithm does not use the `ElSolution`_ type and **cannot be easily extended** to other use cases and 
+    ## N elements to remove from dataset to lose the least data. Unlike the standard `bruteForce`_ algorithm does not use the `ElSolution`_ type and **cannot be easily extended** to other use cases and 
     ## **cannot be used for more than 64 elements** without sacrificing the performance, at which point `bruteForce`_ should be much better choice.
     assert elementN <= 64, "Brute Force with uint64 representation cannot run on more than 64 elements. You will need to take `bruteForce` instead and implement it for more than 64 elements."
     if verbose: styledEcho "\nRunning brute force algorithm for ", styleBright, fgMagenta, $elementN, resetStyle, " elements and ", styleBright, fgMagenta, $dataN, " data points."
@@ -721,6 +732,10 @@ proc geneticSearch*(
     ## carry over to the next iteration ``searchWidth``, the maximum number of iterations ``maxIterations``, the minimum number of iterations the solution has to fail to improve to be 
     ## considered.
     let presenceBitArrays = getPresenceBitArrays()
+    if verbose: 
+        styledEcho "\nRunning Genetic Search algorithm for ", styleBright, fgMagenta, $elementN, resetStyle, " elements and ", styleBright, fgMagenta, $dataN, " data points."
+        styledEcho "Initiating each level with ", styleBright, fgMagenta, $initialSolutionsN, resetStyle, " random solutions and expanding ", styleBright, fgMagenta, 
+            $searchWidth, resetStyle, " solutions at each level for up to ", styleBright, fgMagenta, $maxIterations, resetStyle, " iterations."
 
     benchmarkOnce "Genetic Search", verbose:
         var solutions = initHeapQueue[ElSolution]()
