@@ -457,7 +457,6 @@ To use form command line, provide parameters. Currently supported usage:
 --bruteForceInt   | -bfi  --> Run brute force algorithm with faster but not extensible uint64 representation after getting ETA. Up to 64 elements only.
 --geneticSearch   | -gs   --> Run a genetic search algorithm.
 --algorithmSearch | -as   --> Run a custom problem-informed best-first search algorithm.
---develpment      | -d    --> DEPRECATED: Run development code.
 
 """
 
@@ -817,9 +816,7 @@ when isMainModule:
     if "--expBenchmark" in args or "-eb" in args:
         expBenchmark()
 
-    if "--development" in args or "-d" in args or "--algorithmSearch" in args or "-as" in args:
-        if "--development" in args or "-d" in args:
-            echo "DEPRECATED and will be removed in the future. Please use --algorithmSearch instead."
+    if "--algorithmSearch" in args or "-as" in args:
         discard algorithmSearch(verbose=true)
 
     if "--bruteForce" in args or "-bf" in args:
