@@ -457,6 +457,8 @@ To use form command line, provide parameters. Currently supported usage:
 --bruteForceInt   | -bfi  --> Run brute force algorithm with faster but not extensible uint64 representation after getting ETA. Up to 64 elements only.
 --geneticSearch   | -gs   --> Run a genetic search algorithm.
 --algorithmSearch | -as   --> Run a custom problem-informed best-first search algorithm.
+--singleSolution  | -ss   --> Evaluate a single solution based on the elements provided as arguments after the flag. It can be stacked on itself like:
+                              ./nimcso -ss Ta W Hf Si  -ss V W Hf Si  --singleSolution Ta V
 
 """
 
@@ -855,6 +857,9 @@ when isMainModule:
 
     if "--mostCommon" in args or "-mc" in args:
         discard mostCommon(verbose=true)
+
+    if args[0] == "--singleSolution" or args[0] == "-ss":
+        discard singleSolution(args, verbose=true)
 
     styledEcho fgGreen, styleBright, "\nnimCSO Done!", resetStyle
 
