@@ -796,6 +796,28 @@ proc geneticSearch*(
                 styledEcho styleBright, fgBlue, ($order).align(2), ": ", resetStyle, fgGreen, $solutions[0], styleDim, fgBlack, "  (queue size: ", $len(solutions), ")", resetStyle
             result.add(solutions[0])
 
+proc singleSolution*(args: seq[string], verbose: bool = true): seq[ElSolution] =
+    ## Parses the arguments to find all -ss or --singleSolution words, splits the arguments to single tasks, and runs them through the `newElSolution`_ procedure. 
+    ## It then tests and returns all the solutions. It is primarily used for testing purposes if you want to manually test a set of solutions.
+    var 
+        processedArgs: seq[seq[string]] = @[]
+        n: int = -1
+
+    for arg in args:
+        if arg == "--singleSolution" or arg == "-ss":
+            n += 1
+            processedArgs.add(@[])
+        else:
+            processedArgs[n].add(arg)
+    
+    if verbose:
+        styledEcho "Testing solution with ", styleBright, fgMagenta, $processedArgs, resetStyle
+    let presenceBitArrays = getPresenceBitArrays()
+    for pa in processedArgs:
+        let elSol = newElSolution(pa, presenceBitArrays)
+        result.add(elSol)
+        if verbose: 
+            styledEcho styleBright, fgBlue, ($pa.len).align(2), ": ", resetStyle, fgGreen, $elSol, resetStyle
 
 # ********* Main Routine for Command Line Interface *********
 
