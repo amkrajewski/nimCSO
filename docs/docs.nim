@@ -1,6 +1,23 @@
 
-## **Navigation:** [nimCSO](nimcso.html) (core library) | [Changelog](docs/changelog.html) | [nimcso/bitArrayAutoconfigured](nimcso/bitArrayAutoconfigured.html)
-
+## **Navigation:** [nimCSO](nimcso.html) (core) | [Changelog](docs/changelog.html) | [nimcso/bitArrayAutoconfigured](nimcso/bitArrayAutoconfigured.html)
+## 
+## .. figure:: https://img.shields.io/badge/License-MIT-yellow.svg
+##   :alt: MIT License
+##   :target: https://opensource.org/licenses/MIT
+## 
+## .. figure:: https://img.shields.io/badge/JOSS%20Article-Draft-Badge?color=orange
+##   :alt: JOSS Article Draft
+##   :target: https://github.com/amkrajewski/nimCSO/blob/1588ef66cbce11b4aa4a7243a41b274d324789eb/paper/paper.pdf
+## 
+## .. figure:: https://github.com/amkrajewski/nimCSO/actions/workflows/testingOnPush_Apple.yaml/badge.svg
+##   :alt: macOS Testing
+## 
+## .. figure:: https://github.com/amkrajewski/nimCSO/actions/workflows/testingOnPush_Linux.yaml/badge.svg
+##   :alt: Linux Testing
+## 
+## .. figure:: https://github.com/amkrajewski/nimCSO/actions/workflows/testingOnPush_Windows.yaml/badge.svg
+##   :alt: Windows Testing
+## 
 ## **nim** **C**omposition **S**pace **O**ptimization is a high-performance tool implementing several methods for selecting components (data dimensions) in compositional datasets, which 
 ## optimize the data availability and density for applications such as machine learning (ML) given a constraint on the number of components to be selected, so that they can be designed in 
 ## a way balancing their accuracy and domain of applicability. Making said choice is a **combinatorically hard 
