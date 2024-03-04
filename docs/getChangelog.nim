@@ -18,9 +18,9 @@ let
     data = parseJson(response.body)
 
 if changelogType == "md":
-    targetFile.writeLine("**Navigation:** [nimCSO](../nimcso.html) (core) | [Changelog](changelog.html) | [nimcso/bitArrayAutoconfigured](../nimcso/bitArrayAutoconfigured.html)\n")
+    targetFile.writeLine("**Navigation:** [nimCSO](../../nimcso.html) (core) | [Changelog](changelog.html) | [nimcso/bitArrayAutoconfigured](../../nimcso/bitArrayAutoconfigured.html)\n")
 elif changelogType == "nim":
-    targetFile.writeLine("## **Navigation:** [nimCSO](../nimcso.html) (core) | [Changelog](changelog.html) | [nimcso/bitArrayAutoconfigured](../nimcso/bitArrayAutoconfigured.html)\n")
+    targetFile.writeLine("## **Navigation:** [nimCSO](../../nimcso.html) (core) | [Changelog](changelog.html) | [nimcso/bitArrayAutoconfigured](../../nimcso/bitArrayAutoconfigured.html)\n")
 
 for d in data:
     let 

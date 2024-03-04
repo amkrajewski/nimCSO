@@ -1,5 +1,5 @@
 # The MIT License (MIT)
-# Copyright (C) 2023 Adam M. Krajewski
+# Copyright (C) 2023-2024 Adam M. Krajewski
 # Copyright (c) 2020 Andre von Houck
 
 import std/hashes
@@ -8,7 +8,7 @@ import yaml
 import std/strutils
 import std/terminal
 
-## **Navigation:** [nimCSO](../nimcso.html) (core library) | [Changelog](../docs/changelog.html) | [nimcso/bitArrayAutoconfigured](bitArrayAutoconfigured.html)
+## **Navigation:** [nimCSO](../nimcso.html) (core library) | [Changelog](../_._/docs/changelog.html) | [nimcso/bitArrayAutoconfigured](bitArrayAutoconfigured.html)
 
 # Load config YAML file
 type Config = object

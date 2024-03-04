@@ -1,24 +1,30 @@
 
-## **Navigation:** [nimCSO](nimcso.html) (core) | [Changelog](docs/changelog.html) | [nimcso/bitArrayAutoconfigured](nimcso/bitArrayAutoconfigured.html) |
+## **Navigation:** [nimCSO](nimcso.html) (core) | [Changelog](_._/docs/changelog.html) | [nimcso/bitArrayAutoconfigured](nimcso/bitArrayAutoconfigured.html) |
 ## 
-## .. figure:: https://img.shields.io/badge/License-MIT-yellow.svg
+## |GitHub| |License| |ArticleDraft|
+## 
+## |TestMac| |TestLin| |TestWin|
+## 
+## .. |GitHub| image:: https://img.shields.io/badge/GitHub-Repository-Badge?logo=github&color=black
+##   :alt: GitHub
+##   :target: https://github.com/amkrajewski/nimCSO
+## 
+## .. |License| image:: https://img.shields.io/badge/License-MIT-yellow.svg
 ##   :alt: MIT License
 ##   :target: https://opensource.org/licenses/MIT
 ## 
-## .. figure:: https://img.shields.io/badge/JOSS%20Article-Draft-Badge?color=orange
+## .. |ArticleDraft| image:: https://img.shields.io/badge/JOSS%20Article-Draft-Badge?color=orange
 ##   :alt: JOSS Article Draft
 ##   :target: https://github.com/amkrajewski/nimCSO/blob/1588ef66cbce11b4aa4a7243a41b274d324789eb/paper/paper.pdf
 ## 
-## .. figure:: https://github.com/amkrajewski/nimCSO/actions/workflows/testingOnPush_Apple.yaml/badge.svg
+## .. |TestMac| image:: https://github.com/amkrajewski/nimCSO/actions/workflows/testingOnPush_Apple.yaml/badge.svg
 ##   :alt: macOS Testing
 ## 
-## .. figure:: https://github.com/amkrajewski/nimCSO/actions/workflows/testingOnPush_Linux.yaml/badge.svg
+## .. |TestLin| image:: https://github.com/amkrajewski/nimCSO/actions/workflows/testingOnPush_Linux.yaml/badge.svg
 ##   :alt: Linux Testing
 ## 
-## .. figure:: https://github.com/amkrajewski/nimCSO/actions/workflows/testingOnPush_Windows.yaml/badge.svg
+## .. |TestWin| image:: https://github.com/amkrajewski/nimCSO/actions/workflows/testingOnPush_Windows.yaml/badge.svg
 ##   :alt: Windows Testing
-## 
-## # Summary
 ## 
 ## **nim** **C**omposition **S**pace **O**ptimization is a high-performance tool implementing several methods for selecting components (data dimensions) in compositional datasets, which 
 ## optimize the data availability and density for applications such as machine learning (ML) given a constraint on the number of components to be selected, so that they can be designed in 
