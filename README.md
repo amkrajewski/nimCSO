@@ -2,6 +2,8 @@
 
 [![Static Badge](https://img.shields.io/badge/API-Documentation-e?logo=bookstack&logoColor=white&link=https%3A%2F%2Famkrajewski.github.io%2Fnimcso%2F)](https://nimcso.phaseslab.org)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Paper](https://img.shields.io/badge/JOSS%20Article-Draft-Badge?color=orange)](paper/paper.pdf)
+
 [![MacOS Tests (M1)](https://github.com/amkrajewski/nimCSO/actions/workflows/testingOnPush_Apple.yaml/badge.svg)](https://github.com/amkrajewski/nimCSO/actions/workflows/testingOnPush_Apple.yaml)
 [![Linux (Ubuntu) Tests](https://github.com/amkrajewski/nimCSO/actions/workflows/testingOnPush_Linux.yaml/badge.svg)](https://github.com/amkrajewski/nimCSO/actions/workflows/testingOnPush_Linux.yaml)
 [![Windows Tests](https://github.com/amkrajewski/nimCSO/actions/workflows/testingOnPush_Windows.yaml/badge.svg)](https://github.com/amkrajewski/nimCSO/actions/workflows/testingOnPush_Windows.yaml)
