@@ -1,5 +1,5 @@
 
-## **Navigation:** [nimCSO](nimcso.html) (core) | [Changelog](docs/changelog.html) | [nimcso/bitArrayAutoconfigured](nimcso/bitArrayAutoconfigured.html)
+## **Navigation:** [nimCSO](nimcso.html) (core) | [Changelog](docs/changelog.html) | [nimcso/bitArrayAutoconfigured](nimcso/bitArrayAutoconfigured.html) |
 ## 
 ## .. figure:: https://img.shields.io/badge/License-MIT-yellow.svg
 ##   :alt: MIT License
@@ -17,6 +17,8 @@
 ## 
 ## .. figure:: https://github.com/amkrajewski/nimCSO/actions/workflows/testingOnPush_Windows.yaml/badge.svg
 ##   :alt: Windows Testing
+## 
+## # Summary
 ## 
 ## **nim** **C**omposition **S**pace **O**ptimization is a high-performance tool implementing several methods for selecting components (data dimensions) in compositional datasets, which 
 ## optimize the data availability and density for applications such as machine learning (ML) given a constraint on the number of components to be selected, so that they can be designed in 
@@ -49,7 +51,7 @@
 ## human-readable ``YAML`` config file and plain text data files, making it easy to modify the search method and its parameters with 
 ## no knowledge of programming and only basic command line skills. A single command is used to recompile (``nim c -f``) and run (``-r``) problem (``-d:configPath=config.yaml``) with ``nimCSO`` 
 ## (``src/nimcso``) using one of several methods. Advanced users can also quickly customize the provided methods with brief scripts using the ``nimCSO`` as a data-centric library.
- 
+##
 
 ## # Usage
 ## ## Quick Start
