@@ -13,13 +13,16 @@ def elList2vec(elList):
     return np.array([1 if el in elList else 0 for el in elementOrder], dtype=np.int8)
 
 elMatrix = np.array([elList2vec(comp) for comp in elementalList], dtype=np.int8)
+elMatrixPacked = np.packbits(elMatrix, axis=-1)
 
 def elList2negVec(elList):
     return np.array([0 if el in elList else 1 for el in elementOrder], dtype=np.int8)
 
 def preventedData(elList):
-    um = elMatrix*elList2negVec(set(elementOrder).difference(set(elList)))
-    return np.amax(um, axis=1).sum()
+    negVec = elList2negVec(set(elementOrder).difference(set(elList)))
+    negVec = np.packbits(negVec)
+    um = np.bitwise_or.reduce(elMatrixPacked & negVec, axis=-1)
+    return np.sum(um != 0)
 
 assert preventedData(['Cr', 'Fe', 'Ni', 'Co', 'Al', 'Ti']) == 1955
 
