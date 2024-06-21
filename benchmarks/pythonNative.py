@@ -12,12 +12,11 @@ memoryUsed = sys.getsizeof(elementalList) + \
 print(f"Memory Used: {memoryUsed/1024:.1f} kB")
 
 def preventedDataNative(toCheck):
+    toCheck = frozenset(toCheck)
     prevented = 0
     for row in elementalList:
-        for el in toCheck:
-            if el in row:
-                prevented += 1
-                break
+        if not toCheck.isdisjoint(row):
+            prevented += 1
     return prevented
 
 assert len(elementalList)==2150
