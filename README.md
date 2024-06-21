@@ -127,7 +127,7 @@ Then, you can use the bundled [Nimble](https://github.com/nim-lang/nimble) tool 
 parses the configuration files. It's a single command:
 
 ```cmd
-nimble install  -y arraymancer yaml
+nimble install --depsOnly
 ```
 
 Finally, you can clone the repository and compile the library with:
