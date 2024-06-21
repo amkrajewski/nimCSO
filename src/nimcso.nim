@@ -449,7 +449,7 @@ template timeEstimate(iterN: int, verbose: bool, code: untyped) =
 
 
 proc echoHelp() = echo """
-To use form command line, provide parameters. Currently supported usage:
+To use from command line, provide parameters. Currently supported usage:
 
 --covBenchmark    | -cb   --> Run small coverage benchmarks under two implementations.
 --expBenchmark    | -eb   --> Run small node expansion benchmarks.

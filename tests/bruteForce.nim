@@ -3,7 +3,7 @@ import std/strutils
 
 import ../src/nimcso
 
-suite "Corectness Tests":
+suite "Correctness Tests":
     # Common setup for all tests without need to repeat it every time
     let pBitA = getPresenceBitArrays()
 

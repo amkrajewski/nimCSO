@@ -2,7 +2,7 @@ import std/unittest
 
 import ../src/nimcso
 
-suite "Corectness Tests":
+suite "Correctness Tests":
     test "Verify Brute Force / Brute Foce Int Consistency":
         let resultStandard = bruteForce(verbose=false)
         let resultInt = bruteForceInt(verbose=false)
