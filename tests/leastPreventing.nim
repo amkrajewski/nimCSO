@@ -3,7 +3,7 @@ import std/strutils
 
 import ../src/nimcso
 
-suite "Lest Preventing / Most Common Corectness Tests":
+suite "Least Preventing / Most Common Correctness Tests":
     setup:
         let pBitA = getPresenceBitArrays()
 
@@ -18,7 +18,7 @@ suite "Lest Preventing / Most Common Corectness Tests":
             elSol.prevented = prevented
             referenceResult.add(elSol)
 
-    test "Persistance of Filtered Dataset":
+    test "Persistence of Filtered Dataset":
         saveFilteredDataset("tests/filteredDataset_testResult.txt")
 
     test "Least Prevented Complete":

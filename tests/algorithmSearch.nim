@@ -3,7 +3,7 @@ import std/strutils
 
 import ../src/nimcso
 
-suite "Corectness Tests":
+suite "Correctness Tests":
 
     test "Algorithm Search results match the reference values":
         let pBitA = getPresenceBitArrays()
