@@ -101,42 +101,46 @@ elementList = [e['material']['elements'] for e in collection.find({
 
 # Installation
 
-If you want to use nimCSO on your machine (local or remote), the best course of action is likely to install dependencies and clone the software so that you can get a ready-to-use setup you can also customize. You can do it fairly easily in just a couple minutes.
+If you want to use nimCSO on your machine (local or remote), the best course of action is likely to install dependencies and clone the software so that you can get a ready-to-use setup you can also customize. You can do it fairly easily in just a couple of minutes.
 
-First you need to install [Nim](https://nim-lang.org/) which on most Unix (Linux/MacOS) systems is as simple as using:
+First, you need to install [Nim](https://nim-lang.org/) which on most **Unix** (Linux/MacOS) systems is very straightforward.
 
-- [**conda**](https://docs.conda.io/en/latest/) (or `mamba`) cross-platform package manager:
-  ```cmd
-  conda install -c conda-forge nim
-  ```
-
-- your distribution's package manager, for instance on Ubuntu/Debian **Linux**:
-  ```cmd
-  apt-get install nim
-  ```
-
-- on **MacOS**, assuming you have [Homebrew](https://brew.sh/) installed:
-  ```cmd
+- On **MacOS**, assuming you have [Homebrew](https://brew.sh/) installed, simply:
+  ```sh
   brew install nim
   ```
 
-- on **Windows**, you may want to follow these [installation instructions](https://nim-lang.org/install.html)
+- Using **`conda`**, [`miniconda`](https://docs.anaconda.com/miniconda/), `mamba`, or [`micromamba`](https://mamba.readthedocs.io/en/latest/user_guide/micromamba.html) cross-platform package manager:
+  ```sh
+  conda install -c conda-forge nim
+  ```
 
-Then, you can use the bundled [Nimble](https://github.com/nim-lang/nimble) tool (package manager for Nim, similar to Rust's *crate* or Python's *pip*) to install two top-level dependencies:
-[arraymancer](https://github.com/mratsim/Arraymancer), which is a powerful N-dimensional array library, and [yaml](https://nimyaml.org/index.html) which
-parses the configuration files. It's a single command:
+- On most **Linux** distributions, you should also be able to use your built-in package manager like `pacman`, `apt`, `yum`, or `rpm`; however, the default channel/repository, especially on enterprise systems, may have an unsupported version (`nim<2.0`). While we [do test `nimCSO` with `1.6` versions too](https://github.com/amkrajewski/nimCSO/blob/main/.github/workflows/testingOnPush_Linux.yaml), your experience may be degraded, so you may want to update it or go with another option.
 
-```cmd
+- You can, of course, also build it yourself from [`nim` source code](https://github.com/nim-lang/Nim)! It is relatively straightforward and fast compared to many other languages. 
+
+
+On **Windows**, you may consider using [`WSL`](https://learn.microsoft.com/en-us/windows/wsl/about), i.e., Windows Subsystem for Linux, which is strongly recommended, interplays well with VS Code, and will let you act as if you were on Linux. If you need to use Windows directly, you can follow these [installation instructions](https://nim-lang.org/install_windows.html).
+
+Then, you can use the bundled [Nimble](https://github.com/nim-lang/nimble) tool (package manager for Nim, similar to Rust's `crate` or Python's `pip`) to install two top-level dependencies:
+- [arraymancer](https://github.com/mratsim/Arraymancer), which is a powerful N-dimensional array library, and 
+- [yaml](https://nimyaml.org/index.html) which parses the configuration files. 
+
+It's a single command:
+
+```sh
 nimble install --depsOnly
 ```
 
 Finally, you can clone the repository and compile the library with:
-```cmd
+```sh
 git clone https://github.com/amkrajewski/nimcso
 cd nimcso
 nim c -r -f -d:release src/nimcso
 ```
-which will compile the library and print out concise `help` message with available CLI options. And now, you are ready to use `nimCSO` :)
+which will compile the library and print out concise `help` message with available CLI options. 
+
+And now, you are ready to use `nimCSO` :)
 
 
 # Citing
