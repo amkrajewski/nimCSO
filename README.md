@@ -158,4 +158,27 @@ And now, you are ready to use `nimCSO` :)
 
 - If you must use `nim<2.0` for any reason, you may want to manually install package versions known to work with `nim=1.6.x` using `nimble install -y yaml@1.1.0 arraymancer@0.7.32`.
 
+# Contributing
+
+## What to Contribute
+
+- **We explicitly welcome unsolicited user feedback and feature requests submitted through GitHub Issues.**
+
+- If you wish to contribute to the development of `nimCSO` you are very welcome to do so by forking the repository and creating a pull request. As of Summer 2024, we are actively developing the code and using it in two separate research projects, so we should get back to you within a week or two. 
+
+- We are particularly interested in:
+  - **Performance improvements**, even if marginal.
+  - Additional **I/O file format handling**, like HDF5, especially on the input data side.
+  - Additional **genetic algorithms**, ideally, outperforming the current ones.
+  - Additional test databases and configurations. We would love to see some **high entropy ceramics**, **glasses**, and **metallic glasses** on the materials science side, **complex microbial communities** on the biology side, and **polypharmacy-related data** on the pharmaceutical side.
+
+- We are also open to helping you run our code in non-profit or academic research cases! Please do not hesitate to contact us through the GitHub issues or [by email](mailto:ak@psu.edu).
+
+
+## Rules for Contributing
+
+- **We do not enforce any strict style convention for `nimCSO` contributions, as long as code maintains high readability and overall quality.**
+
+- If you are unsure on what style to use, consult [`nim` compiler style convention](https://nim-lang.org/docs/nep1.html) and try to stick to it. In general, style conventions in `nim` language are a very tricky subject compared to most languages. It is explicitly designed to not have code style conventions, even on the basic level like naming, and makes programmers read code closer to how it will be parsed into AST. The result is that collaborative projects use camelCase in one file to define a function and then kebab-case in another one to call it. Surprisingly to some, `nim` programmers tend to cherish that and even the largest projects like `Arraymancer` allow it.
+
 # Citing
