@@ -11,6 +11,15 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        nim:
+          - '1.4.x'
+          - '1.6.x'
+          - '2.0.0'
+          - '2.0.x'
+          - 'stable'
+    name: Nim ${{ matrix.nim }} Test
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -18,7 +27,7 @@ jobs:
       - name: Install Nim
         uses: jiro4989/setup-nim-action@v2
         with:
-          nim-version: '2.0.2'
+          nim-version: ${{ matrix.nim }}
           repo-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Install nimCSO (and dependencies)
