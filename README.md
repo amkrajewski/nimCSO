@@ -103,6 +103,8 @@ elementList = [e['material']['elements'] for e in collection.find({
 
 If you want to use nimCSO on your machine (local or remote), the best course of action is likely to install dependencies and clone the software so that you can get a ready-to-use setup you can also customize. You can do it fairly easily in just a couple of minutes.
 
+## Nim (compiler)
+
 First, you need to install [Nim](https://nim-lang.org/) which on most **Unix** (Linux/MacOS) systems is very straightforward.
 
 - On **MacOS**, assuming you have [Homebrew](https://brew.sh/) installed, simply:
@@ -122,6 +124,8 @@ First, you need to install [Nim](https://nim-lang.org/) which on most **Unix** (
 
 On **Windows**, you may consider using [`WSL`](https://learn.microsoft.com/en-us/windows/wsl/about), i.e., Windows Subsystem for Linux, which is strongly recommended, interplays well with VS Code, and will let you act as if you were on Linux. If you need to use Windows directly, you can follow these [installation instructions](https://nim-lang.org/install_windows.html).
 
+## nimCSO
+
 Then, you can use the bundled [Nimble](https://github.com/nim-lang/nimble) tool (package manager for Nim, similar to Rust's `crate` or Python's `pip`) to install two top-level dependencies:
 - [arraymancer](https://github.com/mratsim/Arraymancer), which is a powerful N-dimensional array library, and 
 - [yaml](https://nimyaml.org/index.html) which parses the configuration files. 
@@ -130,6 +134,12 @@ It's a single command:
 
 ```sh
 nimble install --depsOnly
+```
+
+or, explicitly:
+
+```sh
+nimble install -y arraymancer yaml
 ```
 
 Finally, you can clone the repository and compile the library with:
@@ -142,5 +152,10 @@ which will compile the library and print out concise `help` message with availab
 
 And now, you are ready to use `nimCSO` :)
 
+## Install Notes
+
+- In general, `nimble` could give you a very similar experience to `pip` and allow you to install `nimCSO` from [`nimble` index](https://nimble.directory/pkg/nimcso) (PyPI equivalent), without manual cloning and compilation. The reason above README undergoes such additional gymnastics and places the binary in the local `src` rather than some more general location, is that `nimCSO` is meant to be compiled with local YAML config files on a per-task basis, taking advantage of optimizations enabled by knowing task specifics. Thus, having it installed would, *I think*, confuse users and perhaps leave unnecessary files behind after task completion.
+
+- If you must use `nim<2.0` for any reason, you may want to manually install package versions known to work with `nim=1.6.x` using `nimble install -y yaml@1.1.0 arraymancer@0.7.32`.
 
 # Citing
