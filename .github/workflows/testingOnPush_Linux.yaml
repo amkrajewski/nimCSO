@@ -9,7 +9,32 @@ on:
   workflow_dispatch:
 
 jobs:
-  test:
+  testStable:
+    runs-on: ubuntu-latest
+    name: Nim stable Test
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Nim
+        uses: jiro4989/setup-nim-action@v2
+        with:
+          nim-version: 'stable'
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Install nimCSO (and dependencies)
+        run: nimble install -y
+
+      - name: Compile minCSO
+        run: nim c -d:release src/nimcso
+
+      - name: Runtime all tests under release mode
+        run: nim c -r -f -d:release -d:configPath=tests/config.yaml tests/runAll
+        
+      - name: Runtime all tests under danger mode
+        run: nim c -r -f -d:danger -d:configPath=tests/config.yaml tests/runAll
+
+  testVersionMatrix:
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -18,7 +43,6 @@ jobs:
           - '1.6.x'
           - '2.0.0'
           - '2.0.x'
-          - 'stable'
     name: Nim ${{ matrix.nim }} Test
     steps:
       - name: Checkout
@@ -31,7 +55,7 @@ jobs:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Install nimCSO (and dependencies)
-        run: nimble install -y
+        run: nimble install -y arraymancer yaml
 
       - name: Compile minCSO
         run: nim c -d:release src/nimcso
