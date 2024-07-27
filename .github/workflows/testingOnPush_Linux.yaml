@@ -39,7 +39,6 @@ jobs:
     strategy:
       matrix:
         nim:
-          - '1.4.x'
           - '1.6.x'
           - '2.0.0'
           - '2.0.x'
@@ -55,7 +54,9 @@ jobs:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Install nimCSO (and dependencies)
-        run: nimble install -y arraymancer yaml
+        run: |
+          nimble install -y yaml@1.1.0
+          nimble install -y arraymancer@0.7.32
 
       - name: Compile minCSO
         run: nim c -d:release src/nimcso
