@@ -133,7 +133,7 @@ A.M.K. was reponsible for conceptualization, methodology, software, testing and 
 
 # Acknowledgements
 
-This work has been funded through grants: **DOE-ARPA-E DE-AR0001435**, **NSF-POSE FAIN-2229690**, and **ONR N00014-23-2721**. We would also like to acknowledge Dr. Jonathan Siegel at Texas A&M University for several valuable discussions and feedback on the project.
+This work has been funded through grants: **DOE-ARPA-E DE-AR0001435**, **NSF-POSE FAIN-2229690**, and **ONR N00014-23-2721**. We would also like to acknowledge Dr. Jonathan Siegel at Texas A&M University for several valuable discussions and feedback on the project, and Dr. Bradley Dice for his code contributions to the project during the review process, such as optimization of the native Python implementation.
 
 
 # References
