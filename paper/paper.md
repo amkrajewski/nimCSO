@@ -40,7 +40,7 @@ bibliography: paper.bib
 
 `nimCSO` is a high-performance tool implementing several methods for selecting components (data dimensions) in compositional datasets, which optimize the data availability and density for applications such as machine learning. Making said choice is a combinatorically hard problem for complex compositions existing in high-dimensional spaces due to the interdependency of components being present. Such spaces are encountered, for instance, in materials science, where datasets on Compositionally Complex Materials (CCMs) often span 20-45 chemical elements, 5-10 processing types, and several temperature regimes, for up to 60 total data dimensions.
 
-At its core, `nimCSO` leverages the metaprogramming ability of the Nim language [@Rumpf2023] to optimize itself at compile time, both in terms of speed and memory handling, to the specific problem statement and dataset at hand based on a human-readable configuration file. As demonstrated in the [Methods and Performance](#methods-and-performance) section, `nimCSO` reaches the physical limits of the hardware (L1 cache latency) and can outperform an efficient native Python implementation over 400 times in terms of speed and 50 times in terms of memory usage (*not* counting interpreter), while also outperforming NumPy implementation 35 and 17 times, respectively, when checking a candidate solution.
+At its core, `nimCSO` leverages the metaprogramming ability of the Nim language [@Rumpf2023] to optimize itself at compile time, both in terms of speed and memory handling, to the specific problem statement and dataset at hand based on a human-readable configuration file. As demonstrated in the [Methods and Performance](#methods-and-performance) section, `nimCSO` reaches the physical limits of the hardware (L1 cache latency) and can outperform an efficient native Python implementation over 100 times in terms of speed and 50 times in terms of memory usage (*not* counting interpreter), while also outperforming NumPy implementation 37 and 17 times, respectively, when checking a candidate solution.
 
 `nimCSO` is designed to be both (1) a user-ready tool, implementing two efficient brute-force approaches (for handling up to 25 dimensions), a custom search algorithm (for up to 40 dimensions), and a genetic algorithm (for any dimensionality), and (2) a scaffold for building even more elaborate methods in the future, including heuristics going beyond data availability. All configuration is done with a simple human-readable `YAML` config file and plain text data files, making it easy to modify the search method and its parameters with no knowledge of programming and only basic command line skills.
 
@@ -67,13 +67,13 @@ Internally, `nimCSO` is built around storing the data and solutions in one of tw
 +----------------+----------------+------------------+-----------------------------+----------------------------+
 | Tool           | Object         | Time per Dataset | Time per Entry *(Relative)* | Database Size *(Relative)* |
 +:===============+:===============+:================:+:===========================:+:==========================:+
-| `Python`^3.11^ | `set`          | 327.4 µs         | 152.3 ns *(x1)*             | 871.5 kB *(x1)*            |
+| `Python`^3.11^ | `set`          | 107.5 µs         | 50.0 ns *(x1)*              | 871.5 kB *(x1)*            |
 +----------------+----------------+------------------+-----------------------------+----------------------------+
-| `NumPy`^1.26^  | `array`        | 40.1 µs          | 18.6 ns  *(x8.3)*           | 79.7 kB  *(x10.9)*         |
+| `NumPy`^1.26^  | `array`        | 36.4 µs          | 16.9 ns  *(x3.0)*           | 79.7 kB  *(x10.9)*         |
 +----------------+----------------+------------------+-----------------------------+----------------------------+
-| `nimCSO`^0.6^  | `BitArray`     | 9.2 µs           | 4.4 ns   *(x34.6)*          | 50.4 kB  *(x17.3)*         |
+| `nimCSO`^0.6^  | `BitArray`     | 6.9 µs           | 3.2 ns   *(x15.6)*          | 50.4 kB  *(x17.3)*         |
 +----------------+----------------+------------------+-----------------------------+----------------------------+
-| `nimCSO`^0.6^  |`uint64`        | 0.79 µs          | 0.37 ns  *(x413)*           | 16.8 kB  *(x52)*           |
+| `nimCSO`^0.6^  |`uint64`        | 0.98 µs          | 0.456 ns  *(x110)*          | 16.8 kB  *(x52)*           |
 +================+================+==================+=============================+============================+
 
 Table: Benchmarks of (1) average time to evaluate how many datapoints would be lost if 5 selected components were removed from a dataset with 2,150 data points spanning 37 components, averaged over 10,000 runs, and (2) the size of the data structure representing the dataset. Values were obtained by running scripts in `benchmarks` directory on Apple M2 Max CPU.
@@ -109,17 +109,17 @@ The tool comes with two pre-defined example problems to demonstrate its use. The
 +--------------------------------------------------+----------+-------------+
 | Task Definition (`nim c -r -f -d:release ...`)   | Time (s) | Memory (MB) |
 +:=================================================+:=========+:===========:+
-| `-d:configPath=config.yaml src/nimcso -as`       | 302s     | 488 MB      |
+| `-d:configPath=config.yaml src/nimcso -as`       | 308s     | 488 MB      |
 +--------------------------------------------------+----------+-------------+
-| `-d:configPath=config.yaml src/nimcso -gs`       | 5.8s     | 3.2 MB      |
+| `-d:configPath=config.yaml src/nimcso -gs`       | 5.10s    | 3.2 MB      |
 +--------------------------------------------------+----------+-------------+
-| `-d:configPath=config_rhea.yaml src/nimcso -as`  | 0.076s   | 2.2 MB      |
+| `-d:configPath=config_rhea.yaml src/nimcso -as`  | 0.073s   | 2.2 MB      |
 +--------------------------------------------------+----------+-------------+
-| `-d:configPath=config_rhea.yaml src/nimcso -gs`  | 0.429s   | 2.1 MB      |
+| `-d:configPath=config_rhea.yaml src/nimcso -gs`  | 0.426s   | 2.1 MB      |
 +--------------------------------------------------+----------+-------------+
-| `-d:configPath=config_rhea.yaml src/nimcso -bf`  | 4.171s   | 2.0 MB      |
+| `-d:configPath=config_rhea.yaml src/nimcso -bf`  | 3.726s   | 2.0 MB      |
 +--------------------------------------------------+----------+-------------+
-| `-d:configPath=config_rhea.yaml src/nimcso -bfi` | 0.459s   | 2.0 MB      |
+| `-d:configPath=config_rhea.yaml src/nimcso -bfi` | 0.495s   | 2.0 MB      |
 +--------------------------------------------------+----------+-------------+
 
 Table: Four example tasks alongside typical CPU time and memory usage on Apple M2 Max.
