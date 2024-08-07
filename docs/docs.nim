@@ -135,40 +135,86 @@
 ## 
 ## # Installation
 ## 
-## If you want to use nimCSO on your machine (local or remote), the best course of action is likely to install dependencies and clone the software so that you can get a ready-to-use setup you can also customize.You can do it fairly easily in just a couple minutes. 
+## If you want to use nimCSO on your machine (local or remote), the best course of action is likely to install dependencies and clone the software so that you can get a ready-to-use setup you can also customize. You can do it fairly easily in just a couple of minutes.
 ## 
-## First you need to install Nim [Nim](https://nim-lang.org/) which on most Unix (Linux/MacOS) systems is as simple as using:
+## ## Nim (compiler)
 ## 
-## - [conda](https://docs.conda.io/en/latest/) (or ``mamba``) cross-platform package manager:
-##   ```cmd
-##   conda install -c conda-forge nim
-##   ```
+## First, you need to install [Nim](https://nim-lang.org/) language compiler which on most **Unix** (Linux/MacOS) systems is very straightforward.
 ## 
-## - your distribution's package manager, for instance on Ubuntu/Debian **Linux**:
-##   ```cmd
-##   apt-get install nim
-##   ```
-## 
-## - on **MacOS**, assuming you have [Homebrew](https://brew.sh/) installed:
-##   ```cmd
+## - On **MacOS**, assuming you have [Homebrew](https://brew.sh/) installed, simply:
+##   ```sh
 ##   brew install nim
 ##   ```
 ## 
-## - on **Windows**, you may want to follow these [installation instructions](https://nim-lang.org/install.html)
+## - Using **`conda`**, [`miniconda`](https://docs.anaconda.com/miniconda/), `mamba`, or [`micromamba`](https://mamba.readthedocs.io/en/latest/user_guide/micromamba.html) cross-platform package manager:
+##   ```sh
+##   conda install -c conda-forge nim
+##   ```
 ## 
-## Then, you can use the boundeled [Nimble](https://github.com/nim-lang/nimble) tool (package manager for Nim, similar to Rust's *crate* or Python's *pip*) to install two top-level dependencies: 
-## [arraymancer](https://github.com/mratsim/Arraymancer), which is a powerful N-dimensional array library, and [yaml](https://nimyaml.org/index.html) which 
-## parses the configuration files. Its a single command:
+## - On most **Linux** distributions, you should also be able to use your built-in package manager like `pacman`, `apt`, `yum`, or `rpm`; however, the default channel/repository, especially on enterprise systems, may have an unsupported version (`nim<2.0`). While we [do test `nimCSO` with `1.6` versions too](https://github.com/amkrajewski/nimCSO/blob/main/.github/workflows/testingOnPush_Linux.yaml), your experience may be degraded, so you may want to update it or go with another option.
 ## 
-## ```cmd
-## nimble install  -y arraymancer yaml
+## - You can, of course, also build it yourself from [`nim` source code](https://github.com/nim-lang/Nim)! It is relatively straightforward and fast compared to many other languages. 
+## 
+## 
+## On **Windows**, you may consider using [`WSL`](https://learn.microsoft.com/en-us/windows/wsl/about), i.e., Windows Subsystem for Linux, which is strongly recommended, interplays well with VS Code, and will let you act as if you were on Linux. If you need to use Windows directly, you can follow these [installation instructions](https://nim-lang.org/install_windows.html).
+## 
+## ## nimCSO
+## 
+## Then, you can use the bundled [Nimble](https://github.com/nim-lang/nimble) tool (package manager for Nim, similar to Rust's `crate` or Python's `pip`) to install two top-level `nim` dependencies:
+## - [arraymancer](https://github.com/mratsim/Arraymancer), which is a powerful N-dimensional array library, and 
+## - [yaml](https://nimyaml.org/index.html) which parses the configuration files. 
+## 
+## It's a single command:
+## 
+## ```sh
+## nimble install --depsOnly
+## ```
+## 
+## or, explicitly:
+## 
+## ```sh
+## nimble install -y arraymancer yaml
 ## ```
 ## 
 ## Finally, you can clone the repository and compile the library with:
-## ```cmd
+## ```sh
 ## git clone https://github.com/amkrajewski/nimcso
 ## cd nimcso
 ## nim c -r -f -d:release src/nimcso
 ## ```
-## which will compile the library and print out concise ``help`` message with available CLI options. And now, you are ready to use ``nimCSO`` :)
+## which will compile the library and print out concise `help` message with available CLI options. 
 ## 
+## And now, you are ready to use `nimCSO` :)
+## 
+## ## Install Notes
+## 
+## - In general, `nimble` could give you a very similar experience to `pip` and allow you to install `nimCSO` from [`nimble` index](https://nimble.directory/pkg/nimcso) (PyPI equivalent), without manual cloning and compilation. The reason above README undergoes such additional gymnastics and places the binary in the local `src` rather than some more general location, is that `nimCSO` is meant to be compiled with local YAML config files on a per-task basis, taking advantage of optimizations enabled by knowing task specifics. Thus, having it installed would, *I think*, confuse users and perhaps leave unnecessary files behind after task completion.
+## 
+## - If you must use `nim<2.0` for any reason, you may want to manually install package versions known to work with `nim=1.6.x` using `nimble install -y yaml@1.1.0 arraymancer@0.7.32`.
+## 
+## - You can use `nimble list -i` to verify that Nim packages were installed correctly.
+## 
+## - Please note that `nim` used by `nimCSO` is the [nim programming language](https://nim-lang.org/), not a `python` package. While `conda` will work perfectly on Unix systems, you cannot install it with `pip install nim`, as the [`nim`](https://pypi.org/project/nim/) Python package on PyPI is an entirely different thing (an obscure interface to the Network Interface Monitor).
+## 
+## # Contributing
+## 
+## ## What to Contribute
+## 
+## - **We explicitly welcome unsolicited user feedback and feature requests submitted through GitHub Issues.**
+## 
+## - If you wish to contribute to the development of `nimCSO` you are very welcome to do so by forking the repository and creating a pull request. As of Summer 2024, we are actively developing the code and using it in two separate research projects, so we should get back to you within a week or two. 
+## 
+## - We are particularly interested in:
+##   - **Performance improvements**, even if marginal.
+##   - Additional **I/O file format handling**, like HDF5, especially on the input data side.
+##   - Additional **genetic algorithms**, ideally, outperforming the current ones.
+##   - Additional test databases and configurations. We would love to see some **high entropy ceramics**, **glasses**, and **metallic glasses** on the materials science side, **complex microbial communities** on the biology side, and **polypharmacy-related data** on the pharmaceutical side.
+## 
+## - We are also open to helping you run our code in non-profit or academic research cases! Please do not hesitate to contact us through the GitHub issues or [by email](mailto:ak@psu.edu).
+## 
+## 
+## ## Rules for Contributing
+## 
+## - **We do not enforce any strict style convention for `nimCSO` contributions, as long as code maintains high readability and overall quality.**
+## 
+## - If you are unsure on what style to use, consult [`nim` compiler style convention](https://nim-lang.org/docs/nep1.html) and try to stick to it. In general, style conventions in `nim` language are a very tricky subject compared to most languages. It is explicitly designed to not have code style conventions, even on the basic level like naming, and makes programmers read code closer to how it will be parsed into AST. The result is that collaborative projects use camelCase in one file to define a function and then kebab-case in another one to call it. Surprisingly to some, `nim` programmers tend to cherish that and even the largest projects like `Arraymancer` allow it.## 
