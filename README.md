@@ -105,7 +105,7 @@ If you want to use nimCSO on your machine (local or remote), the best course of 
 
 ## Nim (compiler)
 
-First, you need to install [Nim](https://nim-lang.org/) which on most **Unix** (Linux/MacOS) systems is very straightforward.
+First, you need to install [Nim](https://nim-lang.org/) language compiler which on most **Unix** (Linux/MacOS) systems is very straightforward.
 
 - On **MacOS**, assuming you have [Homebrew](https://brew.sh/) installed, simply:
   ```sh
@@ -126,7 +126,7 @@ On **Windows**, you may consider using [`WSL`](https://learn.microsoft.com/en-us
 
 ## nimCSO
 
-Then, you can use the bundled [Nimble](https://github.com/nim-lang/nimble) tool (package manager for Nim, similar to Rust's `crate` or Python's `pip`) to install two top-level dependencies:
+Then, you can use the bundled [Nimble](https://github.com/nim-lang/nimble) tool (package manager for Nim, similar to Rust's `crate` or Python's `pip`) to install two top-level `nim` dependencies:
 - [arraymancer](https://github.com/mratsim/Arraymancer), which is a powerful N-dimensional array library, and 
 - [yaml](https://nimyaml.org/index.html) which parses the configuration files. 
 
@@ -157,6 +157,10 @@ And now, you are ready to use `nimCSO` :)
 - In general, `nimble` could give you a very similar experience to `pip` and allow you to install `nimCSO` from [`nimble` index](https://nimble.directory/pkg/nimcso) (PyPI equivalent), without manual cloning and compilation. The reason above README undergoes such additional gymnastics and places the binary in the local `src` rather than some more general location, is that `nimCSO` is meant to be compiled with local YAML config files on a per-task basis, taking advantage of optimizations enabled by knowing task specifics. Thus, having it installed would, *I think*, confuse users and perhaps leave unnecessary files behind after task completion.
 
 - If you must use `nim<2.0` for any reason, you may want to manually install package versions known to work with `nim=1.6.x` using `nimble install -y yaml@1.1.0 arraymancer@0.7.32`.
+
+- You can use `nimble list -i` to verify that Nim packages were installed correctly.
+
+- Please note that `nim` used by `nimCSO` is the [nim programming language](https://nim-lang.org/), not a `python` package. While `conda` will work perfectly on Unix systems, you cannot install it with `pip install nim`, as the [`nim`](https://pypi.org/project/nim/) Python package on PyPI is an entirely different thing (an obscure interface to the Network Interface Monitor).
 
 # Contributing
 
