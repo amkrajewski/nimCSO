@@ -1,5 +1,5 @@
 @article{Yeh2004,
-   abstract = {A new approach for the design of alloys is presented in this study. These "high-entropy alloys" with multi-principal elements were synthesized using well-developed processing technologies. Preliminary results demonstrate examples of 
+   abstract = {A new approach for the design of alloys is presented in this study. These "high-entropy alloys" with multi-principal elements were synthesized using well-developed processing technologies. Preliminary results demonstrate examples of
    the alloys with simple crystal structures, nanostructures, and promising mechanical properties. This approach may be opening a new era in materials science and engineering.},
    author = {Jien Wei Yeh and Swe Kai Chen and Su Jien Lin and Jon Yiew Gan and Tsung Shune Chin and Tao Tsung Shun and Chun Huei Tsau and Shou Yi Chang},
    doi = {10.1002/adem.200300567},
@@ -15,11 +15,11 @@
 
 
 @article{Cantor2004,
-   abstract = {Multicomponent alloys containing several components in equal atomic proportions have been manufactured by casting and melt spinning, and their microstructures and properties have been investigated by a combination of optical microscopy, 
-   scanning electron microscopy, electron probe microanalysis, X-ray diffractrometry and microhardness measurements. Alloys containing 16 and 20 components in equal proportions are multiphase, crystalline and brittle both as-cast and after melt 
-   spinning. A five component Fe20Cr20Mn20Ni20Co20 alloy forms a single fcc solid solution which solidifies dendritically. A wide range of other six to nine component late transition metal rich multicomponent alloys exhibit the same majority fcc primary 
-   dendritic phase, which can dissolve substantial amounts of other transition metals such as Nb, Ti and V. More electronegative elements such as Cu and Ge are less stable in the fcc dendrites and are rejected into the interdendritic regions. The total 
-   number of phases is always well below the maximum equilibrium number allowed by the Gibbs phase rule, and even further below the maximum number allowed under non-equilibrium solidification conditions. Glassy structures are not formed by casting or 
+   abstract = {Multicomponent alloys containing several components in equal atomic proportions have been manufactured by casting and melt spinning, and their microstructures and properties have been investigated by a combination of optical microscopy,
+   scanning electron microscopy, electron probe microanalysis, X-ray diffractrometry and microhardness measurements. Alloys containing 16 and 20 components in equal proportions are multiphase, crystalline and brittle both as-cast and after melt
+   spinning. A five component Fe20Cr20Mn20Ni20Co20 alloy forms a single fcc solid solution which solidifies dendritically. A wide range of other six to nine component late transition metal rich multicomponent alloys exhibit the same majority fcc primary
+   dendritic phase, which can dissolve substantial amounts of other transition metals such as Nb, Ti and V. More electronegative elements such as Cu and Ge are less stable in the fcc dendrites and are rejected into the interdendritic regions. The total
+   number of phases is always well below the maximum equilibrium number allowed by the Gibbs phase rule, and even further below the maximum number allowed under non-equilibrium solidification conditions. Glassy structures are not formed by casting or
    melt spinning of late transition metal rich multicomponent alloys, indicating that the confusion principle does not apply, and other factors are more important in promoting glass formation. © 2003 Elsevier B.V.},
    author = {B. Cantor and I. T.H. Chang and P. Knight and A. J.B. Vincent},
    doi = {10.1016/j.msea.2003.10.257},
@@ -35,18 +35,18 @@
 }
 
 @article{Williams1964,
-   abstract = {ALGORITHM 230 MATRIX PERMUTATION J. BOOTHROYD (Reed 18 Nov. 1963) English Electric-Leo Computers, Kidsgrove, Stoke-on-Trent, England procedure matrixperm(a,b,j,k,s,d,n,p); value n; real a,b; integer array s,d; integcr j,k,n,p; eonlmcnt 
-   a procedure using Jensen's device which exchanges rows or colunms of a matrix to achieve a rearrangement specified by the permutation vectors s,d[1 :n]. Elements of s specify the original source locations while elements of d specify the desired 
-   destination locations. Normally a and b will be called as sub-scripted variables of the same array. The parameters j,k nominate the subscripts of the dimension affected by the permutation , p is the Jensen parameter. As an example of the use of 
-   this procedure, suppose r,c[1 :n] to contain the row and column sub-scripts of the successive matrix pivots used in a matrix inversion of an array a[l:n,l:n]; i.e. r[1], c[1] are the relative sub-scripts of the first pivot r[21, c[2] those of the 
-   second pivot and so on. The two calls matrixperm will perform the required rearrangement of rows and columns respectively; begin integer array tag, loc[1 :n]; integer i,t; real w; comment set up initial vector tag number and address arrays ; for 
-   i := 1 step 1 until n do tag[i] := loc[i] := i; comment start permutation; for i := 1 step 1 until n do begin t := s[i]; j := loc[t]; k := d[i]; ifj#k then begin for p := 1 step 1 until n do beginw := a; a := b; b := w cud; tag[j] := tag[k]; tag[k] 
-   := t; loc[t] := loc[tag[jJ]; loc[tag[jl] := j end jk conditional end i loop end matrixperm ALGORITHM 231 ' ~ MATRIX INVERSION J. BOOTHROYD (Reed 18 Nov. 1963) English Electric-Leo Computers, Kidsgrove, Stoke-on-Trent, England procedure matrixinvert 
-   (a,n,eps,singuIar); value n,eps; array a; integer n; real eps; label singular; eomn~ent inverts a matrix in its own space using the Gauss-Jordan method with complete matrix pivoting. I.e., at each stage the pivot has the largest absolute value of 
-   any element in the remaining matrix. The coordinates of the successive matrix pivots used at each stage of the reduction are recorded in the successive element positions of the row and column index vectors r and c. These are later called upon by 
-   the procedure matrixperm which rearranges the rows and columns of the matrix. If the matrix is singular the procedure exits to an appropriate label in the main program; begin integer i,j,k,l,pivi,pivj,p; real pivot; integer array r,c[1 :hi ; comment 
-   set row and column index vectors; for i := 1 step 1 until n do r[i] := c[i] := i; comment find initial pivot; pivi := pivj := 1; for i := 1 step 1 until n do for j := 1 step 1 until n do if abs (a[i,j]) > abs (a[pivi,pivj]) then begin pivi := i; 
-   pivj := j end; eomment start reduction; for i := 1 step 1 until n do begin l := r[i]; r[i] := r[pivi] begin comment here include an appropriate output procedure to record i and the current values of r[l:n] and ell:n]; go to singular end; forj := n 
+   abstract = {ALGORITHM 230 MATRIX PERMUTATION J. BOOTHROYD (Reed 18 Nov. 1963) English Electric-Leo Computers, Kidsgrove, Stoke-on-Trent, England procedure matrixperm(a,b,j,k,s,d,n,p); value n; real a,b; integer array s,d; integcr j,k,n,p; eonlmcnt
+   a procedure using Jensen's device which exchanges rows or colunms of a matrix to achieve a rearrangement specified by the permutation vectors s,d[1 :n]. Elements of s specify the original source locations while elements of d specify the desired
+   destination locations. Normally a and b will be called as sub-scripted variables of the same array. The parameters j,k nominate the subscripts of the dimension affected by the permutation , p is the Jensen parameter. As an example of the use of
+   this procedure, suppose r,c[1 :n] to contain the row and column sub-scripts of the successive matrix pivots used in a matrix inversion of an array a[l:n,l:n]; i.e. r[1], c[1] are the relative sub-scripts of the first pivot r[21, c[2] those of the
+   second pivot and so on. The two calls matrixperm will perform the required rearrangement of rows and columns respectively; begin integer array tag, loc[1 :n]; integer i,t; real w; comment set up initial vector tag number and address arrays ; for
+   i := 1 step 1 until n do tag[i] := loc[i] := i; comment start permutation; for i := 1 step 1 until n do begin t := s[i]; j := loc[t]; k := d[i]; ifj#k then begin for p := 1 step 1 until n do beginw := a; a := b; b := w cud; tag[j] := tag[k]; tag[k]
+   := t; loc[t] := loc[tag[jJ]; loc[tag[jl] := j end jk conditional end i loop end matrixperm ALGORITHM 231 ' ~ MATRIX INVERSION J. BOOTHROYD (Reed 18 Nov. 1963) English Electric-Leo Computers, Kidsgrove, Stoke-on-Trent, England procedure matrixinvert
+   (a,n,eps,singuIar); value n,eps; array a; integer n; real eps; label singular; eomn~ent inverts a matrix in its own space using the Gauss-Jordan method with complete matrix pivoting. I.e., at each stage the pivot has the largest absolute value of
+   any element in the remaining matrix. The coordinates of the successive matrix pivots used at each stage of the reduction are recorded in the successive element positions of the row and column index vectors r and c. These are later called upon by
+   the procedure matrixperm which rearranges the rows and columns of the matrix. If the matrix is singular the procedure exits to an appropriate label in the main program; begin integer i,j,k,l,pivi,pivj,p; real pivot; integer array r,c[1 :hi ; comment
+   set row and column index vectors; for i := 1 step 1 until n do r[i] := c[i] := i; comment find initial pivot; pivi := pivj := 1; for i := 1 step 1 until n do for j := 1 step 1 until n do if abs (a[i,j]) > abs (a[pivi,pivj]) then begin pivi := i;
+   pivj := j end; eomment start reduction; for i := 1 step 1 until n do begin l := r[i]; r[i] := r[pivi] begin comment here include an appropriate output procedure to record i and the current values of r[l:n] and ell:n]; go to singular end; forj := n
    step-1 until i+1, i-I step-1 until 1 do},
    author = {J. W. J. Williams},
    doi = {10.1145/512274.512284},
@@ -63,8 +63,8 @@
 }
 
 @article{Debnath2021,
-   abstract = {Generative deep learning is powering a wave of new innovations in materials design. In this article, we discuss the basic operating principles of these methods and their advantages over rational design through the lens of a case study on 
-   refractory high-entropy alloys for ultra-high-temperature applications. We present our computational infrastructure and workflow for the inverse design of new alloys powered by these methods. Our preliminary results show that generative models can 
+   abstract = {Generative deep learning is powering a wave of new innovations in materials design. In this article, we discuss the basic operating principles of these methods and their advantages over rational design through the lens of a case study on
+   refractory high-entropy alloys for ultra-high-temperature applications. We present our computational infrastructure and workflow for the inverse design of new alloys powered by these methods. Our preliminary results show that generative models can
    learn complex relationships in order to generate novelty on demand, making them a valuable tool for materials informatics.},
    author = {Arindam Debnath and Adam M. Krajewski and Hui Sun and Shuang Lin and Marcia Ahn and Wenjie Li and Shanshank Priya and Jogender Singh and Shunli Shang and Allison M. Beese and Zi-Kui Liu and Wesley F. Reinhart},
    doi = {10.20517/jmi.2021.05},
@@ -75,7 +75,7 @@
    journal = {Journal of Materials Informatics},
    keywords = {High entropy alloys,databases,inverse design}
 }
-   
+
 @misc{Rumpf2023,
    author = {Andreas Rumpf},
    title = {Nim Programming Language v2.0.0},
@@ -115,12 +115,12 @@
 }
 
 @article{Krajewski2024Nimplex,
-   abstract = {Many disciplines of science and engineering deal with problems related to compositions, ranging from chemical compositions in materials science to portfolio compositions in economics. They exist in non-Euclidean simplex spaces, causing many 
-   standard tools to be incorrect or inefficient, which is significant in combinatorically or structurally challenging spaces exemplified by Compositionally Complex Materials (CCMs) and Functionally Graded Materials (FGMs). Here, we explore them conceptually 
-   in terms of problem spaces and quantitatively in terms of computational feasibility. This work implements several essential methods specific to the compositional (simplex) spaces through a high-performance open-source library nimplex. Most significantly, 
-   we derive and implement an algorithm for constructing a novel n-dimensional simplex graph data structure, which contains all discretized compositions and all possible neighbor-to-neighbor transitions as pointer arrays. Critically, no distance or neighborhood 
-   calculations are performed, instead leveraging pure combinatorics and the ordering in procedurally generated simplex grids, keeping the algorithm $\mathcal\{O\}(N)$, so that graphs with billions of transitions take seconds to construct on a laptop. 
-   Furthermore, we demonstrate how such graph representations can be combined to express path-planning problem spaces and to incorporate prior knowledge while keeping the problem space homogeneous. This allows for efficient deployment of existing high-performance 
+   abstract = {Many disciplines of science and engineering deal with problems related to compositions, ranging from chemical compositions in materials science to portfolio compositions in economics. They exist in non-Euclidean simplex spaces, causing many
+   standard tools to be incorrect or inefficient, which is significant in combinatorically or structurally challenging spaces exemplified by Compositionally Complex Materials (CCMs) and Functionally Graded Materials (FGMs). Here, we explore them conceptually
+   in terms of problem spaces and quantitatively in terms of computational feasibility. This work implements several essential methods specific to the compositional (simplex) spaces through a high-performance open-source library nimplex. Most significantly,
+   we derive and implement an algorithm for constructing a novel n-dimensional simplex graph data structure, which contains all discretized compositions and all possible neighbor-to-neighbor transitions as pointer arrays. Critically, no distance or neighborhood
+   calculations are performed, instead leveraging pure combinatorics and the ordering in procedurally generated simplex grids, keeping the algorithm $\mathcal\{O\}(N)$, so that graphs with billions of transitions take seconds to construct on a laptop.
+   Furthermore, we demonstrate how such graph representations can be combined to express path-planning problem spaces and to incorporate prior knowledge while keeping the problem space homogeneous. This allows for efficient deployment of existing high-performance
    gradient descent, graph traversal search, and other path optimization algorithms.},
    author = {Adam M. Krajewski and Allison M. Beese and Wesley F. Reinhart and Zi-Kui Liu},
    month = {2},
@@ -130,35 +130,35 @@
    year = {2024},
 }
 
-@book{Goldberg1989, 
-author = {Goldberg, David E.}, 
-title = {Genetic Algorithms in Search, Optimization and Machine Learning}, 
-year = {1989}, 
-isbn = {0201157675}, 
+@book{Goldberg1989,
+author = {Goldberg, David E.},
+title = {Genetic Algorithms in Search, Optimization and Machine Learning},
+year = {1989},
+isbn = {0201157675},
 doi = {10.5860/choice.27-0936},
-publisher = {Addison-Wesley Longman Publishing Co., Inc.}, 
-address = {USA}, 
-edition = {1st}, 
-abstract = {From the Publisher:This book brings together - in an informal and tutorial fashion - the computer techniques, mathematical tools, and research results that will enable both students and practitioners to apply genetic algorithms to problems in many 
-fields. Major concepts are illustrated with running examples, and major algorithms are illustrated by Pascal computer programs. No prior knowledge of GAs or genetics is assumed, and only a minimum of computer programming and mathematics background is required.} 
+publisher = {Addison-Wesley Longman Publishing Co., Inc.},
+address = {USA},
+edition = {1st},
+abstract = {From the Publisher:This book brings together - in an informal and tutorial fashion - the computer techniques, mathematical tools, and research results that will enable both students and practitioners to apply genetic algorithms to problems in many
+fields. Major concepts are illustrated with running examples, and major algorithms are illustrated by Pascal computer programs. No prior knowledge of GAs or genetics is assumed, and only a minimum of computer programming and mathematics background is required.}
 }
 
-@book{Knuth, 
-author = {Knuth, Donald E.}, 
-title = {The Art of Computer Programming, Volume 4, Fascicle 1: Bitwise Tricks \& Techniques; Binary Decision Diagrams}, 
-year = {2009}, 
-isbn = {0321580508}, 
-publisher = {Addison-Wesley Professional}, 
-edition = {12th}, 
-abstract = {This multivolume work on the analysis of algorithms has long been recognized as the definitive description of classical computer science. The three complete volumes published to date already comprise a unique and invaluable resource in programming 
-theory and practice. Countless readers have spoken about the profound personal influence of Knuths writings. Scientists have marveled at the beauty and elegance of his analysis, while practicing programmers have successfully applied his cookbook solutions to 
-their day-to-day problems. All have admired Knuth for the breadth, clarity, accuracy, and good humor found in his books.To begin the fourth and later volumes of the set, and to update parts of the existing three, Knuth has created a series of small books called 
-fascicles, which will be published at regular intervals. Each fascicle will encompass a section or more of wholly new or revised material. Ultimately, the content of these fascicles will be rolled up into the comprehensive, final versions of each volume, and the 
-enormous undertaking that began in 1962 will be complete.Volume 4, Fascicle 1 This fascicle, enlivened by a wealth of Knuths typically enjoyable examples, describes basic broadword operations and an important class of data structures that can make computer 
-programs run dozenseven thousandsof times faster. The author brings together and explains a substantial amount of previously scattered but eminently practical information known only to a few specialists. The book also includes nearly five-hundred exercises for 
-self-study, with detailed answers given in nearly every case; dozens of these exercises present original material that has never before been published. Simply put, this fascicle is a must-have for anybody who is faced with tough problems of a combinatorial flavor. 
-It demonstrates how ordinary programmers can make use of powerful techniques that heretofore seemed to be available only to people who used specialized languages and software. It shows how ideas once thought to be far out are now ready to become a part of the 
-programming mainstream.} 
+@book{Knuth,
+author = {Knuth, Donald E.},
+title = {The Art of Computer Programming, Volume 4, Fascicle 1: Bitwise Tricks \& Techniques; Binary Decision Diagrams},
+year = {2009},
+isbn = {0321580508},
+publisher = {Addison-Wesley Professional},
+edition = {12th},
+abstract = {This multivolume work on the analysis of algorithms has long been recognized as the definitive description of classical computer science. The three complete volumes published to date already comprise a unique and invaluable resource in programming
+theory and practice. Countless readers have spoken about the profound personal influence of Knuths writings. Scientists have marveled at the beauty and elegance of his analysis, while practicing programmers have successfully applied his cookbook solutions to
+their day-to-day problems. All have admired Knuth for the breadth, clarity, accuracy, and good humor found in his books.To begin the fourth and later volumes of the set, and to update parts of the existing three, Knuth has created a series of small books called
+fascicles, which will be published at regular intervals. Each fascicle will encompass a section or more of wholly new or revised material. Ultimately, the content of these fascicles will be rolled up into the comprehensive, final versions of each volume, and the
+enormous undertaking that began in 1962 will be complete.Volume 4, Fascicle 1 This fascicle, enlivened by a wealth of Knuths typically enjoyable examples, describes basic broadword operations and an important class of data structures that can make computer
+programs run dozenseven thousandsof times faster. The author brings together and explains a substantial amount of previously scattered but eminently practical information known only to a few specialists. The book also includes nearly five-hundred exercises for
+self-study, with detailed answers given in nearly every case; dozens of these exercises present original material that has never before been published. Simply put, this fascicle is a must-have for anybody who is faced with tough problems of a combinatorial flavor.
+It demonstrates how ordinary programmers can make use of powerful techniques that heretofore seemed to be available only to people who used specialized languages and software. It shows how ideas once thought to be far out are now ready to become a part of the
+programming mainstream.}
 }
 
 @article{Evans2024,
@@ -269,5 +269,30 @@ programming mainstream.}
    title = {Ecological modelling approaches for predicting emergent properties in microbial communities},
    volume = {6},
    url = {https://www.nature.com/articles/s41559-022-01746-7},
+   year = {2022},
+}
+
+@article{Ahn2011,
+   abstract = {The cultural diversity of culinary practice, as illustrated by the variety of regional cuisines, raises the question of whether there are any general patterns that determine the ingredient combinations used in food today or principles that transcend individual tastes and recipes. We introduce a flavor network that captures the flavor compounds shared by culinary ingredients. Western cuisines show a tendency to use ingredient pairs that share many flavor compounds, supporting the so-called food pairing hypothesis. By contrast, East Asian cuisines tend to avoid compound sharing ingredients. Given the increasing availability of information on food preparation, our data-driven investigation opens new avenues towards a systematic understanding of culinary practice.},
+   author = {Yong-Yeol Ahn and Sebastian E. Ahnert and James P. Bagrow and Albert-László Barabási},
+   doi = {10.1038/srep00196},
+   issn = {2045-2322},
+   issue = {1},
+   journal = {Scientific Reports},
+   keywords = {Applied physics,Statistical physics,Statistics,Systems biology,thermodynamics and nonlinear dynamics},
+   month = {12},
+   pages = {196},
+   pmid = {22355711},
+   publisher = {Nature Publishing Group},
+   title = {Flavor network and the principles of food pairing},
+   volume = {1},
+   url = {https://www.nature.com/articles/srep00196},
+   year = {2011},
+}
+@misc{Edmisten2022,
+   author = {William Edmisten},
+   month = {8},
+   title = {Analyzing All Recipes},
+   url = {https://wcedmisten.fyi/post/analyzing-all-recipes/#spices},
    year = {2022},
 }
