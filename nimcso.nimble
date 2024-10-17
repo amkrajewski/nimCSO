@@ -9,5 +9,6 @@ srcDir        = "src"
 # Dependencies
 
 requires "nim >= 2.0.0"
-requires "arraymancer >= 0.7.3"
+requires "nimcuda >= 0.1.4 & <= 0.1.9"
+requires "arraymancer >= 0.7.3 & <= 0.7.32"
 requires "yaml >= 2.0.0"
