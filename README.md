@@ -29,7 +29,7 @@ to the specific problem statement and dataset at hand based on a human-readable 
 (L1 cache latency) and can outperform an efficient native Python implementation over 400 times in terms of speed and 50 times in terms of memory usage (*not* counting interpreter), while
 also outperforming NumPy implementation 35 and 17 times, respectively, when checking a candidate solution.
 
-![Main nimCSO figure](paper/assets/nimCSO_mainFigure.png)
+![Main nimCSO figure](https://raw.githubusercontent.com/amkrajewski/nimCSO/refs/heads/main/paper/assets/nimCSO_mainFigure.png)
 
 `nimCSO` is designed to be both (1) a user-ready tool (see figure above), implementing:
 - **Efficient brute force approaches** (for handling up to 25 dimensions)
