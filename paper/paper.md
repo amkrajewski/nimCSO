@@ -76,7 +76,7 @@ Internally, `nimCSO` is built around storing the data and solutions in one of tw
 | `nimCSO`^0.6^  | `BitArray`     | 6.9 µs           | 3.2 ns   *(x15.6)*          | 50.4 kB  *(x17.3)*         |
 +----------------+----------------+------------------+-----------------------------+----------------------------+
 | `nimCSO`^0.6^  |`uint64`        | 0.98 µs          | 0.456 ns  *(x110)*          | 16.8 kB  *(x52)*           |
-+================+================+==================+=============================+============================+
++----------------+----------------+------------------+-----------------------------+----------------------------+
 
 Table: Benchmarks of (1) the average time to evaluate how many datapoints would be lost if 5 selected components were removed from a dataset with 2,150 data points spanning 37 components, averaged over 10,000 runs, and (2) the size of the data structure representing the dataset. Values were obtained by running scripts in `benchmarks` directory on Apple M2 Max CPU. Pre-processing time is excluded, as it has negligible impact on larger, realistic problems.
 
